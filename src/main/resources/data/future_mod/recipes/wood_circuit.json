@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "MCM",
+    "CXC",
+    "MCM"
+  ],
+  "key": {
+    "M": {
+      "tag": "minecraft:logs"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "X": {
+      "item": "future_mod:redstone_chip"
+    }
+  },
+  "result": {
+    "item": "future_mod:wood_circuit"
+  }
+}
