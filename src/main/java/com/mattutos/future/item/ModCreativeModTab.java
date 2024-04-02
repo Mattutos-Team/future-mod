@@ -13,10 +13,11 @@ public class ModCreativeModTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, FutureMod.MODID);
 
     public static final RegistryObject<CreativeModeTab> EXAMPLE_MOD_TAB = CREATIVE_MODE_TAB.register("example_mod_tab", () -> CreativeModeTab.builder()
-            .icon(() -> new ItemStack(ModItems.FUTURE_INGOT.get())).title(Component.translatable("creative.example_mod_tab"))
+            .icon(() -> new ItemStack(ModItems.WOOD_CIRCUIT.get())).title(Component.translatable("creative.example_mod_tab"))
             .displayItems(((itemDisplayParameters, output) -> {
                 //ITEMS
-
+                output.accept(ModItems.WOOD_CIRCUIT.get());
+                output.accept(ModItems.COOPER_CIRCUIT.get());
                 //FUEL
 
                 //FOODS

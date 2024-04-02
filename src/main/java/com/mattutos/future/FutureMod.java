@@ -59,7 +59,7 @@ public class FutureMod {
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.FUTURE_INGOT);
+            event.accept(ModItems.WOOD_CIRCUIT);
         }
     }
 

@@ -10,7 +10,9 @@ import net.minecraftforge.registries.RegistryObject;
 public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, FutureMod.MODID);
 
-    public static final RegistryObject<Item> FUTURE_INGOT = ITEMS.register("future_ingot", () -> new Item(new Item.Properties()));
+    //CIRCUITS
+    public static final RegistryObject<Item> WOOD_CIRCUIT = ITEMS.register("wood_circuit", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> COOPER_CIRCUIT = ITEMS.register("cooper_circuit", () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
