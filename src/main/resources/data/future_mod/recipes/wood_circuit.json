@@ -8,7 +8,7 @@
   ],
   "key": {
     "M": {
-      "tag": "minecraft:logs"
+      "item": "future_mod:varnished_wood"
     },
     "C": {
       "item": "minecraft:copper_ingot"

@@ -19,6 +19,7 @@ public class ModItems {
 
     //VARNISH
     public static final RegistryObject<Item> VARNISH = ITEMS.register("varnish", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> VARNISHED_WOOD = ITEMS.register("varnished_wood", () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

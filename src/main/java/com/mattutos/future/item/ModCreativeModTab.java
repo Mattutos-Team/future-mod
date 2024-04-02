@@ -21,6 +21,7 @@ public class ModCreativeModTab {
                 output.accept(ModItems.COOPER_CIRCUIT.get());
                 output.accept(ModItems.REDSTONE_CHIP.get());
                 output.accept(ModItems.VARNISH.get());
+                output.accept(ModItems.VARNISHED_WOOD.get());
 
                 //FUEL
 
