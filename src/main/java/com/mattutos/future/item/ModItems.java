@@ -17,6 +17,9 @@ public class ModItems {
     //REDSTONE CHIP
     public static final RegistryObject<Item> REDSTONE_CHIP = ITEMS.register("redstone_chip", () -> new Item(new Item.Properties()));
 
+    //VARNISH
+    public static final RegistryObject<Item> VARNISH = ITEMS.register("varnish", () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
