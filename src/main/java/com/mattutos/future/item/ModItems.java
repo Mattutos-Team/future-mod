@@ -14,6 +14,9 @@ public class ModItems {
     public static final RegistryObject<Item> WOOD_CIRCUIT = ITEMS.register("wood_circuit", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> COOPER_CIRCUIT = ITEMS.register("cooper_circuit", () -> new Item(new Item.Properties()));
 
+    //REDSTONE CHIP
+    public static final RegistryObject<Item> REDSTONE_CHIP = ITEMS.register("redstone_chip", () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

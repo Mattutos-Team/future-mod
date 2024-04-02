@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " R ",
+    "RVR",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "V": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "item": "future_mod:redstone_chip"
+  }
+}
