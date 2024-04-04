@@ -1,6 +1,6 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "category": "misc",
+  "type": "future_mod:varnished_wood",
+  "group": "future_mod:varnished_wood",
   "ingredients": [
     {
       "tag": "minecraft:planks"
@@ -10,6 +10,7 @@
     }
   ],
   "result": {
-    "item": "future_mod:varnished_wood"
+    "item": "future_mod:varnished_wood",
+    "count": 1
   }
 }
