@@ -1,13 +1,13 @@
 {
+  "block.future_mod.coal_energy_generator": "Gerador de energia a carvão",
+  "block.future_mod.old_ore": "Minério Antigo",
   "creative.future_mod_tab": "Future Mod",
   "item.future_mod.cooper_circuit": "Circuito de Cobre",
+  "item.future_mod.old_alloy": "Liga de Minério Antigo",
+  "item.future_mod.old_ingot": "Olderitium",
+  "item.future_mod.raw_old_ore": "Minério Antigo Bruto",
   "item.future_mod.redstone_chip": "Chip de Redstone",
   "item.future_mod.varnish": "Verniz",
   "item.future_mod.varnished_wood": "Base de Madeira Vernizada",
-  "item.future_mod.wood_circuit": "Circuito de Madeira",
-  "block.future_mod.old_ore": "Minério Antigo",
-  "item.future_mod.raw_old_ore": "Minério Antigo Bruto",
-  "item.future_mod.old_alloy": "Liga de Minério Antigo",
-  "item.future_mod.old_ingot": "Olderitium"
-  "block.future_mod.coal_energy_generator": "Gerador de energia a carvão"
+  "item.future_mod.wood_circuit": "Circuito de Madeira"
 }
