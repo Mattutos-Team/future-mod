@@ -7,5 +7,6 @@
   "item.future_mod.wood_circuit": "Circuito de Madeira",
   "block.future_mod.old_ore": "Minério Antigo",
   "item.future_mod.raw_old_ore": "Minério Antigo Bruto",
-  "item.future_mod.old_alloy": "Liga de Minério Antigo"
+  "item.future_mod.old_alloy": "Liga de Minério Antigo",
+  "item.future_mod.old_ingot": "Olderitium"
 }
