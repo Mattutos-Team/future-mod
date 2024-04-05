@@ -21,6 +21,9 @@ public class ModItems {
     public static final RegistryObject<Item> VARNISH = ITEMS.register("varnish", () -> new Item(new Item.Properties().durability(8)));
     public static final RegistryObject<Item> VARNISHED_WOOD = ITEMS.register("varnished_wood", () -> new Item(new Item.Properties()));
 
+    //RAW
+    public static final RegistryObject<Item> RAW_OLD_ORE = ITEMS.register("raw_old_ore", () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
