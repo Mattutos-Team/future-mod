@@ -31,6 +31,15 @@ public class ModItems {
     public static final RegistryObject<BlockItem> COAL_ENERGY_GENERATOR = ITEMS.register("coal_energy_generator",
             () -> new BlockItem(BlockInit.COAL_ENERGY_GENERATOR_BLOCK.get(), new Item.Properties()));
 
+    //RAW
+    public static final RegistryObject<Item> RAW_OLD_ORE = ITEMS.register("raw_old_ore", () -> new Item(new Item.Properties()));
+
+    //ALLOY
+    public static final RegistryObject<Item> OLD_ALLOY = ITEMS.register("old_alloy", () -> new Item(new Item.Properties()));
+
+    //INGOT
+    public static final RegistryObject<Item> OLD_INGOT = ITEMS.register("old_ingot", () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

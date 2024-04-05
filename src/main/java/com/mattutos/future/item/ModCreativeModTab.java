@@ -1,6 +1,7 @@
 package com.mattutos.future.item;
 
 import com.mattutos.future.FutureMod;
+import com.mattutos.future.block.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -27,11 +28,23 @@ public class ModCreativeModTab {
                         output.accept(ModItems.VARNISHED_WOOD.get());
                         output.accept(ModItems.COAL_ENERGY_GENERATOR.get());
 
+
+
+                        //RAW
+                        output.accept(ModItems.RAW_OLD_ORE.get());
+
+                        //ALLOY
+                        output.accept(ModItems.OLD_ALLOY.get());
+
+                        //INGOT
+                        output.accept(ModItems.OLD_INGOT.get());
+
                         //FUEL
 
                         //FOODS
 
                         //BLOCKS
+                        output.accept(ModBlocks.OLD_ORE.get());
                     }))
                     .build());
 

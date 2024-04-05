@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 600,
+  "experience": 1,
+  "group": "future_mod:old_alloy",
+  "ingredient": {
+    "item": "future_mod:old_alloy"
+  },
+  "result": "future_mod:old_ingot"
+}
