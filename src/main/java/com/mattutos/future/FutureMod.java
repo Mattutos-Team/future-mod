@@ -1,21 +1,15 @@
 package com.mattutos.future;
 
-import com.mattutos.future.block.ModBlocks;
 import com.mattutos.future.init.BlockInit;
-import com.mattutos.future.init.ModRecipeSerializers;
-import com.mattutos.future.item.ModCreativeModTab;
-import com.mattutos.future.item.ModItems;
+import com.mattutos.future.init.CreativeModTabInit;
+import com.mattutos.future.init.ItemInit;
+import com.mattutos.future.init.RecipeSerializerInit;
 import lombok.extern.slf4j.Slf4j;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -27,36 +21,20 @@ public class FutureMod {
     public FutureMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        ModCreativeModTab.register(modEventBus);
-        ModItems.register(modEventBus);
-        ModBlocks.register((modEventBus));
-        BlockInit.BLOCKS.register(modEventBus);
-
-        modEventBus.register(new ModRecipeSerializers());
-        ModRecipeSerializers.REGISTRY.register(modEventBus);
-
-        modEventBus.addListener(this::commonSetup);
+        CreativeModTabInit.register(modEventBus);
+        ItemInit.register(modEventBus);
+        BlockInit.register(modEventBus);
+        RecipeSerializerInit.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::addCreative);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-    }
-
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.WOOD_CIRCUIT);
-            event.accept(ModItems.RAW_OLD_ORE);
+            event.accept(ItemInit.WOOD_CIRCUIT);
+            event.accept(ItemInit.RAW_OLD_ORE);
         }
     }
 
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            log.info("HELLO FROM CLIENT SETUP");
-            log.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
-    }
 }

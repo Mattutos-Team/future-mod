@@ -3,7 +3,8 @@ package com.mattutos.future.crafting.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mattutos.future.init.ModRecipeSerializers;
+import com.mattutos.future.Config;
+import com.mattutos.future.init.RecipeSerializerInit;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,7 +13,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Slf4j
@@ -25,17 +26,16 @@ public class VarnishedWoodRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv) {
+    public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer inv) {
         var remaining = super.getRemainingItems(inv);
 
         for (int i = 0; i < inv.getContainerSize(); i++) {
             var stack = inv.getItem(i);
 
             if (stack.getItem().getDescriptionId().equals("item.future_mod.varnish")) {
-                log.info("teste slf4j");
                 var varnish = stack.copy();
 
-                if (!varnish.hurt(1, new LegacyRandomSource(123), null)) {
+                if (!varnish.hurt(1, Config.RANDOM_SOURCE, null)) {
                     remaining.set(i, varnish);
                 }
             }
@@ -45,14 +45,14 @@ public class VarnishedWoodRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
-        return ModRecipeSerializers.VARNISHED_WOOD.get();
+    public @NotNull RecipeSerializer<?> getSerializer() {
+        return RecipeSerializerInit.VARNISHED_WOOD.get();
     }
 
     public static class Serializer implements RecipeSerializer<VarnishedWoodRecipe> {
 
         @Override
-        public VarnishedWoodRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+        public @NotNull VarnishedWoodRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject json) {
             var group = GsonHelper.getAsString(json, "group", "");
             var ingredients = readIngredients(GsonHelper.getAsJsonArray(json, "ingredients"));
 
@@ -79,14 +79,12 @@ public class VarnishedWoodRecipe extends ShapelessRecipe {
         }
 
         @Override
-        public @Nullable VarnishedWoodRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+        public @Nullable VarnishedWoodRecipe fromNetwork(@NotNull ResourceLocation recipeId, FriendlyByteBuf buffer) {
             var group = buffer.readUtf(32767);
             int size = buffer.readVarInt();
             var inputs = NonNullList.withSize(size, Ingredient.EMPTY);
 
-            for (int j = 0; j < inputs.size(); ++j) {
-                inputs.set(j, Ingredient.fromNetwork(buffer));
-            }
+            inputs.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
 
             var result = buffer.readItem();
 

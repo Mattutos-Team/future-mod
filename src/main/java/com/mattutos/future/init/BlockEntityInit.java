@@ -13,6 +13,6 @@ public class BlockEntityInit {
 
     public static final RegistryObject<BlockEntityType<EnergyCoalGeneratorEntity>> ENERGY_GENERATOR_BLOCK_ENTITY = BLOCK_ENTITIES
             .register("coal_energy_generator",
-                    () -> BlockEntityType.Builder.of(EnergyCoalGeneratorEntity::new, BlockInit.COAL_ENERGY_GENERATOR_BLOCK.get())
+                    () -> BlockEntityType.Builder.of(EnergyCoalGeneratorEntity::new, BlockInit.COAL_ENERGY_GENERATOR.get())
                             .build(null));
 }
