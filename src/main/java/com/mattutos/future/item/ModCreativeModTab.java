@@ -25,6 +25,7 @@ public class ModCreativeModTab {
                         output.accept(ModItems.REDSTONE_CHIP.get());
                         output.accept(ModItems.VARNISH.get());
                         output.accept(ModItems.VARNISHED_WOOD.get());
+                        output.accept(ModItems.COAL_ENERGY_GENERATOR.get());
 
                         //FUEL
 

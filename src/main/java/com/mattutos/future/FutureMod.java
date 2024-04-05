@@ -1,5 +1,6 @@
 package com.mattutos.future;
 
+import com.mattutos.future.init.BlockInit;
 import com.mattutos.future.init.ModRecipeSerializers;
 import com.mattutos.future.item.ModCreativeModTab;
 import com.mattutos.future.item.ModItems;
@@ -27,6 +28,7 @@ public class FutureMod {
 
         ModCreativeModTab.register(modEventBus);
         ModItems.register(modEventBus);
+        BlockInit.BLOCKS.register(modEventBus);
 
         modEventBus.register(new ModRecipeSerializers());
         ModRecipeSerializers.REGISTRY.register(modEventBus);

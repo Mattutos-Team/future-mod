@@ -4,5 +4,6 @@
   "item.future_mod.redstone_chip": "Chip de Redstone",
   "item.future_mod.varnish": "Verniz",
   "item.future_mod.varnished_wood": "Base de Madeira Vernizada",
-  "item.future_mod.wood_circuit": "Circuito de Madeira"
+  "item.future_mod.wood_circuit": "Circuito de Madeira",
+  "block.future_mod.coal_energy_generator": "Gerador de energia a carvão"
 }

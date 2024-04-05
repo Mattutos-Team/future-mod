@@ -1,6 +1,8 @@
 package com.mattutos.future.item;
 
 import com.mattutos.future.FutureMod;
+import com.mattutos.future.init.BlockInit;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -11,15 +13,23 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, FutureMod.MOD_ID);
 
     //CIRCUITS
-    public static final RegistryObject<Item> WOOD_CIRCUIT = ITEMS.register("wood_circuit", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> COOPER_CIRCUIT = ITEMS.register("cooper_circuit", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> WOOD_CIRCUIT = ITEMS.register("wood_circuit",
+            () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> COOPER_CIRCUIT = ITEMS.register("cooper_circuit",
+            () -> new Item(new Item.Properties()));
 
     //REDSTONE CHIP
-    public static final RegistryObject<Item> REDSTONE_CHIP = ITEMS.register("redstone_chip", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> REDSTONE_CHIP = ITEMS.register("redstone_chip",
+            () -> new Item(new Item.Properties()));
 
     //VARNISH
-    public static final RegistryObject<Item> VARNISH = ITEMS.register("varnish", () -> new Item(new Item.Properties().durability(8)));
-    public static final RegistryObject<Item> VARNISHED_WOOD = ITEMS.register("varnished_wood", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> VARNISH = ITEMS.register("varnish",
+            () -> new Item(new Item.Properties().durability(8)));
+    public static final RegistryObject<Item> VARNISHED_WOOD = ITEMS.register("varnished_wood",
+            () -> new Item(new Item.Properties()));
+
+    public static final RegistryObject<BlockItem> COAL_ENERGY_GENERATOR = ITEMS.register("coal_energy_generator",
+            () -> new BlockItem(BlockInit.COAL_ENERGY_GENERATOR_BLOCK.get(), new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

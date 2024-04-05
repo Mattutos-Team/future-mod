@@ -4,5 +4,6 @@
   "item.future_mod.redstone_chip": "Redstone Chip",
   "item.future_mod.varnish": "Varnish",
   "item.future_mod.varnished_wood": "Varnished Wood",
-  "item.future_mod.wood_circuit": "Wood Circuit"
+  "item.future_mod.wood_circuit": "Wood Circuit",
+  "block.future_mod.coal_energy_generator": "Coal Energy Generator"
 }
