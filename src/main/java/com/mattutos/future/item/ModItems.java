@@ -24,6 +24,12 @@ public class ModItems {
     //RAW
     public static final RegistryObject<Item> RAW_OLD_ORE = ITEMS.register("raw_old_ore", () -> new Item(new Item.Properties()));
 
+    //ALLOY
+    public static final RegistryObject<Item> OLD_ALLOY = ITEMS.register("old_alloy", () -> new Item(new Item.Properties()));
+
+    //INGOT
+    public static final RegistryObject<Item> OLD_INGOT = ITEMS.register("old_ingot", () -> new Item(new Item.Properties()));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

@@ -27,8 +27,16 @@ public class ModCreativeModTab {
                         output.accept(ModItems.VARNISH.get());
                         output.accept(ModItems.VARNISHED_WOOD.get());
 
-                        //RAWS
+
+
+                        //RAW
                         output.accept(ModItems.RAW_OLD_ORE.get());
+
+                        //ALLOY
+                        output.accept(ModItems.OLD_ALLOY.get());
+
+                        //INGOT
+                        output.accept(ModItems.OLD_INGOT.get());
 
                         //FUEL
 
