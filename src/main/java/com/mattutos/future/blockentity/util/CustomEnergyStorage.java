@@ -1,38 +1,42 @@
 package com.mattutos.future.blockentity.util;
 
-import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
-public class CustomEnergyStorage extends EnergyStorage {
-    public CustomEnergyStorage(int capacity) {
-        super(capacity);
+public class CustomEnergyStorage implements IEnergyStorage {
+
+    private final IEnergyStorage energyStorage;
+
+    public CustomEnergyStorage(IEnergyStorage energyStorage) {
+        this.energyStorage = energyStorage;
     }
 
-    public CustomEnergyStorage(int capacity, int maxTransfer) {
-        super(capacity, maxTransfer);
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        return energyStorage.receiveEnergy(maxReceive, simulate);
     }
 
-    public CustomEnergyStorage(int capacity, int maxReceive, int maxExtract) {
-        super(capacity, maxReceive, maxExtract);
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        return energyStorage.extractEnergy(maxExtract, simulate);
     }
 
-    public CustomEnergyStorage(int capacity, int maxReceive, int maxExtract, int energy) {
-        super(capacity, maxReceive, maxExtract, energy);
+    @Override
+    public int getEnergyStored() {
+        return energyStorage.getEnergyStored();
     }
 
-    public void setEnergy(int energy) {
-        if(energy < 0)
-            energy = 0;
-        if(energy > this.capacity)
-            energy = this.capacity;
-
-        this.energy = energy;
+    @Override
+    public int getMaxEnergyStored() {
+        return energyStorage.getMaxEnergyStored();
     }
 
-    public void addEnergy(int energy) {
-        setEnergy(this.energy + energy);
+    @Override
+    public boolean canExtract() {
+        return energyStorage.canExtract();
     }
 
-    public void removeEnergy(int energy) {
-        setEnergy(this.energy - energy);
+    @Override
+    public boolean canReceive() {
+        return energyStorage.canReceive();
     }
 }

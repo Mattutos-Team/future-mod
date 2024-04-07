@@ -1,7 +1,7 @@
 package com.mattutos.future.init;
 
 import com.mattutos.future.FutureMod;
-import com.mattutos.future.block.EnergyCoalGeneratorBlock;
+import com.mattutos.future.block.CoalEnergyGeneratorBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -22,8 +22,8 @@ public class BlockInit {
             () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)
                     .strength(3f).requiresCorrectToolForDrops()));
 
-    public static final RegistryObject<EnergyCoalGeneratorBlock> COAL_ENERGY_GENERATOR =
-            registerBlock("coal_energy_generator", () -> new EnergyCoalGeneratorBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)));
+    public static final RegistryObject<CoalEnergyGeneratorBlock> COAL_ENERGY_GENERATOR =
+            registerBlock("coal_energy_generator", () -> new CoalEnergyGeneratorBlock(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
