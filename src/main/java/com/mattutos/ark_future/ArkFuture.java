@@ -1,11 +1,11 @@
-package com.mattutos.future;
+package com.mattutos.ark_future;
 
-import com.mattutos.future.init.BlockEntityInit;
-import com.mattutos.future.init.BlockInit;
-import com.mattutos.future.init.CreativeModTabInit;
-import com.mattutos.future.init.ItemInit;
-import com.mattutos.future.init.MenuInit;
-import com.mattutos.future.init.RecipeSerializerInit;
+import com.mattutos.ark_future.init.BlockEntityInit;
+import com.mattutos.ark_future.init.BlockInit;
+import com.mattutos.ark_future.init.CreativeModTabInit;
+import com.mattutos.ark_future.init.ItemInit;
+import com.mattutos.ark_future.init.MenuInit;
+import com.mattutos.ark_future.init.RecipeSerializerInit;
 
 import com.mojang.logging.LogUtils;
 
@@ -20,13 +20,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import org.slf4j.Logger;
 
-@Mod(FutureMod.MOD_ID)
-public class FutureMod {
-    public static final String MOD_ID = "future_mod";
+@Mod(ArkFuture.MOD_ID)
+public class ArkFuture {
+    public static final String MOD_ID = "ark_future";
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public FutureMod(FMLJavaModLoadingContext context) {
+    public ArkFuture(FMLJavaModLoadingContext context) {
         IEventBus modEventBus = context.getModEventBus();
 
         BlockEntityInit.register(modEventBus);

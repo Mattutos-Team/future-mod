@@ -1,6 +1,6 @@
-package com.mattutos.future.init;
+package com.mattutos.ark_future.init;
 
-import com.mattutos.future.FutureMod;
+import com.mattutos.ark_future.ArkFuture;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockEntityInit {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
-            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, FutureMod.MOD_ID);
+            DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, ArkFuture.MOD_ID);
 
     public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);

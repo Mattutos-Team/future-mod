@@ -1,6 +1,6 @@
-package com.mattutos.future.init;
+package com.mattutos.ark_future.init;
 
-import com.mattutos.future.FutureMod;
+import com.mattutos.ark_future.ArkFuture;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public final class RecipeSerializerInit {
-    private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, FutureMod.MOD_ID);
+    private static final DeferredRegister<RecipeSerializer<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, ArkFuture.MOD_ID);
 
     private static RegistryObject<RecipeSerializer<?>> register(String name, Supplier<RecipeSerializer<?>> serializer) {
         return REGISTRY.register(name, serializer);
