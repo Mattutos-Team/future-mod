@@ -1,0 +1,16 @@
+{
+  "type": "future_mod:varnished_wood",
+  "group": "future_mod:varnished_wood",
+  "ingredients": [
+    {
+      "tag": "minecraft:planks"
+    },
+    {
+      "item": "future_mod:varnish"
+    }
+  ],
+  "result": {
+    "item": "future_mod:varnished_wood",
+    "count": 1
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "LLL",
+    "LBL",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "minecraft:leaves"
+    },
+    "B": {
+      "item": "minecraft:potion"
+    }
+  },
+  "result": {
+    "item": "future_mod:varnish"
+  }
+}

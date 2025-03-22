@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "future_mod:item/wood_circuit"
+  }
+}

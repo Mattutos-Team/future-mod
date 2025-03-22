@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "future_mod:old_alloy",
+  "ingredients": [
+    {
+      "item": "minecraft:raw_iron"
+    },
+    {
+      "item": "future_mod:raw_old_ore"
+    }
+  ],
+  "result": {
+    "item": "future_mod:old_alloy",
+    "count": 1
+  }
+}
