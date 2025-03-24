@@ -1,6 +1,6 @@
-package com.mattutos.ark_future.init;
+package com.mattutos.arkfuture.init;
 
-import com.mattutos.ark_future.ArkFuture;
+import com.mattutos.arkFuture.ArkFuture;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
