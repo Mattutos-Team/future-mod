@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "layer0": "ark_future:item/ancient_ore_block"
+  }
+}
