@@ -22,8 +22,8 @@ public class ArkFuture {
         BlockInit.register(modEventBus);
         CreativeModTabInit.register(modEventBus);
         ItemInit.register(modEventBus);
-        MenuInit.register(modEventBus);
         RecipeSerializerInit.register(modEventBus);
+        MenuInit.MENUS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
 
