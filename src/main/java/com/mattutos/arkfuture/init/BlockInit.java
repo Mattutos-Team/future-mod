@@ -1,6 +1,6 @@
-package com.mattutos.ark_future.init;
+package com.mattutos.arkfuture.init;
 
-import com.mattutos.ark_future.ArkFuture;
+import com.mattutos.arkfuture.ArkFuture;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;

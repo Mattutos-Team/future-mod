@@ -1,11 +1,11 @@
-package com.mattutos.ark_future;
+package com.mattutos.arkfuture;
 
-import com.mattutos.ark_future.init.BlockEntityInit;
-import com.mattutos.ark_future.init.BlockInit;
-import com.mattutos.ark_future.init.CreativeModTabInit;
-import com.mattutos.ark_future.init.ItemInit;
-import com.mattutos.ark_future.init.MenuInit;
-import com.mattutos.ark_future.init.RecipeSerializerInit;
+import com.mattutos.arkfuture.init.BlockEntityInit;
+import com.mattutos.arkfuture.init.BlockInit;
+import com.mattutos.arkfuture.init.CreativeModTabInit;
+import com.mattutos.arkfuture.init.ItemInit;
+import com.mattutos.arkfuture.init.MenuInit;
+import com.mattutos.arkfuture.init.RecipeSerializerInit;
 
 import com.mojang.logging.LogUtils;
 

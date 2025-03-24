@@ -1,6 +1,6 @@
-package com.mattutos.ark_future.init;
+package com.mattutos.arkfuture.init;
 
-import com.mattutos.ark_future.ArkFuture;
+import com.mattutos.arkfuture.ArkFuture;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;

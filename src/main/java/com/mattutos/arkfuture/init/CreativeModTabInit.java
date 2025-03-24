@@ -1,6 +1,6 @@
-package com.mattutos.ark_future.init;
+package com.mattutos.arkfuture.init;
 
-import com.mattutos.ark_future.ArkFuture;
+import com.mattutos.arkfuture.ArkFuture;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.eventbus.api.IEventBus;
