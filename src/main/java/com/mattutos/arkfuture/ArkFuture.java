@@ -1,16 +1,8 @@
 package com.mattutos.arkfuture;
 
-import com.mattutos.arkfuture.init.BlockEntityInit;
-import com.mattutos.arkfuture.init.BlockInit;
-import com.mattutos.arkfuture.init.CreativeModTabInit;
-import com.mattutos.arkfuture.init.ItemInit;
-import com.mattutos.arkfuture.init.MenuInit;
-import com.mattutos.arkfuture.init.RecipeSerializerInit;
-
-import com.mojang.logging.LogUtils;
-
+import com.mattutos.arkfuture.init.*;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.world.item.CreativeModeTabs;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -18,15 +10,14 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-import org.slf4j.Logger;
-
+@Slf4j
 @Mod(ArkFuture.MOD_ID)
 public class ArkFuture {
     public static final String MOD_ID = "ark_future";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     public ArkFuture(FMLJavaModLoadingContext context) {
+        log.info("Carregando mod");
+
         IEventBus modEventBus = context.getModEventBus();
 
         BlockEntityInit.register(modEventBus);
