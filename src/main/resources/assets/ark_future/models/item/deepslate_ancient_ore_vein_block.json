@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "layer0": "ark_future:item/deepslate_ancient_ore_vein_block"
-  }
+  "parent": "ark_future:block/deepslate_ancient_ore_vein_block"
 }
