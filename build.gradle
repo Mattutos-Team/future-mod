@@ -93,6 +93,11 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
     // at runtime, use the full JEI jar for Forge
     runtimeOnly("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
+
+    // Tests
+    testImplementation(platform("org.junit:junit-bom:5.12.1"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.named('processResources', ProcessResources).configure {
