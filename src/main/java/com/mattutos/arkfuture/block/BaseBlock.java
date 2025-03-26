@@ -1,13 +1,21 @@
 package com.mattutos.arkfuture.block;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class BaseBlock extends Block {
+public abstract class BaseBlock extends Block {
 
     public BaseBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -42,4 +50,6 @@ public class BaseBlock extends Block {
                         : Properties.of().sound(sound).strength(hardness, resistance).mapColor(color)
         );
     }
+
+    public abstract InteractionResult use(@NotNull BlockState pState, Level pLevel, @NotNull BlockPos pPos, @NotNull Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit);
 }

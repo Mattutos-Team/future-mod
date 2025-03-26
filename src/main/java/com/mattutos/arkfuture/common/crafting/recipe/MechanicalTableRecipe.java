@@ -1,6 +1,5 @@
 package com.mattutos.arkfuture.common.crafting.recipe;
 
-import jdk.jfr.Category;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MechanicalTableRecipe extends CustomRecipe {
     private final ResourceLocation id;
-    //    public final Ingredient template; we can implement this to future tiers on mechanical table
+    //    public final Ingredient template; --> we can implement this to future tiers on mechanical table
     public final Ingredient base;
     public final Ingredient additions;
     public final ItemStack result;
@@ -33,7 +32,7 @@ public class MechanicalTableRecipe extends CustomRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput pInput, HolderLookup.Provider pRegistries) {
-        return null;
+        return this.result.copy();
     }
 
     @Override
@@ -42,9 +41,22 @@ public class MechanicalTableRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider pRegistries) {
-        return null;
+    public @NotNull ItemStack getResultItem(HolderLookup.Provider pRegistries) {
+        return this.result;
     }
+
+    public boolean isBaseIngredient(@NotNull ItemStack pStack) {
+        return this.base.test(pStack);
+    }
+
+    public boolean isAdditionIngredient(@NotNull ItemStack pStack) {
+        return this.additions.test(pStack);
+    }
+
+    public @NotNull ResourceLocation getId() {
+        return this.id;
+    }
+
 
     @Override
     public RecipeSerializer<?> getSerializer() {
