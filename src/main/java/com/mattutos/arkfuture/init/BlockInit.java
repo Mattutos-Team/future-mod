@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
 
+import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -18,8 +19,8 @@ import java.util.function.Supplier;
 public class BlockInit {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ArkFuture.MOD_ID);
 
-    public static final RegistryObject<Block> COAL_POWER_GENERATOR = registerBlock("coal_power_generator",
-            () -> new Block(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.STONE)));
+    public static final RegistryObject<CoalPowerGeneratorBlock> COAL_POWER_GENERATOR = registerBlock("coal_power_generator",
+            () -> new CoalPowerGeneratorBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.STONE)));
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
