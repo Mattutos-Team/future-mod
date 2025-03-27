@@ -2,6 +2,8 @@ package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.init.MenuInit;
+import com.mattutos.arkfuture.screen.util.EnergySlot;
+import com.mattutos.arkfuture.screen.util.FuelSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -37,37 +39,6 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
         this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
         this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
         this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
-    }
-
-    static class FuelSlot extends Slot {
-        public FuelSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
-        }
-
-        public static boolean mayPlaceItem(ItemStack pItemStack) {
-            return net.minecraftforge.common.ForgeHooks.getBurnTime(pItemStack, null) > 0;
-        }
-    }
-
-    static class EnergySlot extends Slot {
-        public EnergySlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
-        }
-
-        public static boolean mayPlaceItem(ItemStack pItemStack) {
-            // TODO: identificar itens que contem energia
-            return false;
-        }
     }
 
     @Override
