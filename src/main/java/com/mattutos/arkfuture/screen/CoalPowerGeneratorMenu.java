@@ -32,11 +32,11 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
         checkContainerSize(pContainer, CoalPowerGeneratorBlockEntity.SLOT.count());
         checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
 
-        addPlayerInventorySlots(inventory, 10, 70);
+        addPlayerInventorySlots(inventory, 8, 84);
 
-        this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 64, 24));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 112, 15));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 112, 33));
+        this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
+        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
+        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
     }
 
     static class FuelSlot extends Slot {

@@ -19,7 +19,7 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
 
         // Ajustando posição do título do inventário
         this.inventoryLabelX = 8;
-        this.inventoryLabelY = this.imageHeight - 110;
+        this.inventoryLabelY = this.imageHeight - 92;
     }
 
     @Override
