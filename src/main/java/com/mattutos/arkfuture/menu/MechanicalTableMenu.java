@@ -1,9 +1,8 @@
 package com.mattutos.arkfuture.menu;
 
-import com.mattutos.arkfuture.common.crafting.recipe.MechanicalTableRecipe;
+import com.mattutos.arkfuture.custom.crafting.recipe.MechanicalTableRecipe;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
-import com.mattutos.arkfuture.init.RecipeTypeInit;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
