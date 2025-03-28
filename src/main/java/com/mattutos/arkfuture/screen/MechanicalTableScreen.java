@@ -1,19 +1,17 @@
 package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.menu.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.MechanicalTable.MechanicalTableMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CyclingSlotBackground;
-import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 

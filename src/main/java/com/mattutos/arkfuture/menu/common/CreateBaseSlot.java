@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.screen.common;
+package com.mattutos.arkfuture.menu.common;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;

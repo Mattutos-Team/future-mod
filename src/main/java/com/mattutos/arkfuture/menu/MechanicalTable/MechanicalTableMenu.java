@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.menu;
+package com.mattutos.arkfuture.menu.MechanicalTable;
 
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
 import com.mattutos.arkfuture.init.BlockInit;
