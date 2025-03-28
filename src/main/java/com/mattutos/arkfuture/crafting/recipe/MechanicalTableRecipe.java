@@ -1,5 +1,6 @@
-package com.mattutos.arkfuture.custom.crafting.recipe;
+package com.mattutos.arkfuture.crafting.recipe;
 
+import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

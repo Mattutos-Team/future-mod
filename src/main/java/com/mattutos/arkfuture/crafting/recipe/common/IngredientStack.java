@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.custom.crafting.recipe;
+package com.mattutos.arkfuture.crafting.recipe.common;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
