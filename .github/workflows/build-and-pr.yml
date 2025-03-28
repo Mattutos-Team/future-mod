@@ -38,7 +38,7 @@ jobs:
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: develop
+          branch: ${{ github.head_ref }}
           base: develop
           title: "🔧 Atualização automática do Mod"
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
