@@ -1,0 +1,43 @@
+name: Build & Create PR for Develop
+
+on:
+  push:
+    branches:
+      - feature/*  # Dispara o workflow quando há um push em uma branch feature
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Você pode usar 'zulu', 'adopt', etc.
+          java-version: '21'
+
+      - name: Configurar cache do Gradle
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Construir o Mod
+        run: ./gradlew build
+
+      - name: Criar PR automático para Develop
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: develop
+          base: develop
+          title: "🔧 Atualização automática do Mod"
+          body: "Este PR foi criado automaticamente após um build bem-sucedido."
+          labels: "automerge, build-pass"
+          delete-branch: true
