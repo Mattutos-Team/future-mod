@@ -84,11 +84,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Tratar nome da branch
+        id: branch_name
+        run: |
+          # Pega o nome da branch a partir do ref
+          BRANCH_NAME="${GITHUB_REF##*/}"
+          echo "Branch name: $BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_ENV
+
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v7
         with:
           base: develop
           branch: ${{ github.ref }}
-          title: "🔧 PR aberto automaticamente. develop <- ${{ github.ref }}" & replace('refs/heads/', '')
+          title: "🔧 PR aberto automaticamente. develop <- ${{ env.branch_name }}"
           body: "Este PR foi criado automaticamente após um build e teste bem-sucedidos."
           labels: "automate-pr, build-pass"
