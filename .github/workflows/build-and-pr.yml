@@ -45,7 +45,6 @@ jobs:
   # Job de teste
   test:
     runs-on: ubuntu-latest
-    needs: build  # Espera o job "build" ser finalizado antes de começar
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
