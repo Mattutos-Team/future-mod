@@ -1,6 +1,8 @@
 package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
+import com.mattutos.arkfuture.config.EnumContainerData;
+import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.screen.util.EnergySlot;
 import com.mattutos.arkfuture.screen.util.FuelSlot;
@@ -12,6 +14,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 
@@ -23,21 +28,28 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int BE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
-    public CoalPowerGeneratorMenu(int i, Inventory inventory, FriendlyByteBuf friendlyByteBuf) {
-        this(i, inventory, new SimpleContainer(CoalPowerGeneratorBlockEntity.SLOT.count()), new SimpleContainerData(CoalPowerGeneratorBlockEntity.DATA.count()));
+    protected final IItemHandler itemHandler;
+
+    // construtor utilizado no lado do cliente
+    public CoalPowerGeneratorMenu(int pContainerId, Inventory playerInventory, FriendlyByteBuf extraData) {
+        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), EnumContainerData.createSimple(CoalPowerGeneratorBlockEntity.DATA.class));
     }
 
-    public CoalPowerGeneratorMenu(int pContainerId, Inventory inventory, Container pContainer, ContainerData pContainerData) {
-        super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, inventory, pContainer, pContainerData);
+    // construtor utilizado no lado do servidor
+    public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, ContainerData pContainerData) {
+        super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
+        this.itemHandler = ((CoalPowerGeneratorBlockEntity)pBlockEntity).getItems();
 
-        checkContainerSize(pContainer, CoalPowerGeneratorBlockEntity.SLOT.count());
-        checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
+//        checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
+//        checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
 
-        addPlayerInventorySlots(inventory, 8, 84);
+        addPlayerInventorySlots(pPlayerInventory, 8, 84);
 
-        this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
+        this.addSlot(new FuelSlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
+        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
+        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
+
+        this.addDataSlots(pContainerData);
     }
 
     @Override
@@ -68,7 +80,7 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
     }
 
     public int getData(CoalPowerGeneratorBlockEntity.DATA data) {
-        return this.data.get(data.ordinal());
+        return this.containerData.get(data.ordinal());
     }
 
 }

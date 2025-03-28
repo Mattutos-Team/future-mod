@@ -1,12 +1,12 @@
 package com.mattutos.arkfuture.screen.util;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class FuelSlot extends Slot {
-    public FuelSlot(Container pContainer, int pSlot, int pX, int pY) {
-        super(pContainer, pSlot, pX, pY);
+public class FuelSlot extends SlotItemHandler {
+    public FuelSlot(IItemHandler pItemHandler, int pSlot, int pX, int pY) {
+        super(pItemHandler, pSlot, pX, pY);
     }
 
     @Override
