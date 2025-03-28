@@ -3,29 +3,35 @@ package com.mattutos.arkfuture.screen;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.items.IItemHandler;
 
 public abstract class ArkFutureContainerMenu extends AbstractContainerMenu {
 
-    protected final Container container;
-    protected final ContainerData data;
+    protected final BlockEntity blockEntity;
+    protected final ContainerData containerData;
     protected final Level level;
 
     protected ArkFutureContainerMenu(
             MenuType<?> pMenuType,
             int pContainerId,
             Inventory pPlayerInventory,
-            Container pContainer,
-            ContainerData pData
+            BlockEntity pBlockEntity,
+            ContainerData pContainerData
     ) {
         super(pMenuType, pContainerId);
-        this.container = pContainer;
-        this.data = pData;
+        this.blockEntity = pBlockEntity;
+        this.containerData = pContainerData;
         this.level = pPlayerInventory.player.level();
+    }
+
+    protected static void checkItemHandlerCount(IItemHandler pIntArray, int pMinSize) {
+        int i = pIntArray.getSlots();
+        if (i < pMinSize) {
+            throw new IllegalArgumentException("Item handler count " + i + " is smaller than expected " + pMinSize);
+        }
     }
 
     private int addSlotRange(Container playerInventory, int index, int x, int y, int amount, int dx) {
@@ -56,7 +62,7 @@ public abstract class ArkFutureContainerMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-        return this.container.stillValid(pPlayer);
+        return pPlayer.canInteractWithBlock(this.blockEntity.getBlockPos(), 4.0D);
     }
 
 }
