@@ -1,5 +1,9 @@
 name: Build & Create PR for Develop
 
+permissions:
+  contents: write
+  pull-requests: write
+
 on:
   push:
     branches:
