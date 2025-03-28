@@ -44,6 +44,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           base: develop  # Branch de destino do PR
+          head: ${{ github.head_ref }}  # Branch de origem do PR (a branch onde o push foi feito)
           title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
           labels: "build-pass"
