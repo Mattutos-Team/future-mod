@@ -44,6 +44,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           base: develop
+          branch: ${{ github.head_ref }}  # Branch de origem do PR (a branch que disparou o workflow)
           title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
           labels: "automerge, build-pass"
