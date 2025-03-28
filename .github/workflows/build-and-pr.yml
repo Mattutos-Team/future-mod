@@ -43,7 +43,7 @@ jobs:
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: develop
+          base: develop  # Branch de destino do PR
           title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
           labels: "build-pass"
