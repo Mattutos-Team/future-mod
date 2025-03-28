@@ -10,9 +10,9 @@ on:
       - feature/*  # Dispara o workflow quando há um push em uma branch feature
 
 jobs:
+  # Job de build
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
+            ~/.gradle/wrapper/dists
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -42,11 +42,54 @@ jobs:
       - name: Construir o Mod
         run: ./gradlew build
 
+  # Job de teste
+  test:
+    runs-on: ubuntu-latest
+    needs: build  # Espera o job "build" ser finalizado antes de começar
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'  # Você pode usar 'zulu', 'adopt', 'jetbrains'.
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Configurar cache do Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper/dists
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Rodar os testes
+        run: ./gradlew test
+
+  # Job para criar o PR após os dois jobs anteriores (build e test) terminarem
+  create_pr:
+    runs-on: ubuntu-latest
+    needs: [build, test]  # Este job só rodará depois que build e test terminarem com sucesso
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v7
         with:
           base: develop
           branch: ${{ github.ref }}
           title: "🔧 PR aberto automaticamente."
-          body: "Este PR foi criado automaticamente após um build bem-sucedido."
+          body: "Este PR foi criado automaticamente após um build e teste bem-sucedidos."
           labels: "automate-pr, build-pass"
