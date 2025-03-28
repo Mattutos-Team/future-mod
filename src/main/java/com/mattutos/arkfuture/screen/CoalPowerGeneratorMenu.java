@@ -2,6 +2,8 @@ package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.init.MenuInit;
+import com.mattutos.arkfuture.screen.util.EnergySlot;
+import com.mattutos.arkfuture.screen.util.FuelSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -9,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
@@ -32,42 +33,11 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
         checkContainerSize(pContainer, CoalPowerGeneratorBlockEntity.SLOT.count());
         checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
 
-        addPlayerInventorySlots(inventory, 10, 70);
+        addPlayerInventorySlots(inventory, 8, 84);
 
-        this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 64, 24));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 112, 15));
-        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 112, 33));
-    }
-
-    static class FuelSlot extends Slot {
-        public FuelSlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
-        }
-
-        public static boolean mayPlaceItem(ItemStack pItemStack) {
-            return net.minecraftforge.common.ForgeHooks.getBurnTime(pItemStack, null) > 0;
-        }
-    }
-
-    static class EnergySlot extends Slot {
-        public EnergySlot(Container pContainer, int pSlot, int pX, int pY) {
-            super(pContainer, pSlot, pX, pY);
-        }
-
-        @Override
-        public boolean mayPlace(ItemStack pStack) {
-            return mayPlaceItem(pStack);
-        }
-
-        public static boolean mayPlaceItem(ItemStack pItemStack) {
-            // TODO: identificar itens que contem energia
-            return false;
-        }
+        this.addSlot(new FuelSlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
+        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
+        this.addSlot(new EnergySlot(this.container, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
     }
 
     @Override
@@ -95,6 +65,10 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 //
 //        return itemstack;
         return ItemStack.EMPTY;
+    }
+
+    public int getData(CoalPowerGeneratorBlockEntity.DATA data) {
+        return this.data.get(data.ordinal());
     }
 
 }
