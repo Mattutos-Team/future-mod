@@ -2,29 +2,42 @@ package com.mattutos.arkfuture.crafting.recipe;
 
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MechanicalTableRecipe implements Recipe<RecipeInput> {
+
+    @Getter
     public final IngredientStack.Item base;
-    private final List<IngredientStack.Item> inputItems;
-    private final ItemStack output;
+    protected List<IngredientStack.Item> inputItems;
+    @Getter
+    public final ItemStack output;
 
-
-    public MechanicalTableRecipe(IngredientStack.Item pBase, List<IngredientStack.Item> pInputItems, ItemStack pOutput) {
+    public MechanicalTableRecipe(ItemStack pOutput, IngredientStack.Item pBase, List<IngredientStack.Item> pInputItems) {
+        this.output = pOutput;
         this.base = pBase;
         this.inputItems = pInputItems;
-        this.output = pOutput;
+    }
 
+    public List<IngredientStack.Item> getInputs() {
+        return this.inputItems;
+    }
+
+    public List<IngredientStack<?, ?>> getSample() {
+        List<IngredientStack<?, ?>> sample = new ArrayList<>();
+        for (var in : this.inputItems) {
+            if (!in.isEmpty()) {
+                sample.add(in.sample());
+            }
+        }
+        return sample;
     }
 
 
@@ -52,8 +65,8 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
 
 
     @Override
-    public ItemStack assemble(RecipeInput pInput, HolderLookup.Provider pRegistries) {
-        return this.output.copy();
+    public @NotNull ItemStack assemble(@NotNull RecipeInput pContainer, @NotNull HolderLookup.Provider pRegistryAccess) {
+        return getResultItem(pRegistryAccess).copy();
     }
 
     @Override
@@ -62,7 +75,7 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem(HolderLookup.Provider pRegistries) {
+    public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider pRegistryAccess) {
         return this.output;
     }
 
@@ -90,38 +103,5 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
         return ModRecipe.MECHANICAL_TABLE_TYPE.get();
     }
 
-    // Getter to inputItems
-    public List<IngredientStack.Item> inputItems() {
-        return inputItems;
-    }
-
-    // Getter  (output)
-    public ItemStack output() {
-        return output;
-    }
-
-
-    public static class Serializer implements RecipeSerializer<MechanicalTableRecipe> {
-
-        //SHOULD FOLLOW THE SAME CONSTRUCTOR ORDER
-        public final static MapCodec<MechanicalTableRecipe> CODEC = RecordCodecBuilder.mapCodec(
-                builder -> builder.group(
-                        IngredientStack.ITEM_CODEC.fieldOf("base").forGetter(ir -> ir.base),
-                        IngredientStack.ITEM_CODEC.listOf().fieldOf("input_items").forGetter(ir -> ir.inputItems),
-                        ItemStack.CODEC.fieldOf("output").forGetter(ir -> ir.output)
-
-                ).apply(builder, MechanicalTableRecipe::new)
-        );
-
-        @Override
-        public MapCodec<MechanicalTableRecipe> codec() {
-            return null;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, MechanicalTableRecipe> streamCodec() {
-            return null;
-        }
-    }
 
 }

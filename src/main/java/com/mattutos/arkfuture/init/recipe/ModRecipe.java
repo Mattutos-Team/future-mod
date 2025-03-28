@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.init.recipe;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.crafting.recipe.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.MechanicalTableSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -20,8 +21,8 @@ public class ModRecipe {
 
 
     //MECHANICAL TABLE SERIALIZER
-    public static final RegistryObject<RecipeSerializer<MechanicalTableRecipe>> MECHANICAL_TABLE_SERIALIZER =
-            SERIALIZERS.register("mechanical_table", MechanicalTableRecipe.Serializer::new);
+    public static final RegistryObject<MechanicalTableSerializer> MECHANICAL_TABLE_SERIALIZER =
+            SERIALIZERS.register("mechanical_table", MechanicalTableSerializer::new);
 
     //MECHANICAL TABLE TPYE
     public static final RegistryObject<RecipeType<MechanicalTableRecipe>> MECHANICAL_TABLE_TYPE =
