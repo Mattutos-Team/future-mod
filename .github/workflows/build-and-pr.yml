@@ -29,6 +29,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
       - name: Construir o Mod
         run: ./gradlew build
 
