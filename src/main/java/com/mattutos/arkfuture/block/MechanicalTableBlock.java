@@ -4,8 +4,11 @@ import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,7 +42,7 @@ public class MechanicalTableBlock extends BaseEntityBlock {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if (entity instanceof MechanicalTableBlockEntity blockEntity) {
-                pPlayer.openMenu(blockEntity);
+                ((ServerPlayer) pPlayer).openMenu(new SimpleMenuProvider(blockEntity, Component.translatable("block.ark_future.mechanical_table")), pPos);
             } else {
                 throw new IllegalStateException("The container provider is missing");
             }

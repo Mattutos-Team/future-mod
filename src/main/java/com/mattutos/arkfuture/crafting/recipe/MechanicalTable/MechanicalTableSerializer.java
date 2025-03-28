@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.crafting.recipe;
+package com.mattutos.arkfuture.crafting.recipe.MechanicalTable;
 
 import com.mattutos.arkfuture.crafting.recipe.common.GlodCodecs;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;

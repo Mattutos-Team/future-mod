@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.crafting.recipe;
+package com.mattutos.arkfuture.crafting.recipe.MechanicalTable;
 
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;

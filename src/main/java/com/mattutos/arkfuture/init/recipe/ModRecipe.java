@@ -1,8 +1,8 @@
 package com.mattutos.arkfuture.init.recipe;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTableRecipe;
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTableSerializer;
+import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
