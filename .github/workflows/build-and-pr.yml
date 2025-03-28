@@ -89,6 +89,6 @@ jobs:
         with:
           base: develop
           branch: ${{ github.ref }}
-          title: "🔧 PR aberto automaticamente."
+          title: "🔧 PR aberto automaticamente. develop <- ${{ github.head_ref }}"
           body: "Este PR foi criado automaticamente após um build e teste bem-sucedidos."
           labels: "automate-pr, build-pass"
