@@ -39,8 +39,8 @@ jobs:
       - name: Dar permissão de execução ao Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Construir o Mod
-        run: ./gradlew build
+#      - name: Construir o Mod
+#        run: ./gradlew build
 
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v7
@@ -49,4 +49,5 @@ jobs:
           head: ${{ github.head_ref }}  # Branch de origem do PR (a branch que disparou o workflow)
           title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
-          labels: "build-pass"
+          labels: "automerge, build-pass"
+          delete-branch: true
