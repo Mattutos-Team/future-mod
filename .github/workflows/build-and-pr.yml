@@ -43,8 +43,8 @@ jobs:
       - name: Criar PR automático para Develop
         uses: peter-evans/create-pull-request@v7
         with:
-          branch: develop
-          title: "🔧 Atualização automática do Mod"
+          base: develop
+          title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
-          labels: "automerge, build-pass"
+          labels: "build-pass"
           delete-branch: true
