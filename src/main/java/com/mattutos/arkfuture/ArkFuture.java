@@ -1,6 +1,7 @@
 package com.mattutos.arkfuture;
 
 import com.mattutos.arkfuture.init.*;
+import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,8 +22,8 @@ public class ArkFuture {
         BlockInit.register(modEventBus);
         CreativeModTabInit.register(modEventBus);
         ItemInit.register(modEventBus);
+        ModRecipe.register(modEventBus);
         MenuInit.register(modEventBus);
-        RecipeSerializerInit.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
     }
