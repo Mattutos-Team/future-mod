@@ -60,7 +60,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         }
 
         static public int count() {
-            return SLOT.values().length;
+            return DATA.values().length;
         }
     }
 

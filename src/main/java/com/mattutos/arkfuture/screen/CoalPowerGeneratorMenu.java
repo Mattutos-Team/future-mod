@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
@@ -66,6 +65,10 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 //
 //        return itemstack;
         return ItemStack.EMPTY;
+    }
+
+    public int getData(CoalPowerGeneratorBlockEntity.DATA data) {
+        return this.data.get(data.ordinal());
     }
 
 }
