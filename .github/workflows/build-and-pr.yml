@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Configurar JDK
         uses: actions/setup-java@v4
@@ -44,7 +46,6 @@ jobs:
         uses: peter-evans/create-pull-request@v7
         with:
           branch: develop  # Branch de destino do PR
-          head: ${{ github.head_ref }}  # Branch de origem do PR (a branch onde o push foi feito)
           title: "🔧 PR aberto automaticamente."
           body: "Este PR foi criado automaticamente após um build bem-sucedido."
           labels: "build-pass"
