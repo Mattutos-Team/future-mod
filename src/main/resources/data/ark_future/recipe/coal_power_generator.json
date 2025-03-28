@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "I": {
+            "tag": "c:ingots/iron"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        }
+    },
+    "pattern": [
+        "III",
+        "RRR",
+        "III"
+    ],
+    "result": {
+        "count": 1,
+        "id": "ark_future:coal_power_generator"
+    }
+}

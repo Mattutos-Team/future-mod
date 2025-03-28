@@ -18,6 +18,7 @@ public class CreativeModTabInit {
                     .title(Component.translatable("creativetab.ark_future.ark_future_tab"))
                     .displayItems((itemDisplayParameters, output) -> {
                         output.accept(BlockInit.COAL_POWER_GENERATOR.get());
+                        output.accept(BlockInit.MECHANICAL_TABLE.get());
 
                         output.accept(ItemInit.ANCIENT_ORE_ITEM.get());
                         output.accept(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get());

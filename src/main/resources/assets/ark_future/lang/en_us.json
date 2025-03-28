@@ -1,12 +1,15 @@
 {
-  "item.ark_future.ancient_ore": "Ancient ore",
-  "block.ark_future.ancient_ore_ingot_block": "Ancient ore ingot block",
-  "block.ark_future.ancient_ore_block": "Ancient ore block",
-  "item.ark_future.ancient_ore_ingot": "Ancient ore ingot",
-  "block.ark_future.ancient_ore_vein_block": "Ancient ore vein block",
-  "block.ark_future.deepslate_ancient_ore_vein_block": "Deepslate ancient ore vein block",
+    "block.ark_future.coal_power_generator": "Coal Power Generator",
+    "block.ark_future.mechanical_table": "Mechanical Table",
+    "creativetab.ark_future.ark_future_tab": "Ark Future",
+    "item.ark_future.ancient_ore": "Ancient ore",
+    "block.ark_future.ancient_ore_ingot_block": "Ancient ore ingot block",
+    "block.ark_future.ancient_ore_block": "Ancient ore block",
+    "item.ark_future.ancient_ore_ingot": "Ancient ore ingot",
+    "block.ark_future.ancient_ore_vein_block": "Ancient ore vein block",
+    "block.ark_future.deepslate_ancient_ore_vein_block": "Deepslate ancient ore vein block",
 
-  "block.ark_future.coal_power_generator": "Coal Generator",
+    "block.ark_future.coal_power_generator": "Coal Generator",
 
-  "creativetab.ark_future.ark_future_tab": "Ark Future"
+    "creativetab.ark_future.ark_future_tab": "Ark Future"
 }

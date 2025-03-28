@@ -1,6 +1,8 @@
 package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
+import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
+import com.mattutos.arkfuture.block.MechanicalTableBlock;
 
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -19,6 +21,12 @@ import java.util.function.Supplier;
 
 public class BlockInit {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ArkFuture.MOD_ID);
+
+    public static final RegistryObject<CoalPowerGeneratorBlock> COAL_POWER_GENERATOR = registerBlock("coal_power_generator",
+            () -> new CoalPowerGeneratorBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.STONE)));
+
+    public static final RegistryObject<MechanicalTableBlock> MECHANICAL_TABLE = registerBlock("mechanical_table",
+            () -> new MechanicalTableBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.WOOD)));
 
     public static final RegistryObject<Block> ANCIENT_ORE_BLOCK_ITEM = registerBlock("ancient_ore_block",
             () -> new Block(BlockBehaviour.Properties.of().strength(5f, 6f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
