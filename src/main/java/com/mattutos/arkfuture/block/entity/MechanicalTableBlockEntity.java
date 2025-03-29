@@ -4,7 +4,7 @@ import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRec
 import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipeInput;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
-import com.mattutos.arkfuture.menu.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.MechanicalTable.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvider {
-
-
     private static final int INPUT_SLOT_1 = 0;  // First input slot
     private static final int INPUT_SLOT_2 = 1;  // Second input slot
     private static final int INPUT_SLOT_3 = 2;  // Third input slot
@@ -105,6 +103,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
         if (recipe.isPresent()) {
             MechanicalTableRecipe currentRecipe = recipe.get().value();
+
 
             // Extract 1 item from each of the 5 input slots (indices 0 to 4)
             for (int i = 0; i < 5; i++) {
