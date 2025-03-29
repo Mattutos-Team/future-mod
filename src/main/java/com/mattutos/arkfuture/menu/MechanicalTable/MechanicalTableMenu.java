@@ -29,16 +29,19 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
+    private final ContainerData data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
     }
 
-    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, ContainerData data) {
         super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId);
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
+        this.data = data;
 
+        //TODO - CREATE AN ENUM TO PUT ALL RECIPES TO MECHANICAL TABLE HERE
         List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
         List<MechanicalTableRecipe> recipes = getMultipleRecipes(recipePaths);
         List<IngredientStack.Item> validBaseIngridientsList = getValidBaseIngredients(recipes);
@@ -47,16 +50,32 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         //BASE ITEM
-        this.addSlot(new BaseSlot(this.blockEntity.inventory, 1, 49, 35, validBaseIngridientsList));
+        this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 49, 35, validBaseIngridientsList));
 
         //INGREDIENTS ITEMS
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 31, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 67, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 49, 17));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, 49, 53));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 31, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 67, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 49, 17));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 4, 49, 53));
 
         //RESULT SLOT
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 121, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 5, 121, 35));
+
+        addDataSlots(data);
+    }
+
+
+    //CHECK WHETHER IS CRAFTING OR NOT
+    public boolean isCrafting() {
+        return data.get(0) > 0;
+    }
+
+    public int getScaledArrowProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);
+        int arrowPixelSize = 24;
+
+        return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
     }
 
 
@@ -76,7 +95,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 5;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 6;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {

@@ -19,11 +19,9 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
     private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
             ArkFuture.MOD_ID, "textures/gui/mechanical_table_gui.png");
 
-    private final CyclingSlotBackground baseIcon = new CyclingSlotBackground(1); //MID SLOT BASE ITEM
-    private final CyclingSlotBackground additionalIcon1 = new CyclingSlotBackground(0);
-    private final CyclingSlotBackground additionalIcon2 = new CyclingSlotBackground(2);
-    private final CyclingSlotBackground additionalIcon3 = new CyclingSlotBackground(3);
-    private final CyclingSlotBackground additionalIcon4 = new CyclingSlotBackground(4);
+    private static final ResourceLocation ARROW_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/arrow_progress.png");
+
 
     public MechanicalTableScreen(MechanicalTableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -43,15 +41,6 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 //        }
 //    }
 
-    private Optional<Item> getBaseItem() {
-        ItemStack itemstack = this.menu.getSlot(1).getItem();
-        if (!itemstack.isEmpty()) {
-            Item item = itemstack.getItem();
-
-            return Optional.of(item);
-        }
-        return Optional.empty();
-    }
 
     @Override
     protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
@@ -63,6 +52,14 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
         int y = (height - imageHeight) / 2;
 
         pGuiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+        renderProgressArrow(pGuiGraphics, x, y);
+    }
+
+    private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
+        if (menu.isCrafting()) {
+            guiGraphics.blit(ARROW_TEXTURE, x + 1, y + 1, 0, 0, menu.getScaledArrowProgress(), 16, 24, 16);
+        }
     }
 
     @Override
@@ -70,28 +67,4 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
-
-    private static final Component MISSING_TEMPLATE_TOOLTIP = Component.translatable("container.upgrade.missing_template_tooltip");
-    private static final Component ERROR_TOOLTIP = Component.translatable("container.upgrade.error_tooltip");
-
-//    private void renderOnboardingTooltips(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
-//        Optional<Component> optional = Optional.empty();
-//        if (this.hasRecipeError() && this.isHovering(65, 46, 28, 21, pMouseX, pMouseY)) {
-//            optional = Optional.of(ERROR_TOOLTIP);
-//        }
-//
-//        if (this.hoveredSlot != null) {
-//            ItemStack itemstack = this.menu.getSlot(0).getItem();
-//            if (itemstack.isEmpty()) {
-//                if (this.hoveredSlot.index == 0) {
-//                    optional = Optional.of(MISSING_TEMPLATE_TOOLTIP);
-//                }
-//            }
-//        }
-//
-//        optional.ifPresent((p_280863_) -> {
-//            pGuiGraphics.renderTooltip(this.font, this.font.split(p_280863_, 115), pMouseX, pMouseY);
-//        });
-//    }
-
 }
