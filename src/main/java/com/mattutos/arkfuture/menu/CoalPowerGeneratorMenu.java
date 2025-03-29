@@ -1,14 +1,10 @@
-package com.mattutos.arkfuture.screen;
+package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
-import com.mattutos.arkfuture.config.EnumContainerData;
-import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.MenuInit;
-import com.mattutos.arkfuture.screen.util.EnergySlot;
-import com.mattutos.arkfuture.screen.util.FuelSlot;
+import com.mattutos.arkfuture.screen.common.EnergySlot;
+import com.mattutos.arkfuture.screen.common.FuelSlot;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
@@ -16,7 +12,6 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 
@@ -32,7 +27,8 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 
     // construtor utilizado no lado do cliente
     public CoalPowerGeneratorMenu(int pContainerId, Inventory playerInventory, FriendlyByteBuf extraData) {
-        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), EnumContainerData.createSimple(CoalPowerGeneratorBlockEntity.DATA.class));
+//        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), EnumContainerData.createSimple(CoalPowerGeneratorBlockEntity.DATA.class));
+        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(7));
     }
 
     // construtor utilizado no lado do servidor
@@ -40,13 +36,13 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
         super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
         this.itemHandler = ((CoalPowerGeneratorBlockEntity)pBlockEntity).getItems();
 
-//        checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
+        checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
 //        checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
 
         addPlayerInventorySlots(pPlayerInventory, 8, 84);
 
         this.addSlot(new FuelSlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
-        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 16));
+        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 15));
         this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
 
         this.addDataSlots(pContainerData);
@@ -81,6 +77,29 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 
     public int getData(CoalPowerGeneratorBlockEntity.DATA data) {
         return this.containerData.get(data.ordinal());
+    }
+
+    public boolean isBurning() {
+        return this.containerData.get(0) > 0;
+    }
+
+    public int getScaledFlameProgress(int pixelSize) {
+        int progress = this.containerData.get(0);
+        int maxProgress = this.containerData.get(1);
+
+        return maxProgress != 0 && progress != 0 ? progress * pixelSize / maxProgress : 0;
+    }
+
+    public int getGenerating() {
+        return this.containerData.get(2);
+    }
+
+    public int getEnergyStored() {
+        return ((this.containerData.get(3) & 0xFFFF) << 16) + (this.containerData.get(4) & 0xFFFF);
+    }
+
+    public int getMaxEnergyStored() {
+        return ((this.containerData.get(5) & 0xFFFF) << 16) + (this.containerData.get(6) & 0xFFFF);
     }
 
 }

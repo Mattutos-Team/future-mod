@@ -4,7 +4,7 @@ import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
 import com.mattutos.arkfuture.config.EnumContainerData;
 import com.mattutos.arkfuture.config.BaseData;
 import com.mattutos.arkfuture.init.BlockEntityInit;
-import com.mattutos.arkfuture.screen.CoalPowerGeneratorMenu;
+import com.mattutos.arkfuture.menu.CoalPowerGeneratorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -71,6 +71,10 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
             this.dataPackShort = dataPackShort;
         }
 
+        public static int getByIndex(int pIndex) {
+            return DATA.values()[pIndex].ordinal();
+        }
+
         @Override
         public int getDataPack() {
             return this.dataPackShort;
@@ -94,8 +98,10 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
     private int remainingBurnTime = 0;
     private int totalBurnTime = 0;
+    private int generating = 0;
 
-    protected final EnumContainerData<DATA> containerData;
+    protected final ContainerData containerData;
+//    protected final EnumContainerData<DATA> containerData;
 
     private @NotNull ItemStackHandler createItemStackHandler() {
         return new ItemStackHandler(SLOT.values().length) {
@@ -116,46 +122,44 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     public CoalPowerGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.COAL_POWER_GENERATOR.get(), pPos, pBlockState);
 
-        containerData = new EnumContainerData<>(DATA.class) {
-            @Override
-            public void set(DATA enumData, long pValue) {
-
-            }
-        };
-//        containerData = new ContainerData() {
+//        containerData = new EnumContainerData<>(DATA.class) {
 //            @Override
-//            public int get(int pIndex) {
-//                return DATA.getByIndex(pIndex).getValueContainerData(this);
-////                return switch (DATA.getByIndex(pIndex)) {
-////                    case REMAINING_BURN_TIME -> remainingBurnTime;
-////                    case TOTAL_BURN_TIME -> totalBurnTime;
-////                    case GENERATING -> remainingBurnTime > 0 ? GENERATE : 0;
-////                    case HOW_MUCH_CAN_GENERATE -> GENERATE;
-////                    case MAX_TRANSFER -> MAX_TRANSFER;
-////                    case CAPACITY -> CAPACITY;
-////                    case ENERGY_STORED -> energyStorage.getMaxEnergyStored();
-////                };
-//            }
+//            public void set(DATA enumData, long pValue) {
 //
-//            @Override
-//            public void set(int pIndex, int pValue) {
-//                DATA.getByIndex(pIndex).setValueContainerData(this, pValue);
-////                switch (DATA.getByIndex(pIndex)) {
-////                    case REMAINING_BURN_TIME -> CoalPowerGeneratorBlockEntity.this.remainingBurnTime = pValue;
-////                    case TOTAL_BURN_TIME -> CoalPowerGeneratorBlockEntity.this.totalBurnTime = pValue;
-//////                    case GENERATING -> GENERATE = pValue;
-//////                    case CAN_GENERATE -> GENERATE = pValue;
-//////                    case MAX_TRANSFER -> MAX_TRANSFER = pValue;
-//////                    case CAPACITY -> CAPACITY = pValue;
-////                    case ENERGY_STORED -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy(pValue, false);
-////                };
-//            }
-//
-//            @Override
-//            public int getCount() {
-//                return DATA.count();
 //            }
 //        };
+        containerData = new ContainerData() {
+            @Override
+            public int get(int pIndex) {
+                return switch (pIndex) {
+                    case 0 -> remainingBurnTime;
+                    case 1 -> totalBurnTime;
+                    case 2 -> generating;
+                    case 3 -> ((energyStorage.getEnergyStored() >> 16) & 0xffff);
+                    case 4 -> (energyStorage.getEnergyStored() & 0xffff);
+                    case 5 -> ((energyStorage.getMaxEnergyStored() >> 16) & 0xffff);
+                    case 6 -> (energyStorage.getMaxEnergyStored() & 0xffff);
+                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
+                };
+            }
+
+            @Override
+            public void set(int pIndex, int pValue) {
+                switch (pIndex) {
+                    case 0 -> CoalPowerGeneratorBlockEntity.this.remainingBurnTime = pValue;
+                    case 1 -> CoalPowerGeneratorBlockEntity.this.totalBurnTime = pValue;
+                    case 2 -> CoalPowerGeneratorBlockEntity.this.generating = pValue;
+//                    case 3 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy((pValue << 16), false);
+//                    case 4 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy(pValue, false);
+                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
+                };
+            }
+
+            @Override
+            public int getCount() {
+                return 7;
+            }
+        };
     }
 
     @Override
@@ -254,9 +258,14 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
     private void generateEnergy() {
         if (remainingBurnTime > 0) {
+            if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+                generating = 0;
+                return;
+            }
             remainingBurnTime--;
-            energyStorage.receiveEnergy(GENERATE, false);
+            generating = energyStorage.receiveEnergy(GENERATE, false);
         } else {
+            generating = 0;
             ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
             if (!fuel.isEmpty()) {
                 totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);

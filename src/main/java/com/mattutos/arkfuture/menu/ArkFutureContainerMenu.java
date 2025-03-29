@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.screen;
+package com.mattutos.arkfuture.menu;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
