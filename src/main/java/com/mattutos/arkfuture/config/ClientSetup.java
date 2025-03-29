@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.config;
 
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.screen.CoalPowerGeneratorScreen;
+import com.mattutos.arkfuture.screen.MechanicalTableScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -17,7 +18,7 @@ public class ClientSetup {
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             MenuScreens.register(MenuInit.COAL_POWER_GENERATOR_MENU.get(), CoalPowerGeneratorScreen::new);
+            MenuScreens.register(MenuInit.MECHANICAL_TABLE_MENU.get(), MechanicalTableScreen::new);
         });
     }
-
 }

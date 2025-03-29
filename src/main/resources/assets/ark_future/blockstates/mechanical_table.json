@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "ark_future:block/mechanical_table"
+        }
+    }
+}
