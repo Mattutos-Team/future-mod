@@ -37,12 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvider {
-    private static final int INPUT_SLOT_1 = 0;  // First input slot
-    private static final int INPUT_SLOT_2 = 1;  // Second input slot
-    private static final int INPUT_SLOT_3 = 2;  // Third input slot
-    private static final int INPUT_SLOT_4 = 3;  // Fourth input slot
-    private static final int INPUT_SLOT_5 = 4;  // Fifth input slot
-    private static final int OUTPUT_SLOT = 5;   // Output slot
+    private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableBlockEntity.class);
 
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
