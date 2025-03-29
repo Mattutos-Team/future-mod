@@ -1,8 +1,10 @@
 package com.mattutos.arkfuture.block.entity;
 
 import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
+import com.mattutos.arkfuture.config.EnumContainerData;
+import com.mattutos.arkfuture.config.BaseData;
 import com.mattutos.arkfuture.init.BlockEntityInit;
-import com.mattutos.arkfuture.screen.CoalPowerGeneratorMenu;
+import com.mattutos.arkfuture.menu.CoalPowerGeneratorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -29,6 +31,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntity {
 
     public enum SLOT {
@@ -41,26 +45,44 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
     public enum NBT {
         REMAINING_BURN_TIME,
+        TOTAL_BURN_TIME,
         ENERGY,
         INVENTORY;
 
         public final String key = "coal_power_generator." + this.name().toLowerCase();
     }
 
-    public enum DATA {
+    public enum DATA implements BaseData<DATA> {
         REMAINING_BURN_TIME,
+        TOTAL_BURN_TIME,
         GENERATING,
-        CAN_GENERATE,
+        HOW_MUCH_CAN_GENERATE,
         MAX_TRANSFER,
-        CAPACITY,
-        ENERGY_STORED;
+        CAPACITY(4),
+        ENERGY_STORED(4);
 
-        static public DATA getByIndex(int index) {
-            return index < 0 || index >= DATA.values().length ? DATA.values()[0] : DATA.values()[index];
+        private final int dataPackShort;
+
+        DATA() {
+            this.dataPackShort = 1;
         }
 
-        static public int count() {
-            return DATA.values().length;
+        DATA(int dataPackShort) {
+            this.dataPackShort = dataPackShort;
+        }
+
+        public static int getByIndex(int pIndex) {
+            return DATA.values()[pIndex].ordinal();
+        }
+
+        @Override
+        public int getDataPack() {
+            return this.dataPackShort;
+        }
+
+        @Override
+        public List<? extends BaseData<?>> getAllValues() {
+            return List.of(DATA.values());
         }
     }
 
@@ -75,8 +97,11 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     private final LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
 
     private int remainingBurnTime = 0;
+    private int totalBurnTime = 0;
+    private int generating = 0;
 
     protected final ContainerData containerData;
+//    protected final EnumContainerData<DATA> containerData;
 
     private @NotNull ItemStackHandler createItemStackHandler() {
         return new ItemStackHandler(SLOT.values().length) {
@@ -97,26 +122,42 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     public CoalPowerGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.COAL_POWER_GENERATOR.get(), pPos, pBlockState);
 
+//        containerData = new EnumContainerData<>(DATA.class) {
+//            @Override
+//            public void set(DATA enumData, long pValue) {
+//
+//            }
+//        };
         containerData = new ContainerData() {
             @Override
             public int get(int pIndex) {
-                return switch (DATA.getByIndex(pIndex)) {
-                    case REMAINING_BURN_TIME -> remainingBurnTime;
-                    case GENERATING -> remainingBurnTime > 0 ? GENERATE : 0;
-                    case CAN_GENERATE -> GENERATE;
-                    case MAX_TRANSFER -> MAX_TRANSFER;
-                    case CAPACITY -> CAPACITY;
-                    case ENERGY_STORED -> energyStorage.getMaxEnergyStored();
+                return switch (pIndex) {
+                    case 0 -> remainingBurnTime;
+                    case 1 -> totalBurnTime;
+                    case 2 -> generating;
+                    case 3 -> ((energyStorage.getEnergyStored() >> 16) & 0xffff);
+                    case 4 -> (energyStorage.getEnergyStored() & 0xffff);
+                    case 5 -> ((energyStorage.getMaxEnergyStored() >> 16) & 0xffff);
+                    case 6 -> (energyStorage.getMaxEnergyStored() & 0xffff);
+                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
                 };
             }
 
             @Override
             public void set(int pIndex, int pValue) {
+                switch (pIndex) {
+                    case 0 -> CoalPowerGeneratorBlockEntity.this.remainingBurnTime = pValue;
+                    case 1 -> CoalPowerGeneratorBlockEntity.this.totalBurnTime = pValue;
+                    case 2 -> CoalPowerGeneratorBlockEntity.this.generating = pValue;
+//                    case 3 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy((pValue << 16), false);
+//                    case 4 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy(pValue, false);
+                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
+                };
             }
 
             @Override
             public int getCount() {
-                return DATA.count();
+                return 7;
             }
         };
     }
@@ -136,7 +177,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para salvar informações NBT do bloco
-
     /**
      * Salva os dados da BlockEntity em um CompoundTag quando o jogo salva o mundo.
      * 🔹 Quando é chamado?
@@ -152,10 +192,10 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         pTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
         pTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
         pTag.putInt(NBT.REMAINING_BURN_TIME.key, remainingBurnTime);
+        pTag.putInt(NBT.TOTAL_BURN_TIME.key, totalBurnTime);
     }
 
     // metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
-
     /**
      * Carrega os dados da BlockEntity a partir do CompoundTag quando o jogo carrega o mundo.
      * 🔹 Quando é chamado?
@@ -169,10 +209,9 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound(NBT.INVENTORY.key));
-
-        // TODO: precisa criar a implementação
-//        energyStorage.deserializeNBT(pRegistries, pTag.getCompound(NBT.ENERGY.key));
+        energyStorage.deserializeNBT(pRegistries, pTag.get(NBT.ENERGY.key));
         remainingBurnTime = pTag.getInt(NBT.REMAINING_BURN_TIME.key);
+        totalBurnTime = pTag.getInt(NBT.TOTAL_BURN_TIME.key);
     }
 
     @Override
@@ -193,7 +232,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     @Override
-    protected ItemStackHandler getItems() {
+    public ItemStackHandler getItems() {
         return itemStackHandler;
     }
 
@@ -219,12 +258,17 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
     private void generateEnergy() {
         if (remainingBurnTime > 0) {
+            if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+                generating = 0;
+                return;
+            }
             remainingBurnTime--;
-            energyStorage.receiveEnergy(GENERATE, false);
+            generating = energyStorage.receiveEnergy(GENERATE, false);
         } else {
+            generating = 0;
             ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
             if (!fuel.isEmpty()) {
-                remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
+                totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
                 fuel.shrink(1);
             }
         }
@@ -234,7 +278,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para sincronização
-
     /**
      * Define os dados que serão enviados para o cliente quando um chunk contendo o BlockEntity for carregado.
      * 🔹 Quando é chamado?
@@ -251,7 +294,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para sincronização
-
     /**
      * Controla a atualização do BlockEntity quando o seu estado muda dinamicamente sem precisar recarregar o chunk.
      * 🔹 Quando é chamado?
