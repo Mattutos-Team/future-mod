@@ -1,13 +1,17 @@
 package com.mattutos.arkfuture.menu.MechanicalTable;
 
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
@@ -17,6 +21,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
 
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
+    private final MechanicalTableRecipe currentRecipe;
 
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
@@ -28,11 +33,15 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
 
+        // Load the current recipe
+        this.currentRecipe = getCurrentRecipe();
+
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
+        this.addSlot(new BaseSlot(this.blockEntity.inventory, 1, 49, 35, this.currentRecipe)); //IS BASE
+
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 31, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 49, 35)); //IS BASE
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 67, 35));
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 49, 17));
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, 49, 53));
@@ -112,5 +121,17 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+    }
+
+    private MechanicalTableRecipe getCurrentRecipe() {
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath("ark_future", "ancient_obsidian"); // Adjust this as needed
+        RecipeHolder<?> recipeHolder = recipeManager.byKey(recipeId).orElse(null);
+
+        if (recipeHolder != null && recipeHolder.value() instanceof MechanicalTableRecipe) {
+            return (MechanicalTableRecipe) recipeHolder.value();
+        }
+        return null;
     }
 }

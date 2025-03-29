@@ -40,7 +40,6 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
         return sample;
     }
 
-
     @Override
     public boolean matches(RecipeInput pInput, Level pLevel) {
         int ingredientIndex = 0;
@@ -62,7 +61,6 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
 
         return ingredientIndex == inputItems.size();
     }
-
 
     @Override
     public @NotNull ItemStack assemble(@NotNull RecipeInput pContainer, @NotNull HolderLookup.Provider pRegistryAccess) {
@@ -92,6 +90,9 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
         return false;
     }
 
+    public ItemStack getBaseItem() {
+        return base.getIngredient().getItems()[0];
+    }
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
@@ -102,6 +103,4 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     public @NotNull RecipeType<?> getType() {
         return ModRecipe.MECHANICAL_TABLE_TYPE.get();
     }
-
-
 }
