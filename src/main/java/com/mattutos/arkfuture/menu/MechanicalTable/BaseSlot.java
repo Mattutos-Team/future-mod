@@ -1,24 +1,23 @@
 package com.mattutos.arkfuture.menu.MechanicalTable;
 
 import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-
-//THIS BASE SLOT MUST BE USED WHEN YOUR CUSTOM MANU HAS ONLY ONE BASE ITEM TO CRAFT OTHER ITEMS
+import java.util.List;
 
 @Slf4j
 public class BaseSlot extends SlotItemHandler {
 
-    //TODO - ALLOW TO GET ANY RECIPE
-    private final MechanicalTableRecipe mechanicalTableRecipe;
+    private final List<IngredientStack.Item> validBaseItems;
 
-    public BaseSlot(IItemHandler pContainer, int pSlot, int pX, int pY, MechanicalTableRecipe mechanicalTableRecipe) {
+    public BaseSlot(IItemHandler pContainer, int pSlot, int pX, int pY, List<IngredientStack.Item> validBaseItems) {
         super(pContainer, pSlot, pX, pY);
-        this.mechanicalTableRecipe = mechanicalTableRecipe;
+        this.validBaseItems = validBaseItems;
     }
 
     @Override
@@ -27,10 +26,18 @@ public class BaseSlot extends SlotItemHandler {
     }
 
     public boolean isValid(ItemStack itemStack) {
-        if (mechanicalTableRecipe == null || mechanicalTableRecipe.base == null) {
-            log.info("No Base Recipe Found, Check the pPath");
+        if (validBaseItems == null || validBaseItems.isEmpty()) {
+            log.info("No valid base ingredients found.");
             return false;
         }
-        return itemStack.getItem().equals(mechanicalTableRecipe.getBaseItem().getItem());
+
+        for (IngredientStack.Item validBase : validBaseItems) {
+            if (validBase.getIngredient().test(itemStack)) {
+                return true;
+            }
+        }
+
+        log.info("Invalid base item: {}", itemStack.getItem());
+        return false;
     }
 }

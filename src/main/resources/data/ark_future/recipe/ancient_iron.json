@@ -1,0 +1,19 @@
+{
+  "type": "ark_future:mechanical_table",
+  "input_items": [
+    {
+      "ingredient": {
+        "tag": "c:ingots/iron"
+      }
+    }
+  ],
+  "base": {
+    "ingredient": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:iron_block"
+  }
+}

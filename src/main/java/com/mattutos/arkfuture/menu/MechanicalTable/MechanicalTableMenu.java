@@ -1,7 +1,9 @@
 package com.mattutos.arkfuture.menu.MechanicalTable;
 
+import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
 import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import net.minecraft.network.FriendlyByteBuf;
@@ -15,14 +17,18 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MechanicalTableMenu extends AbstractContainerMenu {
 
+    private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
-    private final MechanicalTableRecipe currentRecipe;
-
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
@@ -33,14 +39,17 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
 
-        // Load the current recipe
-        this.currentRecipe = getCurrentRecipe();
+        List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
+        List<MechanicalTableRecipe> recipes = getMultipleRecipes(recipePaths);
+        List<IngredientStack.Item> validBaseIngridientsList = getValidBaseIngredients(recipes);
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.addSlot(new BaseSlot(this.blockEntity.inventory, 1, 49, 35, this.currentRecipe)); //IS BASE
+        //BASE ITEM
+        this.addSlot(new BaseSlot(this.blockEntity.inventory, 1, 49, 35, validBaseIngridientsList));
 
+        //INGREDIENTS ITEMS
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 31, 35));
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 67, 35));
         this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 49, 17));
@@ -123,15 +132,44 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         }
     }
 
-    private MechanicalTableRecipe getCurrentRecipe() {
+
+    private List<MechanicalTableRecipe> getMultipleRecipes(List<String> paths) {
         RecipeManager recipeManager = level.getRecipeManager();
+        List<MechanicalTableRecipe> validRecipes = new ArrayList<>();
 
-        ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath("ark_future", "ancient_obsidian"); // Adjust this as needed
-        RecipeHolder<?> recipeHolder = recipeManager.byKey(recipeId).orElse(null);
+        for (String path : paths) {
+            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, path);
 
-        if (recipeHolder != null && recipeHolder.value() instanceof MechanicalTableRecipe) {
-            return (MechanicalTableRecipe) recipeHolder.value();
+            log.info("Processing recipe ID: {}", recipeId);
+
+            RecipeHolder<?> recipeHolder = recipeManager.byKey(recipeId).orElse(null);
+
+            if (recipeHolder == null) {
+                log.warn("No recipe found for ID: {}", recipeId);
+            }
+
+            if (recipeHolder != null && recipeHolder.value() instanceof MechanicalTableRecipe) {
+                validRecipes.add((MechanicalTableRecipe) recipeHolder.value());
+                log.info("Valid recipe found: {}", recipeId);
+            }
         }
-        return null;
+        log.info("Total valid recipes found: {}", validRecipes.size());
+
+        return validRecipes;
+    }
+
+
+    private List<IngredientStack.Item> getValidBaseIngredients(List<MechanicalTableRecipe> recipes) {
+        List<IngredientStack.Item> validBases = new ArrayList<>();
+
+        for (MechanicalTableRecipe recipe : recipes) {
+            IngredientStack.Item base = recipe.getBase();
+
+            if (base != null && !base.isEmpty()) {
+                validBases.add(base);
+            }
+        }
+
+        return validBases;
     }
 }
