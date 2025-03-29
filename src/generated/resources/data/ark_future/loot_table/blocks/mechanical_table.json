@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "ark_future:ancient_ore_block"
+          "name": "ark_future:mechanical_table"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ark_future:ancient_ore_block"
+  "random_sequence": "ark_future:blocks/mechanical_table"
 }

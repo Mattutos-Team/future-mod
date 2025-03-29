@@ -32,6 +32,15 @@
               "type": "minecraft:item",
               "functions": [
                 {
+                  "add": false,
+                  "count": {
+                    "type": "minecraft:uniform",
+                    "max": 5.0,
+                    "min": 2.0
+                  },
+                  "function": "minecraft:set_count"
+                },
+                {
                   "enchantment": "minecraft:fortune",
                   "formula": "minecraft:ore_drops",
                   "function": "minecraft:apply_bonus"
@@ -48,5 +57,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "ark_future:ancient_ore_vein_block"
+  "random_sequence": "ark_future:blocks/ancient_ore_vein_block"
 }
