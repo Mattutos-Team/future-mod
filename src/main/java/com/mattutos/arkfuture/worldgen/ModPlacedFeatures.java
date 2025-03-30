@@ -8,16 +8,39 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 
 import java.util.List;
 
 public class ModPlacedFeatures {
+    public static final ResourceKey<PlacedFeature> ANCIENT_ORE_PLACED_UPPER_KEY = registerKey("ancient_ore_upper_placed");
+    public static final ResourceKey<PlacedFeature> ANCIENT_ORE_PLACED_MIDDLE_KEY = registerKey("ancient_ore_middle_placed");
+    public static final ResourceKey<PlacedFeature> ANCIENT_ORE_PLACED_SMALL_KEY = registerKey("ancient_ore_small_placed");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
+
+        register(context, ANCIENT_ORE_PLACED_UPPER_KEY,
+                configuredFeatures.getOrThrow(ModConfiguredFeatures.OVERWORLD_ANCIENT_ORE_KEY),
+                ModOrePlacement.commonOrePlacement(
+                        90,
+                        HeightRangePlacement.triangle(VerticalAnchor.absolute(80), VerticalAnchor.absolute(384))));
+
+        register(context, ANCIENT_ORE_PLACED_MIDDLE_KEY,
+                configuredFeatures.getOrThrow(ModConfiguredFeatures.OVERWORLD_ANCIENT_ORE_KEY),
+                ModOrePlacement.commonOrePlacement(
+                        10,
+                        HeightRangePlacement.triangle(VerticalAnchor.absolute(-24), VerticalAnchor.absolute(56))));
+
+        register(context, ANCIENT_ORE_PLACED_SMALL_KEY,
+                configuredFeatures.getOrThrow(ModConfiguredFeatures.OVERWORLD_ANCIENT_ORE_SMALL_KEY),
+                ModOrePlacement.commonOrePlacement(
+                        10,
+                        HeightRangePlacement.uniform(VerticalAnchor.bottom(), VerticalAnchor.absolute(72))));
     }
 
     private static ResourceKey<PlacedFeature> registerKey(String name) {
