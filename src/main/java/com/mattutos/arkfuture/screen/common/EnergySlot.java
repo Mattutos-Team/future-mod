@@ -1,13 +1,13 @@
-package com.mattutos.arkfuture.screen.util;
+package com.mattutos.arkfuture.screen.common;
 
-import net.minecraft.world.Container;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class EnergySlot extends Slot {
-    public EnergySlot(Container pContainer, int pSlot, int pX, int pY) {
-        super(pContainer, pSlot, pX, pY);
+public class EnergySlot extends SlotItemHandler {
+    public EnergySlot(IItemHandler pItemHandler, int pSlot, int pX, int pY) {
+        super(pItemHandler, pSlot, pX, pY);
     }
 
     @Override
