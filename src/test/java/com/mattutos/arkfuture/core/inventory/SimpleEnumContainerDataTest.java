@@ -7,25 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleEnumContainerDataTest {
 
-    enum EnumTest implements BaseData<EnumTest> {
-        SHORT(1),
-        INT(2),
-        LONG(4);
-
-        private final int dataPack;
-
-        EnumTest(int dataPack) {
-            this.dataPack = dataPack;
-        }
-
-        @Override
-        public int getDataPack() {
-            return dataPack;
-        }
-    }
-
     @Test
-    @DisplayName("Teste configurando e recuperando dados short, int e long")
+    @DisplayName("Teste do SimpleEnumContainerData configurando e recuperando dados short, int e long")
     void testSetAndGet() {
         SimpleEnumContainerData<EnumTest> containerData = new SimpleEnumContainerData<>(EnumTest.class);
 
