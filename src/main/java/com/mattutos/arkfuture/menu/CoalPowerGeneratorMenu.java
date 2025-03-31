@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 
 public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGeneratorBlockEntity.DATA> {
 
@@ -48,30 +49,45 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
     }
 
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
         // TODO: terminar implementação
-//        ItemStack itemstack = ItemStack.EMPTY;
+        ItemStack itemstack = ItemStack.EMPTY;
 //        Slot slot = this.slots.get(pIndex);
 //        if (slot.hasItem()) {
 //            ItemStack slotItemClicked = slot.getItem();
 //            itemstack = slotItemClicked.copy();
-//            if (pIndex < data.getCount()) {
-//                if (!this.moveItemStackTo(slotItemClicked, data.getCount(), this.slots.size() + data.getCount(), true)) {
+//            if (pIndex < this.slots.size()) {
+//                if (!this.moveItemStackTo(slotItemClicked, this.slots.size(), this.slots.size() + this.slots.size(), true)) {
 //                    return ItemStack.EMPTY;
 //                }
 //
 //                slot.onQuickCraft(slotItemClicked, itemstack);
-//            } else {
-//
+//            }
+//            int slotCount = CoalPowerGeneratorBlockEntity.SLOT.count();
+//            if (!this.moveItemStackTo(slotItemClicked, BE_INVENTORY_FIRST_SLOT_INDEX, slotCount +1, false)) {
+//                if (pIndex < 27 + slotCount) {
+//                    if (!this.moveItemStackTo(slotItemClicked, 27 + slotCount, 36 + slotCount, false)) {
+//                        return ItemStack.EMPTY;
+//                    }
+//                } else if (pIndex < Inventory.INVENTORY_SIZE + slotCount && !this.moveItemStackTo(slotItemClicked, slotCount, 27 + slotCount, false)) {
+//                    return ItemStack.EMPTY;
+//                }
 //            }
 //
+//            if (slotItemClicked.isEmpty()) {
+//                slot.set(ItemStack.EMPTY);
+//            } else {
+//                slot.setChanged();
+//            }
 //
+//            if (slotItemClicked.getCount() == itemstack.getCount()) {
+//                return ItemStack.EMPTY;
+//            }
 //
 //            slot.onTake(pPlayer, slotItemClicked);
 //        }
-//
-//        return itemstack;
-        return ItemStack.EMPTY;
+
+        return itemstack;
     }
 
     public long getData(CoalPowerGeneratorBlockEntity.DATA data) {

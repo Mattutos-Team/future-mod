@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
@@ -147,6 +148,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para salvar informações NBT do bloco
+
     /**
      * Salva os dados da BlockEntity em um CompoundTag quando o jogo salva o mundo.
      * 🔹 Quando é chamado?
@@ -157,7 +159,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
      * Salva os dados personalizados da BlockEntity para que eles sejam restaurados ao carregar o mundo novamente.
      */
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
         pTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
         pTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
@@ -166,6 +168,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
+
     /**
      * Carrega os dados da BlockEntity a partir do CompoundTag quando o jogo carrega o mundo.
      * 🔹 Quando é chamado?
@@ -176,7 +179,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
      * Recupera os dados salvos e restaura o estado da BlockEntity.
      */
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound(NBT.INVENTORY.key));
         energyStorage.deserializeNBT(pRegistries, pTag.get(NBT.ENERGY.key));
@@ -188,12 +191,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     public void onLoad() {
         super.onLoad();
         lazyInventoryHandler = LazyOptional.of(() -> itemStackHandler);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyInventoryHandler.invalidate();
     }
 
     @Override
@@ -227,27 +224,49 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     private void generateEnergy() {
-        if (remainingBurnTime > 0) {
-            if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+        if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+            if (remainingBurnTime > 0) {
+                if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+                    generating = 0;
+                    return;
+                }
+                remainingBurnTime--;
+                generating = energyStorage.receiveEnergy(GENERATE, false);
+            } else {
                 generating = 0;
-                return;
+                ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
+                if (!fuel.isEmpty()) {
+                    totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
+                    fuel.shrink(1);
+                }
             }
-            remainingBurnTime--;
-            generating = energyStorage.receiveEnergy(GENERATE, false);
-        } else {
-            generating = 0;
-            ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
-            if (!fuel.isEmpty()) {
-                totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
-                fuel.shrink(1);
-            }
+            setChanged();
         }
     }
 
     private void distributeEnergy() {
+        if (energyStorage.getEnergyStored() <= 0) return;
+
+        // checa todos os lados verifica se os blocos vizinhos podem receber energia
+        for (Direction direction : Direction.values()) {
+            BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.relative(direction));
+            if (blockEntity != null) {
+                blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite())
+                        .ifPresent(iEnergyStorage -> {
+                            if (iEnergyStorage.canReceive()) {
+                                int energyToSend = Math.min(energyStorage.getEnergyStored(), MAX_TRANSFER);
+                                int received = iEnergyStorage.receiveEnergy(energyToSend, false);
+                                energyStorage.extractEnergy(received, false);
+                                blockEntity.setChanged();
+                                CoalPowerGeneratorBlockEntity.this.setChanged();
+                            }
+                        });
+            }
+        }
     }
 
     // metodo usado para sincronização
+
     /**
      * Define os dados que serão enviados para o cliente quando um chunk contendo o BlockEntity for carregado.
      * 🔹 Quando é chamado?
@@ -264,6 +283,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para sincronização
+
     /**
      * Controla a atualização do BlockEntity quando o seu estado muda dinamicamente sem precisar recarregar o chunk.
      * 🔹 Quando é chamado?
