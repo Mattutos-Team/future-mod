@@ -12,7 +12,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class ArkFutureContainerMenu<T extends Enum<T> & BaseData<T>> extends AbstractContainerMenu {
+@SuppressWarnings("ReassignedVariable")
+public abstract class ArkFutureContainerMenu<T extends Enum<T> & BaseData> extends AbstractContainerMenu {
 
     protected final BlockEntity blockEntity;
     protected final EnumContainerData<T> containerData;

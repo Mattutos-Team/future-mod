@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 
 public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerGeneratorMenu> {
 
@@ -70,7 +71,7 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
     }
 
     @Override
-    public void render(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+    public void render(@NotNull GuiGraphics pGuiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
 
         renderLabelsEnergy(pGuiGraphics);

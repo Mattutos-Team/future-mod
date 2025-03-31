@@ -17,8 +17,8 @@ class SimpleEnumContainerDataTest {
         containerData.set(EnumTest.LONG, 0xffff_ffff_ffff_ffffL);
 
         assertEquals((short)0xffff, (short)containerData.get(EnumTest.SHORT));
-        assertEquals((int)0xffff_ffff, (int)containerData.get(EnumTest.INT));
-        assertEquals((long)0xffff_ffff_ffff_ffffL, (long)containerData.get(EnumTest.LONG));
+        assertEquals(0xffff_ffff, (int)containerData.get(EnumTest.INT));
+        assertEquals(0xffff_ffff_ffff_ffffL, (long)containerData.get(EnumTest.LONG));
     }
 
     @Test

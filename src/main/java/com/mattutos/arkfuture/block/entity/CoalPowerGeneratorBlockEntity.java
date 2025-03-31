@@ -50,7 +50,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         public final String key = "coal_power_generator." + this.name().toLowerCase();
     }
 
-    public enum DATA implements BaseData<DATA> {
+    public enum DATA implements BaseData {
         REMAINING_BURN_TIME,
         TOTAL_BURN_TIME,
         GENERATING,

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SimpleEnumContainerData<T extends Enum<T> & BaseData<T>> extends EnumContainerData<T> {
+public class SimpleEnumContainerData<T extends Enum<T> & BaseData> extends EnumContainerData<T> {
 
     private final int[] ints;
     protected final Class<T> baseData;

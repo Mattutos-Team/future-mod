@@ -6,7 +6,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EnumContainerData<T extends Enum<T> & BaseData<T>> implements ContainerData {
+public abstract class EnumContainerData<T extends Enum<T> & BaseData> implements ContainerData {
 
     protected final Map<Integer, AbstractMap.SimpleEntry<T, Integer>> mapEnumIndexes;
 

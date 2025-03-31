@@ -1,6 +1,6 @@
 package com.mattutos.arkfuture.core.inventory;
 
-public enum EnumTest implements BaseData<EnumTest> {
+public enum EnumTest implements BaseData {
     SHORT(1),
     INT(2),
     LONG(4);
