@@ -1,7 +1,7 @@
 package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
-import com.mattutos.arkfuture.core.inventory.EContainerData;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.screen.common.EnergySlot;
@@ -31,7 +31,7 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
     }
 
     // construtor utilizado no lado do servidor
-    public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, EContainerData<CoalPowerGeneratorBlockEntity.DATA> pContainerData) {
+    public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, EnumContainerData<CoalPowerGeneratorBlockEntity.DATA> pContainerData) {
         super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
         this.itemHandler = ((CoalPowerGeneratorBlockEntity) pBlockEntity).getItems();
 

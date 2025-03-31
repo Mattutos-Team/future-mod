@@ -1,10 +1,12 @@
 package com.mattutos.arkfuture.core.inventory;
 
+import net.minecraft.world.inventory.ContainerData;
+
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class EnumContainerData<T extends Enum<T> & BaseData<T>> implements EContainerData<T> {
+public abstract class EnumContainerData<T extends Enum<T> & BaseData<T>> implements ContainerData {
 
     protected final Map<Integer, AbstractMap.SimpleEntry<T, Integer>> mapEnumIndexes;
 
@@ -48,9 +50,7 @@ public abstract class EnumContainerData<T extends Enum<T> & BaseData<T>> impleme
         return mapEnumIndexes.size();
     }
 
-    @Override
     abstract public void set(T enumData, long value);
 
-    @Override
     abstract public long get(T enumData);
 }

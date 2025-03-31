@@ -31,8 +31,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntity {
 
     public enum SLOT {
@@ -63,18 +61,17 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
         private final int dataPackShort;
 
-        DATA() { this.dataPackShort = 1; }
+        DATA() {
+            this.dataPackShort = 1;
+        }
 
-        DATA(int dataPackShort) { this.dataPackShort = dataPackShort; }
+        DATA(int dataPackShort) {
+            this.dataPackShort = dataPackShort;
+        }
 
         @Override
         public int getDataPack() {
             return this.dataPackShort;
-        }
-
-        @Override
-        public List<? extends BaseData<?>> getAllValues() {
-            return List.of(DATA.values());
         }
     }
 

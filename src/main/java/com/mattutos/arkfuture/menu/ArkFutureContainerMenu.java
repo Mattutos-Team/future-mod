@@ -1,7 +1,7 @@
 package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.core.inventory.BaseData;
-import com.mattutos.arkfuture.core.inventory.EContainerData;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 public abstract class ArkFutureContainerMenu<T extends Enum<T> & BaseData<T>> extends AbstractContainerMenu {
 
     protected final BlockEntity blockEntity;
-    protected final EContainerData<T> containerData;
+    protected final EnumContainerData<T> containerData;
     protected final Level level;
 
     protected ArkFutureContainerMenu(
@@ -23,7 +23,7 @@ public abstract class ArkFutureContainerMenu<T extends Enum<T> & BaseData<T>> ex
             int pContainerId,
             Inventory pPlayerInventory,
             BlockEntity pBlockEntity,
-            EContainerData<T> pContainerData
+            EnumContainerData<T> pContainerData
     ) {
         super(pMenuType, pContainerId);
         this.blockEntity = pBlockEntity;
