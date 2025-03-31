@@ -1,19 +1,19 @@
 package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
+import com.mattutos.arkfuture.core.inventory.EContainerData;
+import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.screen.common.EnergySlot;
 import com.mattutos.arkfuture.screen.common.FuelSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
-public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
+public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGeneratorBlockEntity.DATA> {
 
     private static final int HOTBAR_SLOT_COUNT = 9;
     private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
@@ -27,14 +27,13 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
 
     // construtor utilizado no lado do cliente
     public CoalPowerGeneratorMenu(int pContainerId, Inventory playerInventory, FriendlyByteBuf extraData) {
-//        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), EnumContainerData.createSimple(CoalPowerGeneratorBlockEntity.DATA.class));
-        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(7));
+        this(pContainerId, playerInventory, playerInventory.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(CoalPowerGeneratorBlockEntity.DATA.class));
     }
 
     // construtor utilizado no lado do servidor
-    public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, ContainerData pContainerData) {
+    public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, EContainerData<CoalPowerGeneratorBlockEntity.DATA> pContainerData) {
         super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
-        this.itemHandler = ((CoalPowerGeneratorBlockEntity)pBlockEntity).getItems();
+        this.itemHandler = ((CoalPowerGeneratorBlockEntity) pBlockEntity).getItems();
 
         checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
 //        checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
@@ -75,31 +74,31 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu {
         return ItemStack.EMPTY;
     }
 
-    public int getData(CoalPowerGeneratorBlockEntity.DATA data) {
-        return this.containerData.get(data.ordinal());
+    public long getData(CoalPowerGeneratorBlockEntity.DATA data) {
+        return this.containerData.get(data);
     }
 
     public boolean isBurning() {
-        return this.containerData.get(0) > 0;
+        return this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.REMAINING_BURN_TIME) > 0;
     }
 
     public int getScaledFlameProgress(int pixelSize) {
-        int progress = this.containerData.get(0);
-        int maxProgress = this.containerData.get(1);
+        long progress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.REMAINING_BURN_TIME);
+        long maxProgress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.TOTAL_BURN_TIME);
 
-        return maxProgress != 0 && progress != 0 ? progress * pixelSize / maxProgress : 0;
+        return maxProgress != 0 && progress != 0 ? (int) (progress * pixelSize / maxProgress) : 0;
     }
 
     public int getGenerating() {
-        return this.containerData.get(2);
+        return (int) this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.GENERATING);
     }
 
-    public int getEnergyStored() {
-        return ((this.containerData.get(3) & 0xFFFF) << 16) + (this.containerData.get(4) & 0xFFFF);
+    public long getEnergyStored() {
+        return this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.ENERGY_STORED);
     }
 
-    public int getMaxEnergyStored() {
-        return ((this.containerData.get(5) & 0xFFFF) << 16) + (this.containerData.get(6) & 0xFFFF);
+    public long getMaxEnergyStored() {
+        return this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.CAPACITY);
     }
 
 }

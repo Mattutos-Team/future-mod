@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.config;
+package com.mattutos.arkfuture.core.inventory;
 
 import net.minecraft.world.inventory.ContainerData;
 
@@ -13,18 +13,18 @@ public interface BaseData<T extends Enum<T>> {
     default void setValueContainerData(ContainerData containerData, long value) {
         var startedPosition = this.getPositionData();
 
-        for (int i = getDataPack(); i >= 0; --i) {
+        for (int i = (getDataPack() - 1); i >= 0; i--) {
             short valueToSave = (short) (value & 0xFFFF);
             value >>= 16;
             containerData.set(startedPosition + i, valueToSave);
         }
     }
 
-    default int getValueContainerData(ContainerData containerData) {
+    default long getValueContainerData(ContainerData containerData) {
         var startedPosition = this.getPositionData();
-        int value = 0;
+        long value = 0;
 
-        for (int i = 0; i < getDataPack(); i++) {
+        for (int i = (getDataPack() - 1); i >= 0; i--) {
             value <<= 16;
             value += containerData.get(startedPosition + i);
         }

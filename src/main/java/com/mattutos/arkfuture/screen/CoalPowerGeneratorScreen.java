@@ -56,7 +56,7 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
     private void renderProgressEnergyStored(GuiGraphics pGuiGraphics, int x, int y) {
         pGuiGraphics.fill(x + ENERGY_X, y + ENERGY_Y, x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xff330000);
         if (menu.getEnergyStored() > 0 && menu.getMaxEnergyStored() != 0) {
-            int percentEnergyHeight = menu.getEnergyStored() * ENERGY_HEIGHT / menu.getMaxEnergyStored();
+            int percentEnergyHeight = (int) (menu.getEnergyStored() * ENERGY_HEIGHT / menu.getMaxEnergyStored());
             pGuiGraphics.fillGradient(x + ENERGY_X, y + (ENERGY_Y + (ENERGY_HEIGHT - percentEnergyHeight)), x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xffcc0000, 0xffaa0000);
         }
     }
@@ -82,7 +82,7 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
         int y = (height - imageHeight) / 2;
 
         int generating = menu.getGenerating();
-        int energyStored = menu.getEnergyStored();
+        long energyStored = menu.getEnergyStored();
 
         int xTempGenerating = this.font.width(generating + "");
         int xTempEnergyStored = this.font.width(energyStored + "");
@@ -93,9 +93,9 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
     }
 
     private void renderTooltipEnergy(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
-        // Renderiza o tooltip de energia se o mouse estiver em cima da barra de enrgia
+        // Renderiza o tooltip de energia se o mouse estiver em cima da barra de energia
         if (pMouseX >= leftPos + ENERGY_X && pMouseX < leftPos + ENERGY_X + ENERGY_WIDTH && pMouseY >= topPos + ENERGY_Y && pMouseY < topPos + ENERGY_Y + ENERGY_HEIGHT) {
-            int power = menu.getEnergyStored();
+            long power = menu.getEnergyStored();
             pGuiGraphics.renderTooltip(this.font, Component.literal(power + " FE"), pMouseX, pMouseY);
         }
     }
