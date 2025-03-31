@@ -22,5 +22,4 @@ public class MenuInit {
     public static void register(IEventBus eventBus) {
         MENU_TYPE.register(eventBus);
     }
-
 }
