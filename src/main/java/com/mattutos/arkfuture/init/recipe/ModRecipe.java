@@ -26,7 +26,7 @@ public class ModRecipe {
 
     //MECHANICAL TABLE TPYE
     public static final RegistryObject<RecipeType<MechanicalTableRecipe>> MECHANICAL_TABLE_TYPE =
-            TYPES.register("mechanical_table", () -> new RecipeType<MechanicalTableRecipe>() {
+            TYPES.register("mechanical_table", () -> new RecipeType<>() {
                 @Override
                 public String toString() {
                     return "mechanical_table";

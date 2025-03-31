@@ -10,9 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
 public class MechanicalTableSerializer implements RecipeSerializer<MechanicalTableRecipe> {
-
-//    public static final MechanicalTableSerializer INSTANCE = new MechanicalTableSerializer();
-
     public static final MapCodec<MechanicalTableRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     ItemStack.CODEC.fieldOf("output").forGetter(MechanicalTableRecipe::getOutput),

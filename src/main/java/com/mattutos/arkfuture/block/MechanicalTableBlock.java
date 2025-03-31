@@ -2,6 +2,8 @@ package com.mattutos.arkfuture.block;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.init.BlockEntityInit;
+import com.mattutos.arkfuture.init.BlockInit;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -14,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -49,5 +53,16 @@ public class MechanicalTableBlock extends BaseEntityBlock {
         }
 
         return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        if (pLevel.isClientSide()) {
+            return null;
+        }
+
+        return createTickerHelper(pBlockEntityType, BlockEntityInit.MECHANICAL_TABLE.get(),
+                (level, blockPos, blockState, mechanicalTableBlockEntity) -> mechanicalTableBlockEntity.tick(level, blockPos, blockState));
     }
 }

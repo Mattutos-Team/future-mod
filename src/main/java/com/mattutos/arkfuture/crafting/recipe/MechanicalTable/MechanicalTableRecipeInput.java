@@ -2,33 +2,29 @@ package com.mattutos.arkfuture.crafting.recipe.MechanicalTable;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class MechanicalTableRecipeInput implements RecipeInput {
-    private final ItemStack[] inputs;  // Array to store the 5 input ItemStacks
+    private static final Logger log = LoggerFactory.getLogger(MechanicalTableRecipeInput.class);
+    private final List<ItemStack> inputs;
 
-    // Constructor now takes an array of ItemStacks
-    public MechanicalTableRecipeInput(ItemStack... inputs) {
-        if (inputs.length != 5) {
-            throw new IllegalArgumentException("MechanicalTableRecipeInput must have exactly 5 inputs.");
-        }
+    public MechanicalTableRecipeInput(List<ItemStack> inputs) {
         this.inputs = inputs;
     }
 
     @Override
     public ItemStack getItem(int pIndex) {
-        if (pIndex < 0 || pIndex >= size()) {
-            return ItemStack.EMPTY;  // Return empty stack if the index is out of bounds
+        if (pIndex >= 0 && pIndex < inputs.size()) {
+            return inputs.get(pIndex);
         }
-        return inputs[pIndex];  // Return the item at the specified index
+        return ItemStack.EMPTY;
     }
 
     @Override
     public int size() {
-        return 5;  // We now have 5 input slots
-    }
-
-    // Optional: you can create a getter for the inputs array if you need it elsewhere
-    public ItemStack[] getInputs() {
-        return inputs;
+        return inputs.size();
     }
 }
