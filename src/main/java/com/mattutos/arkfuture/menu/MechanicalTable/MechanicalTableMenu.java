@@ -1,44 +1,81 @@
-package com.mattutos.arkfuture.menu;
+package com.mattutos.arkfuture.menu.MechanicalTable;
 
+import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MechanicalTableMenu extends AbstractContainerMenu {
 
+    private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
-
+    private final ContainerData data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
     }
 
-    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity) {
+    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, ContainerData data) {
         super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId);
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
+        this.data = data;
+
+        //TODO - CREATE AN ENUM TO PUT ALL RECIPES TO MECHANICAL TABLE HERE
+        List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
+        List<MechanicalTableRecipe> recipes = getMultipleRecipes(recipePaths);
+        List<IngredientStack.Item> validBaseIngridientsList = getValidBaseIngredients(recipes);
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 31, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 49, 35)); //IS BASE
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 67, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 49, 17));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 4, 49, 53));
+        //BASE ITEM
+        this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 49, 35, validBaseIngridientsList));
+
+        //INGREDIENTS ITEMS
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 31, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 67, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 49, 17));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 4, 49, 53));
 
         //RESULT SLOT
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 121, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 5, 121, 35));
+
+        addDataSlots(data);
+    }
+
+
+    //CHECK WHETHER IS CRAFTING OR NOT
+    public boolean isCrafting() {
+        return data.get(0) > 0;
+    }
+
+    public int getScaledArrowProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);
+        int arrowPixelSize = 24;
+
+        return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
     }
 
 
@@ -58,7 +95,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 5;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 6;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
@@ -112,5 +149,46 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+    }
+
+
+    private List<MechanicalTableRecipe> getMultipleRecipes(List<String> paths) {
+        RecipeManager recipeManager = level.getRecipeManager();
+        List<MechanicalTableRecipe> validRecipes = new ArrayList<>();
+
+        for (String path : paths) {
+            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, path);
+
+            log.info("Processing recipe ID: {}", recipeId);
+
+            RecipeHolder<?> recipeHolder = recipeManager.byKey(recipeId).orElse(null);
+
+            if (recipeHolder == null) {
+                log.warn("No recipe found for ID: {}", recipeId);
+            }
+
+            if (recipeHolder != null && recipeHolder.value() instanceof MechanicalTableRecipe) {
+                validRecipes.add((MechanicalTableRecipe) recipeHolder.value());
+                log.info("Valid recipe found: {}", recipeId);
+            }
+        }
+        log.info("Total valid recipes found: {}", validRecipes.size());
+
+        return validRecipes;
+    }
+
+
+    private List<IngredientStack.Item> getValidBaseIngredients(List<MechanicalTableRecipe> recipes) {
+        List<IngredientStack.Item> validBases = new ArrayList<>();
+
+        for (MechanicalTableRecipe recipe : recipes) {
+            IngredientStack.Item base = recipe.getBase();
+
+            if (base != null && !base.isEmpty()) {
+                validBases.add(base);
+            }
+        }
+
+        return validBases;
     }
 }

@@ -8,12 +8,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MechanicalTableRecipe implements Recipe<RecipeInput> {
 
+    private static final Logger log = LoggerFactory.getLogger(MechanicalTableRecipe.class);
     @Getter
     public final IngredientStack.Item base;
     protected List<IngredientStack.Item> inputItems;
@@ -30,21 +33,12 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
         return this.inputItems;
     }
 
-    public List<IngredientStack<?, ?>> getSample() {
-        List<IngredientStack<?, ?>> sample = new ArrayList<>();
-        for (var in : this.inputItems) {
-            if (!in.isEmpty()) {
-                sample.add(in.sample());
-            }
-        }
-        return sample;
-    }
-
 
     @Override
     public boolean matches(RecipeInput pInput, Level pLevel) {
         int ingredientIndex = 0;
-        for (int i = 0; i < pInput.size(); i++) {
+
+        for (int i = 0; i < inputItems.size(); i++) {
             ItemStack stack = pInput.getItem(i);
 
             if (!stack.isEmpty()) {
@@ -52,6 +46,7 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
                     return false;
                 }
 
+                //CHECKING WHETHER IS A VALID INGREDIENT OR NOT
                 if (!inputItems.get(ingredientIndex).getIngredient().test(stack)) {
                     return false;
                 }
@@ -92,7 +87,6 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
         return false;
     }
 
-
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return ModRecipe.MECHANICAL_TABLE_SERIALIZER.get();
@@ -102,6 +96,4 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     public @NotNull RecipeType<?> getType() {
         return ModRecipe.MECHANICAL_TABLE_TYPE.get();
     }
-
-
 }
