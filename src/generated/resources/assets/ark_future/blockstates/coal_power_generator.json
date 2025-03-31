@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ark_future:block/coal_power_generator"
+    }
+  }
+}

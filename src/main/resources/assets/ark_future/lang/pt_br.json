@@ -1,5 +1,11 @@
 {
     "block.ark_future.coal_power_generator": "Gerador de Energia a Carvão",
     "block.ark_future.mechanical_table": "Mesa Mecânica",
-    "creativetab.ark_future.ark_future_tab": "Ark Future"
+    "creativetab.ark_future.ark_future_tab": "Ark Future",
+    "item.ark_future.ancient_ore": "Minério antigo",
+    "block.ark_future.ancient_ore_ingot_block": "Bloco de barras de minério antigo",
+    "block.ark_future.ancient_ore_block": "Bloco de minério antigo",
+    "item.ark_future.ancient_ore_ingot": "Barra de minério antigo",
+    "block.ark_future.ancient_ore_vein_block": "Veio de minério antigo",
+    "block.ark_future.deepslate_ancient_ore_vein_block": "Veio de minério antigo de ardosiabissal"
 }
