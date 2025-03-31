@@ -45,7 +45,7 @@ public class SimpleEnumContainerData<T extends Enum<T> & BaseData<T>> extends En
 
         for (int i = (enumData.getDataPack() - 1); i >= 0; i--) {
             value <<= 16;
-            value += this.get(startedPosition + i);
+            value |= (this.get(startedPosition + i) & 0xFFFF);
         }
 
         return value;
