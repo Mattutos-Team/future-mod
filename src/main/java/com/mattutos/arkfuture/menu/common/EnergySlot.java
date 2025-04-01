@@ -1,11 +1,12 @@
-package com.mattutos.arkfuture.screen.common;
+package com.mattutos.arkfuture.menu.common;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class FuelSlot extends SlotItemHandler {
-    public FuelSlot(IItemHandler pItemHandler, int pSlot, int pX, int pY) {
+public class EnergySlot extends SlotItemHandler {
+    public EnergySlot(IItemHandler pItemHandler, int pSlot, int pX, int pY) {
         super(pItemHandler, pSlot, pX, pY);
     }
 
@@ -15,6 +16,7 @@ public class FuelSlot extends SlotItemHandler {
     }
 
     public static boolean mayPlaceItem(ItemStack pItemStack) {
-        return net.minecraftforge.common.ForgeHooks.getBurnTime(pItemStack, null) > 0;
+        // TODO: identificar itens que contem energia
+        return pItemStack.getItem() instanceof IEnergyStorage;
     }
 }

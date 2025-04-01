@@ -6,6 +6,7 @@ import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRec
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
+import com.mattutos.arkfuture.menu.common.BaseSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
