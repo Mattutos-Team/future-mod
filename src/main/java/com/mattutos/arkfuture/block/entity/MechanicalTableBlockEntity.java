@@ -1,10 +1,10 @@
 package com.mattutos.arkfuture.block.entity;
 
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipeInput;
+import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipeInput;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
-import com.mattutos.arkfuture.menu.MechanicalTable.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -12,9 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -115,6 +113,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        //TODO CHANGE THE KEY NAME
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
         pTag.putInt("mechanical_table.progress", progress);
         pTag.putInt("mechanical_table.max_progress", maxProgress);
@@ -186,8 +185,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             itemHandler.setStackInSlot(OUTPUT_SLOT, new ItemStack(output.getItem(),
                     itemHandler.getStackInSlot(OUTPUT_SLOT).getCount() + output.getCount()));
         }
-
-
     }
 
 
@@ -217,17 +214,25 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     private Optional<RecipeHolder<MechanicalTableRecipe>> getCurrentRecipe() {
         List<ItemStack> inputs = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        // Add input items (4 items)
+        for (int i = 0; i < 4; i++) {
             ItemStack stack = itemHandler.getStackInSlot(i);
             if (!stack.isEmpty()) {
                 inputs.add(stack);
             }
         }
 
+        // Get the base item (the 5th item)
+        ItemStack baseItem = itemHandler.getStackInSlot(4);  // Assuming the base item is always at index 4
 
+        // Create a new recipe input object, including both input items and base item
+        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(inputs, baseItem);
+
+        // Fetch the recipe using the recipe input
         return this.level.getRecipeManager()
-                .getRecipeFor(ModRecipe.MECHANICAL_TABLE_TYPE.get(), new MechanicalTableRecipeInput(inputs), level);
+                .getRecipeFor(ModRecipe.MECHANICAL_TABLE_TYPE.get(), recipeInput, level);
     }
+
 
 
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {

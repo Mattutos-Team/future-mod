@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.crafting.recipe.MechanicalTable;
+package com.mattutos.arkfuture.crafting.recipe.mechanicaltable;
 
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
@@ -11,12 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MechanicalTableRecipe implements Recipe<RecipeInput> {
-
-    private static final Logger log = LoggerFactory.getLogger(MechanicalTableRecipe.class);
     @Getter
     public final IngredientStack.Item base;
     protected List<IngredientStack.Item> inputItems;
@@ -38,20 +35,23 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     public boolean matches(RecipeInput pInput, Level pLevel) {
         int ingredientIndex = 0;
 
-        for (int i = 0; i < inputItems.size(); i++) {
+        // Loop through input items and check against the provided recipe input
+        for (int i = 0; i < inputItems.size() + 1; i++) {  // +1 to account for the base item
             ItemStack stack = pInput.getItem(i);
 
             if (!stack.isEmpty()) {
-                if (ingredientIndex >= inputItems.size()) {
-                    return false;
+                if (ingredientIndex < inputItems.size()) {
+                    // CHECKING INPUT ITEMS
+                    if (!inputItems.get(ingredientIndex).getIngredient().test(stack)) {
+                        return false;
+                    }
+                    ingredientIndex++;
+                } else {
+                    // CHECKING BASE ITEM
+                    if (!base.getIngredient().test(stack)) {
+                        return false;
+                    }
                 }
-
-                //CHECKING WHETHER IS A VALID INGREDIENT OR NOT
-                if (!inputItems.get(ingredientIndex).getIngredient().test(stack)) {
-                    return false;
-                }
-
-                ingredientIndex++;
             }
         }
 
