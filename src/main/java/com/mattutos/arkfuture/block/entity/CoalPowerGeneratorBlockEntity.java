@@ -1,8 +1,9 @@
 package com.mattutos.arkfuture.block.entity;
 
+import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
-import com.mattutos.arkfuture.config.EnumContainerData;
-import com.mattutos.arkfuture.config.BaseData;
+import com.mattutos.arkfuture.core.inventory.BaseData;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.menu.CoalPowerGeneratorMenu;
 import net.minecraft.core.BlockPos;
@@ -17,8 +18,9 @@ import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
@@ -30,8 +32,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntity {
 
@@ -52,7 +52,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         public final String key = "coal_power_generator." + this.name().toLowerCase();
     }
 
-    public enum DATA implements BaseData<DATA> {
+    public enum DATA implements BaseData {
         REMAINING_BURN_TIME,
         TOTAL_BURN_TIME,
         GENERATING,
@@ -71,22 +71,13 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
             this.dataPackShort = dataPackShort;
         }
 
-        public static int getByIndex(int pIndex) {
-            return DATA.values()[pIndex].ordinal();
-        }
-
         @Override
         public int getDataPack() {
             return this.dataPackShort;
         }
-
-        @Override
-        public List<? extends BaseData<?>> getAllValues() {
-            return List.of(DATA.values());
-        }
     }
 
-    public static final int GENERATE = 50;
+    public static final int GENERATE = 10;
     public static final int MAX_TRANSFER = 1_000;
     public static final int CAPACITY = 100_000;
 
@@ -100,8 +91,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     private int totalBurnTime = 0;
     private int generating = 0;
 
-    protected final ContainerData containerData;
-//    protected final EnumContainerData<DATA> containerData;
+    protected final EnumContainerData<DATA> containerData;
 
     private @NotNull ItemStackHandler createItemStackHandler() {
         return new ItemStackHandler(SLOT.values().length) {
@@ -109,7 +99,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
             protected void onContentsChanged(int slot) {
                 setChanged();
                 if (!level.isClientSide()) {
-                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
                 }
             }
         };
@@ -122,44 +112,26 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     public CoalPowerGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.COAL_POWER_GENERATOR.get(), pPos, pBlockState);
 
-//        containerData = new EnumContainerData<>(DATA.class) {
-//            @Override
-//            public void set(DATA enumData, long pValue) {
-//
-//            }
-//        };
-        containerData = new ContainerData() {
+        containerData = new EnumContainerData<>(DATA.class) {
             @Override
-            public int get(int pIndex) {
-                return switch (pIndex) {
-                    case 0 -> remainingBurnTime;
-                    case 1 -> totalBurnTime;
-                    case 2 -> generating;
-                    case 3 -> ((energyStorage.getEnergyStored() >> 16) & 0xffff);
-                    case 4 -> (energyStorage.getEnergyStored() & 0xffff);
-                    case 5 -> ((energyStorage.getMaxEnergyStored() >> 16) & 0xffff);
-                    case 6 -> (energyStorage.getMaxEnergyStored() & 0xffff);
-                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
-                };
+            public void set(DATA enumData, long value) {
             }
 
             @Override
-            public void set(int pIndex, int pValue) {
-                switch (pIndex) {
-                    case 0 -> CoalPowerGeneratorBlockEntity.this.remainingBurnTime = pValue;
-                    case 1 -> CoalPowerGeneratorBlockEntity.this.totalBurnTime = pValue;
-                    case 2 -> CoalPowerGeneratorBlockEntity.this.generating = pValue;
-//                    case 3 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy((pValue << 16), false);
-//                    case 4 -> CoalPowerGeneratorBlockEntity.this.energyStorage.receiveEnergy(pValue, false);
-                    default -> throw new IllegalStateException("Unexpected value: " + pIndex);
+            public long get(DATA enumData) {
+                return switch (enumData) {
+                    case REMAINING_BURN_TIME -> CoalPowerGeneratorBlockEntity.this.remainingBurnTime;
+                    case TOTAL_BURN_TIME -> CoalPowerGeneratorBlockEntity.this.totalBurnTime;
+                    case GENERATING -> CoalPowerGeneratorBlockEntity.this.generating;
+                    case HOW_MUCH_CAN_GENERATE -> GENERATE;
+                    case MAX_TRANSFER -> MAX_TRANSFER;
+                    case ENERGY_STORED -> CoalPowerGeneratorBlockEntity.this.energyStorage.getEnergyStored();
+                    case CAPACITY -> CoalPowerGeneratorBlockEntity.this.energyStorage.getMaxEnergyStored();
+                    default -> throw new IllegalStateException("Unexpected value: " + enumData);
                 };
-            }
-
-            @Override
-            public int getCount() {
-                return 7;
             }
         };
+
     }
 
     @Override
@@ -177,6 +149,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para salvar informações NBT do bloco
+
     /**
      * Salva os dados da BlockEntity em um CompoundTag quando o jogo salva o mundo.
      * 🔹 Quando é chamado?
@@ -187,7 +160,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
      * Salva os dados personalizados da BlockEntity para que eles sejam restaurados ao carregar o mundo novamente.
      */
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
         pTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
         pTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
@@ -196,6 +169,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
+
     /**
      * Carrega os dados da BlockEntity a partir do CompoundTag quando o jogo carrega o mundo.
      * 🔹 Quando é chamado?
@@ -206,7 +180,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
      * Recupera os dados salvos e restaura o estado da BlockEntity.
      */
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound(NBT.INVENTORY.key));
         energyStorage.deserializeNBT(pRegistries, pTag.get(NBT.ENERGY.key));
@@ -218,12 +192,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     public void onLoad() {
         super.onLoad();
         lazyInventoryHandler = LazyOptional.of(() -> itemStackHandler);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyInventoryHandler.invalidate();
     }
 
     @Override
@@ -257,27 +225,53 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     private void generateEnergy() {
-        if (remainingBurnTime > 0) {
-            if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+        if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+            if (remainingBurnTime > 0) {
+                if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
+                    generating = 0;
+                    return;
+                }
+                remainingBurnTime--;
+                generating = energyStorage.receiveEnergy(GENERATE, false);
+            } else {
                 generating = 0;
-                return;
+                ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
+                if (!fuel.isEmpty()) {
+                    totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
+                    fuel.shrink(1);
+                }
             }
-            remainingBurnTime--;
-            generating = energyStorage.receiveEnergy(GENERATE, false);
-        } else {
-            generating = 0;
-            ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
-            if (!fuel.isEmpty()) {
-                totalBurnTime = remainingBurnTime = ForgeHooks.getBurnTime(fuel, null);
-                fuel.shrink(1);
+        }
+
+        // este metodo cria somente um estado novo, nao atualiza o bloco atual.
+        BlockState blockState = this.getBlockState().setValue(CoalPowerGeneratorBlock.POWERED, generating > 0);
+        this.level.setBlock(this.worldPosition, blockState, Block.UPDATE_ALL); // seta o novo estado
+        setChanged();
+    }
+
+    private void distributeEnergy() {
+        if (energyStorage.getEnergyStored() <= 0) return;
+
+        // checa todos os lados verifica se os blocos vizinhos podem receber energia
+        for (Direction direction : Direction.values()) {
+            BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.relative(direction));
+            if (blockEntity != null) {
+                blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite())
+                        .ifPresent(iEnergyStorage -> {
+                            if (iEnergyStorage.canReceive()) {
+                                int energyToSend = Math.min(energyStorage.getEnergyStored(), MAX_TRANSFER);
+                                int received = iEnergyStorage.receiveEnergy(energyToSend, false);
+                                energyStorage.extractEnergy(received, false);
+                                blockEntity.setChanged();
+                                CoalPowerGeneratorBlockEntity.this.setChanged();
+                            }
+                        });
             }
         }
     }
 
-    private void distributeEnergy() {
-    }
-
     // metodo usado para sincronização
+
     /**
      * Define os dados que serão enviados para o cliente quando um chunk contendo o BlockEntity for carregado.
      * 🔹 Quando é chamado?
@@ -294,6 +288,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     // metodo usado para sincronização
+
     /**
      * Controla a atualização do BlockEntity quando o seu estado muda dinamicamente sem precisar recarregar o chunk.
      * 🔹 Quando é chamado?
