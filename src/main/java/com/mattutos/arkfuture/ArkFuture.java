@@ -15,7 +15,7 @@ public class ArkFuture {
 
     public ArkFuture(FMLJavaModLoadingContext context) {
         log.info("Carregando mod");
-        erro de compilação
+        erro de compilação 2
 
         IEventBus modEventBus = context.getModEventBus();
 
