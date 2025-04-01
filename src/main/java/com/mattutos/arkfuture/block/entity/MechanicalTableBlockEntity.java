@@ -223,7 +223,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         }
 
         // Get the base item (the 5th item)
-        ItemStack baseItem = itemHandler.getStackInSlot(4);  // Assuming the base item is always at index 4
+        ItemStack baseItem = itemHandler.getStackInSlot(1);  // BASE ITEM IS INDEX 1
 
         // Create a new recipe input object, including both input items and base item
         MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(inputs, baseItem);
