@@ -1,6 +1,5 @@
-package com.mattutos.arkfuture.menu.MechanicalTable;
+package com.mattutos.arkfuture.menu.mechanicaltable;
 
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.world.item.ItemStack;

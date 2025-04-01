@@ -1,8 +1,8 @@
-package com.mattutos.arkfuture.menu.MechanicalTable;
+package com.mattutos.arkfuture.menu.mechanicaltable;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
-import com.mattutos.arkfuture.crafting.recipe.MechanicalTable.MechanicalTableRecipe;
+import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
@@ -41,7 +41,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         this.level = inv.player.level();
         this.data = data;
 
-        //TODO - CREATE AN ENUM TO PUT ALL RECIPES TO MECHANICAL TABLE HERE
+        //TODO - CREATE A LOGIC TO GET RECIPES BY A SPECIFIC FOLDER
         List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
         List<MechanicalTableRecipe> recipes = getMultipleRecipes(recipePaths);
         List<IngredientStack.Item> validBaseIngridientsList = getValidBaseIngredients(recipes);
@@ -50,16 +50,16 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         //BASE ITEM
-        this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 49, 35, validBaseIngridientsList));
+        this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 29, 35, validBaseIngridientsList));
 
         //INGREDIENTS ITEMS
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 31, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 67, 35));
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 49, 17));
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 4, 49, 53));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 11, 35)); // LEFT
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 47, 35)); // RIGHT
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 29, 17)); // UP
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 4, 29, 53)); // BOTTOM
 
         //RESULT SLOT
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 5, 121, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 5, 152, 35));
 
         addDataSlots(data);
     }
@@ -73,7 +73,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     public int getScaledArrowProgress() {
         int progress = this.data.get(0);
         int maxProgress = this.data.get(1);
-        int arrowPixelSize = 24;
+        int arrowPixelSize = 18;
 
         return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
     }

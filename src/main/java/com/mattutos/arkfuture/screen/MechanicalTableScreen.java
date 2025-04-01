@@ -1,26 +1,21 @@
 package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.menu.MechanicalTable.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.CyclingSlotBackground;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-
-import java.util.Optional;
 
 public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTableMenu> {
     private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
-            ArkFuture.MOD_ID, "textures/gui/mechanical_table_gui.png");
+            ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_menu_gui.png");
 
-    private static final ResourceLocation ARROW_TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/arrow_progress.png");
+    private static final ResourceLocation CRAFTING_PROGRESS_BAR =
+            ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_crafting_bar.png");
 
 
     public MechanicalTableScreen(MechanicalTableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -58,7 +53,7 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isCrafting()) {
-            guiGraphics.blit(ARROW_TEXTURE, x + 1, y + 1, 0, 0, menu.getScaledArrowProgress(), 16, 24, 16);
+            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
         }
     }
 
