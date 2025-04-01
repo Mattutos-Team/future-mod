@@ -16,6 +16,7 @@ public class ArkFuture {
     public ArkFuture(FMLJavaModLoadingContext context) {
         log.info("Carregando mod");
 
+
         IEventBus modEventBus = context.getModEventBus();
 
         BlockEntityInit.register(modEventBus);
