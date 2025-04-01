@@ -1,5 +1,6 @@
 package com.mattutos.arkfuture.block.entity;
 
+import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
 import com.mattutos.arkfuture.core.inventory.BaseData;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
@@ -240,8 +241,12 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
                     fuel.shrink(1);
                 }
             }
-            setChanged();
         }
+
+        // este metodo cria somente um estado novo, nao atualiza o bloco atual.
+        BlockState blockState = this.getBlockState().setValue(CoalPowerGeneratorBlock.POWERED, generating > 0);
+        this.level.setBlock(this.worldPosition, blockState, Block.UPDATE_ALL); // seta o novo estado
+        setChanged();
     }
 
     private void distributeEnergy() {
