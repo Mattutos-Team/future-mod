@@ -6,6 +6,7 @@ import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -38,11 +43,26 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableBlockEntity.class);
 
+    private final EnergyStorage energyStorage = createEnergyStorage();
+    private final LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
+
+    //LAZY ITEM HANDLER
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
     protected final ContainerData data;
     private int progress = 0;
     private int maxProgress = 72;
+
+    //TODO - ADD CRAFTING ENERGY USE LIMIT AT RECIPES
+
+    //THE MAX VALUE IT WILL BE GOT PER TICK
+    public static final int MAX_TRANSFER = 500;
+    public static final int CAPACITY = 20_000;
+
+    private @NotNull EnergyStorage createEnergyStorage() {
+        return new EnergyStorage(CAPACITY, MAX_TRANSFER, MAX_TRANSFER, 0);
+    }
+
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(6) { //5 TO CRAFT +1 TO OUTPUT
         @Override
@@ -150,16 +170,23 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
+        boolean hasEnergyEnoughToCraft = energyStorage.getEnergyStored() > 5;
+
+        if (!hasRecipe()) resetProgress();
+
+        if (!hasEnergyEnoughToCraft) return;
+
         if (hasRecipe()) {
             increaseCraftingProgress();
-            setChanged(level, blockPos, blockState);
+
+            //WASTE ENERGY PER TICK
+            energyStorage.extractEnergy(5, false);
 
             if (hasCraftingFinished()) {
                 craftItem();
                 resetProgress();
+                setChanged(level, blockPos, blockState);
             }
-        } else {
-            resetProgress();
         }
     }
 
@@ -234,7 +261,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
 
-
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {
         return itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();
     }
@@ -252,4 +278,16 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {
+            return lazyItemHandler.cast();
+        } else if (cap == ForgeCapabilities.ENERGY) {
+            return lazyEnergyHandler.cast();
+        } else {
+            return super.getCapability(cap, side);
+        }
+    }
+
 }

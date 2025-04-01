@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.menu.mechanicaltable;
+package com.mattutos.arkfuture.menu.common;
 
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import lombok.extern.slf4j.Slf4j;
