@@ -2,16 +2,15 @@ package com.mattutos.arkfuture.datagen;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.init.BlockInit;
-
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
 
@@ -27,11 +26,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         this.blockCubeAllWithItem(BlockInit.ANCIENT_ORE_BLOCK_ITEM);
         this.blockCubeAllWithItem(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM);
 
-        this.blockOrientableWithItem(
-                BlockInit.COAL_POWER_GENERATOR,
-                "coal_power_generator_side",
-                "coal_power_generator_front",
-                "coal_power_generator_top");
+        this.customStatesFacingAndPowered(BlockInit.COAL_POWER_GENERATOR);
         this.blockOrientableWithItem(BlockInit.MECHANICAL_TABLE);
     }
 
@@ -44,22 +39,44 @@ public class ModBlockStateProvider extends BlockStateProvider {
         this.simpleBlockWithItem(blockRegistryObject.get(), this.cubeAll(blockRegistryObject.get()));
     }
 
-    private void blockOrientableWithItem(
-            RegistryObject<? extends Block> blockRegistryObject,
-            String namespace,
-            String side,
-            String front,
-            String top) {
+    private void blockOrientableWithItem(RegistryObject<? extends Block> blockRegistryObject, String namespace, String side, String front, String top) {
         Block block = blockRegistryObject.get();
 
         ResourceLocation sideResource = ResourceLocation.fromNamespaceAndPath(namespace, ModelProvider.BLOCK_FOLDER + "/" + side);
         ResourceLocation frontResource = ResourceLocation.fromNamespaceAndPath(namespace, ModelProvider.BLOCK_FOLDER + "/" + front);
         ResourceLocation topResource = ResourceLocation.fromNamespaceAndPath(namespace, ModelProvider.BLOCK_FOLDER + "/" + top);
 
-        this.simpleBlockWithItem(
-                block,
-                this.models().orientable(getBlockPath(block), sideResource, frontResource, topResource)
-        );
+        ModelFile model = this.models().orientable(getBlockPath(block), sideResource, frontResource, topResource);
+
+        this.simpleBlockWithItem(block, model);
+    }
+
+    private void customStatesFacingAndPowered(RegistryObject<? extends Block> blockRegistryObject) {
+        String blockPath = getBlockPath(blockRegistryObject.get());
+        String side = blockPath + "_side";
+        String front = blockPath + "_front";
+        String frontOn = blockPath + "_front_on";
+        String top = blockPath + "_top";
+
+        ResourceLocation sideResource = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, ModelProvider.BLOCK_FOLDER + "/" + blockPath + "/" + side);
+        ResourceLocation frontResource = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, ModelProvider.BLOCK_FOLDER + "/" + blockPath + "/" + front);
+        ResourceLocation frontOnResource = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, ModelProvider.BLOCK_FOLDER + "/" + blockPath + "/" + frontOn);
+        ResourceLocation topResource = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, ModelProvider.BLOCK_FOLDER + "/" + blockPath + "/" + top);
+
+
+        BlockModelBuilder modelCPGOff = this.models().orientable(blockPath, sideResource, frontResource, topResource);
+        BlockModelBuilder modelCPGOn = this.models().orientable(blockPath.concat("_on"), sideResource, frontOnResource, topResource);
+
+        getVariantBuilder(blockRegistryObject.get()).forAllStates(state -> {
+            Direction facing = state.getValue(ButtonBlock.FACING);
+            boolean powered = state.getValue(ButtonBlock.POWERED);
+
+            return ConfiguredModel.builder()
+                    .modelFile(powered ? modelCPGOn : modelCPGOff)
+                    .rotationY((int) facing.toYRot())
+                    .build();
+        });
+        this.simpleBlockItem(blockRegistryObject.get(), modelCPGOff);
     }
 
     /**
@@ -67,18 +84,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
      */
     private void blockOrientableWithItem(RegistryObject<? extends Block> blockRegistryObject) {
         Block block = blockRegistryObject.get();
+        BlockModelBuilder model = this.models().withExistingParent(this.getBlockPath(block), ModelProvider.BLOCK_FOLDER + "/orientable");
 
-        this.simpleBlockWithItem(
-                block,
-                this.models().withExistingParent(
-                        this.getBlockPath(block), ModelProvider.BLOCK_FOLDER + "/orientable"));
+        this.simpleBlockWithItem(block, model);
     }
 
-    private void blockOrientableWithItem(
-            RegistryObject<? extends Block> blockRegistryObject,
-            String side,
-            String front,
-            String top) {
+    private void blockOrientableWithItem(RegistryObject<? extends Block> blockRegistryObject, String side, String front, String top) {
         this.blockOrientableWithItem(blockRegistryObject, ArkFuture.MOD_ID, side, front, top);
     }
 }

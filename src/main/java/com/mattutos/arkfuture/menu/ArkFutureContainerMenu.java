@@ -1,17 +1,22 @@
 package com.mattutos.arkfuture.menu;
 
+import com.mattutos.arkfuture.core.inventory.BaseData;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class ArkFutureContainerMenu extends AbstractContainerMenu {
+@SuppressWarnings("ReassignedVariable")
+public abstract class ArkFutureContainerMenu<T extends Enum<T> & BaseData> extends AbstractContainerMenu {
 
     protected final BlockEntity blockEntity;
-    protected final ContainerData containerData;
+    protected final EnumContainerData<T> containerData;
     protected final Level level;
 
     protected ArkFutureContainerMenu(
@@ -19,7 +24,7 @@ public abstract class ArkFutureContainerMenu extends AbstractContainerMenu {
             int pContainerId,
             Inventory pPlayerInventory,
             BlockEntity pBlockEntity,
-            ContainerData pContainerData
+            EnumContainerData<T> pContainerData
     ) {
         super(pMenuType, pContainerId);
         this.blockEntity = pBlockEntity;

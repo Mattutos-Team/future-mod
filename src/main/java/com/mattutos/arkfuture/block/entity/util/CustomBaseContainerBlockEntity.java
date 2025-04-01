@@ -1,6 +1,7 @@
 package com.mattutos.arkfuture.block.entity.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
@@ -21,7 +22,12 @@ import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -35,7 +41,7 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         this.lockKey = LockCode.fromTag(pTag);
         if (pTag.contains("CustomName", 8)) {
@@ -44,7 +50,7 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
         this.lockKey.addToTag(pTag);
         if (this.name != null) {
@@ -53,12 +59,12 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    public Component getName() {
+    public @NotNull Component getName() {
         return this.name != null ? this.name : this.getDefaultName();
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NotNull Component getDisplayName() {
         return this.getName();
     }
 
@@ -100,12 +106,12 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    public ItemStack getItem(int pSlot) {
+    public @NotNull ItemStack getItem(int pSlot) {
         return this.getItems().getStackInSlot(pSlot);
     }
 
     @Override
-    public ItemStack removeItem(int pSlot, int pAmount) {
+    public @NotNull ItemStack removeItem(int pSlot, int pAmount) {
         ItemStack itemstack = this.getItems().extractItem(pSlot, pAmount, false);
         if (!itemstack.isEmpty()) {
             this.setChanged();
@@ -115,19 +121,19 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    public ItemStack removeItemNoUpdate(int pSlot) {
+    public @NotNull ItemStack removeItemNoUpdate(int pSlot) {
         return this.getItems().extractItem(pSlot, this.getItems().getStackInSlot(pSlot).getCount(), false);
     }
 
     @Override
-    public void setItem(int pSlot, ItemStack pStack) {
+    public void setItem(int pSlot, @NotNull ItemStack pStack) {
         this.getItems().setStackInSlot(pSlot, pStack);
         pStack.limitSize(this.getMaxStackSize(pStack));
         this.setChanged();
     }
 
     @Override
-    public boolean stillValid(Player pPlayer) {
+    public boolean stillValid(@NotNull Player pPlayer) {
         return Container.stillValidBlockEntity(this, pPlayer);
     }
 
@@ -140,7 +146,7 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
         return this.canOpen(pPlayer) ? this.createMenu(pContainerId, pPlayerInventory) : null;
     }
 
@@ -156,7 +162,7 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    protected void applyImplicitComponents(BlockEntity.DataComponentInput pComponentInput) {
+    protected void applyImplicitComponents(BlockEntity.@NotNull DataComponentInput pComponentInput) {
         super.applyImplicitComponents(pComponentInput);
         this.name = pComponentInput.get(DataComponents.CUSTOM_NAME);
         this.lockKey = pComponentInput.getOrDefault(DataComponents.LOCK, LockCode.NO_LOCK);
@@ -164,7 +170,7 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    protected void collectImplicitComponents(DataComponentMap.Builder pComponents) {
+    protected void collectImplicitComponents(DataComponentMap.@NotNull Builder pComponents) {
         super.collectImplicitComponents(pComponents);
         pComponents.set(DataComponents.CUSTOM_NAME, this.name);
         if (!this.lockKey.equals(LockCode.NO_LOCK)) {
@@ -175,19 +181,19 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     }
 
     @Override
-    public void removeComponentsFromTag(CompoundTag pTag) {
+    public void removeComponentsFromTag(@NotNull CompoundTag pTag) {
         pTag.remove("CustomName");
         pTag.remove("Lock");
         pTag.remove("Items");
     }
 
-    private net.minecraftforge.common.util.LazyOptional<?> itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> createUnSidedHandler());
+    private LazyOptional<?> itemHandler = LazyOptional.of(this::createUnSidedHandler);
 
-    protected net.minecraftforge.items.IItemHandler createUnSidedHandler() {
-        return new net.minecraftforge.items.wrapper.InvWrapper(this);
+    protected IItemHandler createUnSidedHandler() {
+        return new InvWrapper(this);
     }
 
-    public <T> net.minecraftforge.common.util.LazyOptional<T> getCapability(net.minecraftforge.common.capabilities.Capability<T> cap, @org.jetbrains.annotations.Nullable net.minecraft.core.Direction side) {
+    public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER && !this.remove)
             return itemHandler.cast();
         return super.getCapability(cap, side);
@@ -202,6 +208,6 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     @Override
     public void reviveCaps() {
         super.reviveCaps();
-        itemHandler = net.minecraftforge.common.util.LazyOptional.of(() -> createUnSidedHandler());
+        itemHandler = LazyOptional.of(this::createUnSidedHandler);
     }
 }
