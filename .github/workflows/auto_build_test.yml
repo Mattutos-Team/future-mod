@@ -13,6 +13,11 @@ jobs:
     outputs:
       is_bot_commit: ${{ steps.check_author.outputs.is_bot_commit }}
     steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Verificar autor do commit
         id: check_author
         run: |
