@@ -61,7 +61,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "Sem alterações para commitar."
           else
-            git commit -m "🔄 Atualização automática do DataGen"
+            git commit -m "🔄 Atualização automática do DataGen [skip ci]" --no-verify
             git push
           fi
   # Job de build
