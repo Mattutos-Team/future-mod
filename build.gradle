@@ -20,7 +20,6 @@ println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty '
 minecraft {
     mappings channel: mapping_channel, version: mapping_version
 
-    // TODO: implementação do projeto antigo abaixo (a instrução "reobf" não existe lá)
     // Tell FG to not automtically create the reobf tasks, as we now use Official mappings at runtime, If you don't use them at dev time then you'll have to fix your reobf yourself.
     reobf = false
 
@@ -33,13 +32,6 @@ minecraft {
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-
-            // TODO: implementação do projeto antigo abaixo
-//            mods {
-//                "${mod_id}" {
-//                    source sourceSets.main
-//                }
-//            }
         }
 
         client {
@@ -79,14 +71,15 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Lombok - Utilitários
-    compileOnly 'org.projectlombok:lombok:1.18.36'
-    annotationProcessor 'org.projectlombok:lombok:1.18.36'
-    testCompileOnly 'org.projectlombok:lombok:1.18.36'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
+    implementation platform('org.projectlombok:lombok-bom:1.18.30')
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     // Slf4j - Logs
-    implementation 'org.slf4j:slf4j-api:1.7.32'  // SLF4J API
-    implementation 'org.slf4j:slf4j-simple:1.7.32'  // SLF4J com Logback
+    implementation 'org.slf4j:slf4j-api:2.0.13'
+    implementation 'org.slf4j:slf4j-simple:2.0.13'
 
     // JEI
     // compile against the JEI API but do not include it at runtime
