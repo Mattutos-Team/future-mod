@@ -17,15 +17,17 @@ public class CreativeModTabInit {
                     .icon(() -> new ItemStack(BlockInit.COAL_POWER_GENERATOR.get()))
                     .title(Component.translatable("creativetab.ark_future.ark_future_tab"))
                     .displayItems((itemDisplayParameters, output) -> {
-                        output.accept(BlockInit.COAL_POWER_GENERATOR.get());
-                        output.accept(BlockInit.MECHANICAL_TABLE.get());
-
                         output.accept(ItemInit.ANCIENT_ORE_ITEM.get());
                         output.accept(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get());
                         output.accept(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get());
                         output.accept(ItemInit.ANCIENT_ORE_INGOT_ITEM.get());
                         output.accept(BlockInit.ANCIENT_ORE_VEIN_BLOCK_ITEM.get());
                         output.accept(BlockInit.DEEPSLATE_ANCIENT_ORE_VEIN_BLOCK_ITEM.get());
+
+                        output.accept(BlockInit.COAL_POWER_GENERATOR.get());
+                        output.accept(BlockInit.MECHANICAL_TABLE.get());
+
+                        output.accept(ItemInit.BATTERY_10K.get());
                     })
                     .build()
     );

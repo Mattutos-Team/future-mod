@@ -17,5 +17,6 @@ public class ModItemModelProvider extends ItemModelProvider {
     protected void registerModels() {
         this.basicItem(ItemInit.ANCIENT_ORE_ITEM.get());
         this.basicItem(ItemInit.ANCIENT_ORE_INGOT_ITEM.get());
+        this.basicItem(ItemInit.BATTERY_10K.get());
     }
 }

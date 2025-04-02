@@ -55,7 +55,7 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
     }
 
     private void renderProgressEnergyStored(GuiGraphics pGuiGraphics, int x, int y) {
-        pGuiGraphics.fill(x + ENERGY_X, y + ENERGY_Y, x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xff330000);
+        pGuiGraphics.fill(x + ENERGY_X, y + ENERGY_Y, x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xff666666);
         if (menu.getEnergyStored() > 0 && menu.getMaxEnergyStored() != 0) {
             int percentEnergyHeight = (int) (menu.getEnergyStored() * ENERGY_HEIGHT / menu.getMaxEnergyStored());
             pGuiGraphics.fillGradient(x + ENERGY_X, y + (ENERGY_Y + (ENERGY_HEIGHT - percentEnergyHeight)), x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xffcc0000, 0xffaa0000);
