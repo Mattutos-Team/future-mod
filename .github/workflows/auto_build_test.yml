@@ -26,6 +26,7 @@ jobs:
             echo "is_bot_commit=true" >> $GITHUB_ENV
           else
             echo "is_bot_commit=false" >> $GITHUB_ENV
+          fi
         shell: bash
 
   build:
