@@ -14,7 +14,7 @@ public class ItemInit {
     public static final RegistryObject<Item> ANCIENT_ORE_ITEM = ITEMS.register("ancient_ore", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> ANCIENT_ORE_INGOT_ITEM = ITEMS.register("ancient_ore_ingot", () -> new Item(new Item.Properties()));
 
-    public static final RegistryObject<Item> BATTERY_10K = ITEMS.register("battery_10k", () -> new BatteryItem(new Item.Properties()));
+    public static final RegistryObject<Item> BATTERY_10K = ITEMS.register("battery_10k", () -> new BatteryItem(new Item.Properties(), 10_000, 100, 100));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

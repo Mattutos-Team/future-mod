@@ -71,15 +71,14 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     // Lombok - Utilitários
-    implementation platform('org.projectlombok:lombok-bom:1.18.32')
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    compileOnly "org.projectlombok:lombok:${lombok_version}"
+    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+    testCompileOnly "org.projectlombok:lombok:${lombok_version}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
 
     // Slf4j - Logs
-    implementation 'org.slf4j:slf4j-api:2.0.13'
-    implementation 'org.slf4j:slf4j-simple:2.0.13'
+    implementation "org.slf4j:slf4j-api:${slf4j_version}"
+    implementation "org.slf4j:slf4j-simple:${slf4j_version}"
 
     // JEI
     // compile against the JEI API but do not include it at runtime

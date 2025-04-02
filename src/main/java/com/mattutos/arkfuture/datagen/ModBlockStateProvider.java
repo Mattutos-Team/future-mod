@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ButtonBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -68,12 +68,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
         BlockModelBuilder modelCPGOn = this.models().orientable(blockPath.concat("_on"), sideResource, frontOnResource, topResource);
 
         getVariantBuilder(blockRegistryObject.get()).forAllStates(state -> {
-            Direction facing = state.getValue(ButtonBlock.FACING);
-            boolean powered = state.getValue(ButtonBlock.POWERED);
+            Direction facing = state.getValue(BlockStateProperties.FACING);
+            boolean powered = state.getValue(BlockStateProperties.POWERED);
 
             return ConfiguredModel.builder()
                     .modelFile(powered ? modelCPGOn : modelCPGOff)
-                    .rotationY((int) facing.toYRot())
+                    .rotationY((int) facing.getOpposite().toYRot())
                     .build();
         });
         this.simpleBlockItem(blockRegistryObject.get(), modelCPGOff);
