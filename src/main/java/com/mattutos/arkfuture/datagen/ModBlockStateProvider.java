@@ -68,7 +68,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         BlockModelBuilder modelCPGOn = this.models().orientable(blockPath.concat("_on"), sideResource, frontOnResource, topResource);
 
         getVariantBuilder(blockRegistryObject.get()).forAllStates(state -> {
-            Direction facing = state.getValue(BlockStateProperties.FACING);
+            Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
             boolean powered = state.getValue(BlockStateProperties.POWERED);
 
             return ConfiguredModel.builder()
