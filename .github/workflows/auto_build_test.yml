@@ -1,0 +1,70 @@
+name: Auto Build & Test
+
+on:
+  push:
+    branches:
+      - feature/*  # Dispara o workflow quando há um push em uma branch feature
+      - fix/*  # Dispara o workflow quando há um push em uma branch fix
+      - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
+
+jobs:
+  verify_author:
+    runs-on: ubuntu-latest
+    outputs:
+      is_bot_commit: ${{ steps.check_author.outputs.is_bot_commit }}
+    steps:
+      - name: Verificar autor do commit
+        id: check_author
+        run: |
+          AUTHOR=$(git log -1 --pretty=format:'%an')
+          if [[ "$AUTHOR" == "github-actions[bot]" ]]; then
+            echo "is_bot_commit=true" >> $GITHUB_ENV
+          else
+            echo "is_bot_commit=false" >> $GITHUB_ENV
+        shell: bash
+
+  build:
+    needs: verify_author
+    if: needs.verify_author.outputs.is_bot_commit == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Construir o Mod
+        run: ./gradlew build
+
+  test:
+    needs: verify_author
+    if: needs.verify_author.outputs.is_bot_commit == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Rodar os testes
+        run: ./gradlew test
