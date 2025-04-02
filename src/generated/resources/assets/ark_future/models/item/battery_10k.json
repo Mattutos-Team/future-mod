@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "ark_future:item/abcd"
+    "layer0": "ark_future:item/battery_10k"
   }
 }
