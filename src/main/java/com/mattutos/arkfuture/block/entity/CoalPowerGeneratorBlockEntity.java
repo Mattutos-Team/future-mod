@@ -1,5 +1,6 @@
 package com.mattutos.arkfuture.block.entity;
 
+import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
 import com.mattutos.arkfuture.core.inventory.BaseData;
@@ -145,7 +146,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
             inv.setItem(i, itemStackHandler.getStackInSlot(i));
         }
 
-        Containers.dropContents(this.level, this.worldPosition, inv);
+        if (this.level != null) Containers.dropContents(this.level, this.worldPosition, inv);
     }
 
     // metodo usado para salvar informações NBT do bloco
@@ -162,10 +163,14 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
-        pTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
-        pTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
-        pTag.putInt(NBT.REMAINING_BURN_TIME.key, remainingBurnTime);
-        pTag.putInt(NBT.TOTAL_BURN_TIME.key, totalBurnTime);
+
+        CompoundTag compoundTag = new CompoundTag();
+        compoundTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
+        compoundTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
+        compoundTag.putInt(NBT.REMAINING_BURN_TIME.key, remainingBurnTime);
+        compoundTag.putInt(NBT.TOTAL_BURN_TIME.key, totalBurnTime);
+
+        pTag.put(ArkFuture.MOD_ID, compoundTag);
     }
 
     // metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
@@ -182,10 +187,12 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     @Override
     protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
-        itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound(NBT.INVENTORY.key));
-        energyStorage.deserializeNBT(pRegistries, pTag.get(NBT.ENERGY.key));
-        remainingBurnTime = pTag.getInt(NBT.REMAINING_BURN_TIME.key);
-        totalBurnTime = pTag.getInt(NBT.TOTAL_BURN_TIME.key);
+
+        CompoundTag compoundTag = pTag.getCompound(ArkFuture.MOD_ID);
+        itemStackHandler.deserializeNBT(pRegistries, compoundTag.getCompound(NBT.INVENTORY.key));
+        energyStorage.deserializeNBT(pRegistries, compoundTag.get(NBT.ENERGY.key));
+        remainingBurnTime = compoundTag.getInt(NBT.REMAINING_BURN_TIME.key);
+        totalBurnTime = compoundTag.getInt(NBT.TOTAL_BURN_TIME.key);
     }
 
     @Override
@@ -219,13 +226,24 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         distributeEnergy();
     }
 
-    private boolean canGenerate() {
-        ItemStack fuel = itemStackHandler.getStackInSlot(SLOT.FUEL.ordinal());
-        return !fuel.isEmpty() && remainingBurnTime > 0;
-    }
-
     private void generateEnergy() {
-        if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
+        if (energyStorage.receiveEnergy(GENERATE, true) > 0) {
+
+            // verifica slot de entrada de energia
+            ItemStack stackInSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_IN.ordinal());
+            if (!stackInSlot.isEmpty()) {
+                stackInSlot.getCapability(ForgeCapabilities.ENERGY)
+                        .ifPresent(itemEnergyStorage -> {
+                            if (itemEnergyStorage.canExtract()) {
+                                int energyToReceive = itemEnergyStorage.extractEnergy(MAX_TRANSFER, true);
+                                int received = energyStorage.receiveEnergy(energyToReceive, false);
+                                itemEnergyStorage.extractEnergy(received, false);
+                                CoalPowerGeneratorBlockEntity.this.setChanged();
+                            }
+                        });
+            }
+
+            // Queima de combustivel para gerar energia
             if (remainingBurnTime > 0) {
                 if (energyStorage.receiveEnergy(GENERATE, true) != GENERATE) {
                     generating = 0;
@@ -245,15 +263,30 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
 
         // este metodo cria somente um estado novo, nao atualiza o bloco atual.
         BlockState blockState = this.getBlockState().setValue(CoalPowerGeneratorBlock.POWERED, generating > 0);
-        this.level.setBlock(this.worldPosition, blockState, Block.UPDATE_ALL); // seta o novo estado
+        if (this.level != null) this.level.setBlock(this.worldPosition, blockState, Block.UPDATE_ALL); // seta o novo estado
         setChanged();
     }
 
     private void distributeEnergy() {
         if (energyStorage.getEnergyStored() <= 0) return;
 
+        // checa se existe um item para adicionar energia no slot de entrada
+        ItemStack stackOutSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_OUT.ordinal());
+        if (!stackOutSlot.isEmpty()) {
+            stackOutSlot.getCapability(ForgeCapabilities.ENERGY)
+                    .ifPresent(itemEnergyStorage -> {
+                        if (itemEnergyStorage.canReceive()) {
+                            int energyToSend = energyStorage.extractEnergy(MAX_TRANSFER, true);
+                            int received = itemEnergyStorage.receiveEnergy(energyToSend, false);
+                            energyStorage.extractEnergy(received, false);
+                            CoalPowerGeneratorBlockEntity.this.setChanged();
+                        }
+                    });
+        }
+
         // checa todos os lados verifica se os blocos vizinhos podem receber energia
         for (Direction direction : Direction.values()) {
+            if (this.level == null) break;
             BlockEntity blockEntity = level.getBlockEntity(this.worldPosition.relative(direction));
             if (blockEntity != null) {
                 blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite())
