@@ -1,9 +1,7 @@
 package com.mattutos.arkfuture.block;
 
-import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
 import com.mattutos.arkfuture.init.BlockEntityInit;
-import com.mattutos.arkfuture.init.BlockInit;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -53,6 +51,16 @@ public class MechanicalTableBlock extends BaseEntityBlock {
         }
 
         return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+    }
+
+    @Override
+    protected void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
+        if (pState.getBlock() != pNewState.getBlock()) {
+            if (pLevel.getBlockEntity(pPos) instanceof MechanicalTableBlockEntity blockEntity) {
+                blockEntity.drops();
+            }
+        }
+        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
 
     @Nullable

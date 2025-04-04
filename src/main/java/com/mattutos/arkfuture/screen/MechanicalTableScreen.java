@@ -1,7 +1,7 @@
 package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.MechanicalTableMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,6 +16,9 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 
     private static final ResourceLocation CRAFTING_PROGRESS_BAR =
             ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_crafting_bar.png");
+
+    private static final ResourceLocation ENERGY_INCREASING_BAR =
+            ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_charged.png");
 
 
     public MechanicalTableScreen(MechanicalTableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -49,11 +52,18 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
         pGuiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         renderProgressArrow(pGuiGraphics, x, y);
+        renderEnergyIncreasingBar(pGuiGraphics, x, y);
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isCrafting()) {
             guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
+        }
+    }
+
+    private void renderEnergyIncreasingBar(GuiGraphics guiGraphics, int x, int y) {
+        if (menu.isEnergyIncreasing()) {
+            guiGraphics.blit(ENERGY_INCREASING_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
         }
     }
 

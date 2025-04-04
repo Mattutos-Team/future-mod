@@ -1,4 +1,4 @@
-package com.mattutos.arkfuture.menu.mechanicaltable;
+package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
@@ -69,6 +69,11 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     //CHECK WHETHER IS CRAFTING OR NOT
     public boolean isCrafting() {
         return data.get(0) > 0;
+    }
+
+    public boolean isEnergyIncreasing() {
+        log.info("Calling isEnergyIncreasing");
+        return false;
     }
 
     public int getScaledArrowProgress() {
