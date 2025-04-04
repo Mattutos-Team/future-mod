@@ -114,20 +114,30 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
-        data = new EnumContainerData<>(DATA.class) {
+
+        data = new EnumContainerData<DATA>(DATA.class) {
             @Override
             public void set(DATA enumData, long value) {
-
+                switch (enumData) {
+                    case PROGRESS -> MechanicalTableBlockEntity.this.progress = (int) value;
+                    case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress = (int) value;
+                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
+                }
             }
 
             @Override
             public long get(DATA enumData) {
+                log.info("==> DATA GET: {}", enumData);
                 return switch (enumData) {
                     case PROGRESS -> MechanicalTableBlockEntity.this.progress;
                     case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress;
                     case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess;
-                    default -> throw new IllegalStateException("Unexpected value: " + enumData);
                 };
+            }
+
+
+            public int size() {
+                return 3; // since you have 3 enum values
             }
         };
     }
@@ -172,7 +182,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("mechanical_table.progress");
         maxProgress = pTag.getInt("mechanical_table.max_progress");
-        storeEnergyProcess = pTag.getInt("mechanical_table.store_energy_process");
+//        storeEnergyProcess = pTag.getInt("mechanical_table.store_energy_process");
     }
 
     @Override

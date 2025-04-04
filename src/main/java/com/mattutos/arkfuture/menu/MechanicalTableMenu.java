@@ -72,7 +72,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     }
 
     public boolean isEnergyIncreasing() {
-        log.info("Calling isEnergyIncreasing");
+        log.info("isEnergyIncreasing: {}", this.data.get(1));
         return false;
     }
 
