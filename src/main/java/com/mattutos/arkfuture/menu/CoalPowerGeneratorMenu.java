@@ -9,6 +9,7 @@ import com.mattutos.arkfuture.menu.common.FuelSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.IItemHandler;
@@ -23,6 +24,7 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
     private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int BE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+    private static final int BE_INVENTORY_LAST_SLOT_INDEX = BE_INVENTORY_FIRST_SLOT_INDEX + CoalPowerGeneratorBlockEntity.SLOT.count();
 
     protected final IItemHandler itemHandler;
 
@@ -49,42 +51,34 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
 
     @Override
     public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
-        // TODO: terminar implementação
         ItemStack itemstack = ItemStack.EMPTY;
-//        Slot slot = this.slots.get(pIndex);
-//        if (slot.hasItem()) {
-//            ItemStack slotItemClicked = slot.getItem();
-//            itemstack = slotItemClicked.copy();
-//            if (pIndex < this.slots.size()) {
-//                if (!this.moveItemStackTo(slotItemClicked, this.slots.size(), this.slots.size() + this.slots.size(), true)) {
-//                    return ItemStack.EMPTY;
-//                }
-//
-//                slot.onQuickCraft(slotItemClicked, itemstack);
-//            }
-//            int slotCount = CoalPowerGeneratorBlockEntity.SLOT.count();
-//            if (!this.moveItemStackTo(slotItemClicked, BE_INVENTORY_FIRST_SLOT_INDEX, slotCount +1, false)) {
-//                if (pIndex < 27 + slotCount) {
-//                    if (!this.moveItemStackTo(slotItemClicked, 27 + slotCount, 36 + slotCount, false)) {
-//                        return ItemStack.EMPTY;
-//                    }
-//                } else if (pIndex < Inventory.INVENTORY_SIZE + slotCount && !this.moveItemStackTo(slotItemClicked, slotCount, 27 + slotCount, false)) {
-//                    return ItemStack.EMPTY;
-//                }
-//            }
-//
-//            if (slotItemClicked.isEmpty()) {
-//                slot.set(ItemStack.EMPTY);
-//            } else {
-//                slot.setChanged();
-//            }
-//
-//            if (slotItemClicked.getCount() == itemstack.getCount()) {
-//                return ItemStack.EMPTY;
-//            }
-//
-//            slot.onTake(pPlayer, slotItemClicked);
-//        }
+        Slot slot = this.slots.get(pIndex);
+
+        if (slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem();
+            itemstack = stackInSlot.copy();
+
+            // Se o item vem do inventario do jogador
+            if (pIndex < BE_INVENTORY_FIRST_SLOT_INDEX) {
+                if (!this.moveItemStackTo(stackInSlot, BE_INVENTORY_FIRST_SLOT_INDEX, BE_INVENTORY_LAST_SLOT_INDEX, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+            // Se o item vem do inventario do bloco
+            else {
+                if (!this.moveItemStackTo(stackInSlot, VANILLA_FIRST_SLOT_INDEX, VANILLA_SLOT_COUNT, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            if (stackInSlot.isEmpty()) {
+                slot.set(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            slot.onTake(pPlayer, stackInSlot);
+        }
 
         return itemstack;
     }
