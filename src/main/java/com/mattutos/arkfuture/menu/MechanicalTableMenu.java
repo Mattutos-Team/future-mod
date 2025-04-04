@@ -2,6 +2,8 @@ package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
+import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
@@ -33,14 +35,14 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private final ContainerData data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(MechanicalTableBlockEntity.DATA.class));
     }
 
-    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, ContainerData data) {
+    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, EnumContainerData<MechanicalTableBlockEntity.DATA> pContainerData) {
         super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId);
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
-        this.data = data;
+        this.data = pContainerData;
 
         //TODO - CREATE A LOGIC TO GET RECIPES BY A SPECIFIC FOLDER
         List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
@@ -72,8 +74,11 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     }
 
     public boolean isEnergyIncreasing() {
-        log.info("isEnergyIncreasing: {}", this.data.get(1));
-        return false;
+        int energy = this.data.get(2);
+        if (energy > MechanicalTableBlockEntity.CAPACITY) {
+            return false;
+        }
+        return true;
     }
 
     public int getScaledArrowProgress() {

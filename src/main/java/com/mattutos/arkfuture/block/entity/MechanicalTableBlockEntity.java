@@ -121,13 +121,12 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
                 switch (enumData) {
                     case PROGRESS -> MechanicalTableBlockEntity.this.progress = (int) value;
                     case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress = (int) value;
-                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
+//                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
                 }
             }
 
             @Override
             public long get(DATA enumData) {
-                log.info("==> DATA GET: {}", enumData);
                 return switch (enumData) {
                     case PROGRESS -> MechanicalTableBlockEntity.this.progress;
                     case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress;
@@ -237,8 +236,8 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private void increasingEnergyStoreProcess() {
-        storeEnergyProcess = storeEnergyProcess + energyStorage.getEnergyStored();
-        log.info("increasingEnergyStoreProcess ==>: {}", energyStorage.getEnergyStored());
+        storeEnergyProcess += energyStorage.getEnergyStored();
+        log.info("increasingEnergyStoreProcess ==>: {}", storeEnergyProcess);
     }
 
     public void drops() {
