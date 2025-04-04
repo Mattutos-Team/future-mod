@@ -21,6 +21,7 @@ public class ArkFuture {
         BlockEntityInit.register(modEventBus);
         BlockInit.register(modEventBus);
         CreativeModTabInit.register(modEventBus);
+        DataComponentTypesInit.register(modEventBus);
         ItemInit.register(modEventBus);
         ModRecipe.register(modEventBus);
         MenuInit.register(modEventBus);

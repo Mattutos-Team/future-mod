@@ -1,81 +1,49 @@
 package com.mattutos.arkfuture.item;
 
-import net.minecraft.core.Direction;
+import com.mattutos.arkfuture.init.DataComponentTypesInit;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class BatteryItem extends Item implements IEnergyStorage, ICapabilityProvider {
+public class BatteryItem extends Item {
 
     private final int capacity;
     private final int maxReceive;
     private final int maxExtract;
-    private int energy = 0;
 
     public BatteryItem(Properties pProperties, int capacity, int maxReceive, int maxExtract) {
-        super(pProperties.stacksTo(1).durability(capacity).durability(capacity));
+        super(pProperties.stacksTo(1));
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (!canReceive())
-            return 0;
+    public @NotNull ICapabilityProvider getCapabilityProvider(ItemStack stack) {
+        return new ItemEnergyCapability(stack, capacity, maxReceive, maxExtract);
+    }
 
-        int energyReceived = Math.min(this.capacity - this.energy, Math.min(this.maxReceive, maxReceive));
-        if (!simulate)
-            energy += energyReceived;
-        return energyReceived;
+    public int getEnergy(ItemStack pStack) {
+        return pStack.getOrDefault(DataComponentTypesInit.ENERGY.get(), 0).intValue();
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        if (!canExtract())
-            return 0;
-
-        int energyExtracted = Math.min(this.energy, Math.min(this.maxExtract, maxExtract));
-        if (!simulate)
-            this.energy -= energyExtracted;
-        return energyExtracted;
+    public boolean isBarVisible(@NotNull ItemStack pStack) {
+        return true;
     }
 
     @Override
-    public int getEnergyStored() {
-        return this.energy;
+    public int getBarWidth(@NotNull ItemStack pStack) {
+        int energy = getEnergy(pStack);
+        return Math.round((energy / (float) capacity) * 13); // A barra no MC tem 13 pixels de largura
     }
 
     @Override
-    public int getMaxEnergyStored() {
-        return this.capacity;
+    public int getBarColor(@NotNull ItemStack pStack) {
+        float percentage = getEnergy(pStack) / (float) capacity;
+        return Mth.hsvToRgb(percentage * 0.33F, 1.0F, 1.0F);
     }
-
-    @Override
-    public boolean canExtract() {
-        return this.maxExtract > 0;
-    }
-
-    @Override
-    public boolean canReceive() {
-        return this.maxReceive > 0;
-    }
-
-    @Override
-    public @Nullable ICapabilityProvider getCapabilityProvider(ItemStack stack) {
-        return this;
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> this));
-    }
-
 
 }

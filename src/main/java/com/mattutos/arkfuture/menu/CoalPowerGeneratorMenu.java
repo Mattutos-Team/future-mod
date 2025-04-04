@@ -37,13 +37,12 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
         this.itemHandler = ((CoalPowerGeneratorBlockEntity) pBlockEntity).getItems();
 
         checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
-//        checkContainerDataCount(pContainerData, CoalPowerGeneratorBlockEntity.DATA.count());
 
         addPlayerInventorySlots(pPlayerInventory, 8, 84);
 
         this.addSlot(new FuelSlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.FUEL.ordinal(), 26, 49));
-        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_IN.ordinal(), 134, 15));
-        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_OUT.ordinal(), 134, 49));
+        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_CHARGER.ordinal(), 134, 15));
+        this.addSlot(new EnergySlot(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.ENERGY_DISCHARGER.ordinal(), 134, 49));
 
         this.addDataSlots(pContainerData);
     }

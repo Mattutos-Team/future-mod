@@ -76,10 +76,6 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombok_version}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
 
-    // Slf4j - Logs
-    implementation "org.slf4j:slf4j-api:${slf4j_version}"
-    implementation "org.slf4j:slf4j-simple:${slf4j_version}"
-
     // JEI
     // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
