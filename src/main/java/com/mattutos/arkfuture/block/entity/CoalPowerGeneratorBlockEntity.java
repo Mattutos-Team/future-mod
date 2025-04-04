@@ -37,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntity {
 
     public enum SLOT {
-        FUEL, ENERGY_IN, ENERGY_OUT;
+        FUEL, ENERGY_CHARGER, ENERGY_DISCHARGER;
 
         static public int count() {
             return SLOT.values().length;
@@ -230,7 +230,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         if (energyStorage.receiveEnergy(GENERATE, true) > 0) {
 
             // verifica slot de entrada de energia
-            ItemStack stackInSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_IN.ordinal());
+            ItemStack stackInSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_DISCHARGER.ordinal());
             if (!stackInSlot.isEmpty()) {
                 stackInSlot.getCapability(ForgeCapabilities.ENERGY)
                         .ifPresent(itemEnergyStorage -> {
@@ -271,7 +271,7 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         if (energyStorage.getEnergyStored() <= 0) return;
 
         // checa se existe um item para adicionar energia no slot de entrada
-        ItemStack stackOutSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_OUT.ordinal());
+        ItemStack stackOutSlot = itemStackHandler.getStackInSlot(SLOT.ENERGY_CHARGER.ordinal());
         if (!stackOutSlot.isEmpty()) {
             stackOutSlot.getCapability(ForgeCapabilities.ENERGY)
                     .ifPresent(itemEnergyStorage -> {
