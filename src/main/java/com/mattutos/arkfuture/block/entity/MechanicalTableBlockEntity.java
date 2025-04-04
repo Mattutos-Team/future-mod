@@ -48,7 +48,8 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     public enum DATA implements BaseData {
         PROGRESS,
         MAX_PROGRESS,
-        ENERGY_STORED(2);
+        ENERGY_STORED,
+        MAX_ENERGY_CAPACITY;
 
         private final int dataPackShort;
 
@@ -83,7 +84,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     //DATA FOR ENERGY
     private int storeEnergyProcess = 0;
-    private int maxEnergyCapability = 20_000;
+    private int maxEnergyCapability = CAPACITY;
 
     //TODO - ADD CRAFTING ENERGY USE LIMIT AT RECIPES
 
@@ -121,7 +122,8 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
                 switch (enumData) {
                     case PROGRESS -> MechanicalTableBlockEntity.this.progress = (int) value;
                     case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress = (int) value;
-//                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
+                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
+                    case MAX_ENERGY_CAPACITY -> MechanicalTableBlockEntity.this.maxEnergyCapability = (int) value;
                 }
             }
 
@@ -130,7 +132,8 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
                 return switch (enumData) {
                     case PROGRESS -> MechanicalTableBlockEntity.this.progress;
                     case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress;
-                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess;
+                    case ENERGY_STORED -> energyStorage.getEnergyStored();
+                    case MAX_ENERGY_CAPACITY -> MechanicalTableBlockEntity.this.maxEnergyCapability;
                 };
             }
 
@@ -169,7 +172,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
         pTag.putInt("mechanical_table.progress", progress);
         pTag.putInt("mechanical_table.max_progress", maxProgress);
-//        pTag.putInt("mechanical_table.store_energy_process", storeEnergyProcess);
 
         super.saveAdditional(pTag, pRegistries);
     }
@@ -181,7 +183,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("mechanical_table.progress");
         maxProgress = pTag.getInt("mechanical_table.max_progress");
-//        storeEnergyProcess = pTag.getInt("mechanical_table.store_energy_process");
     }
 
     @Override
@@ -209,10 +210,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
         if (!hasEnergyEnoughToCraft) return;
 
-        if (storeEnergyProcess < maxEnergyCapability) {
-            increasingEnergyStoreProcess();
-        }
-
         if (hasRecipe()) {
             increaseCraftingProgress();
 
@@ -233,11 +230,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     private void increaseCraftingProgress() {
         progress++;
-    }
-
-    private void increasingEnergyStoreProcess() {
-        storeEnergyProcess += energyStorage.getEnergyStored();
-        log.info("increasingEnergyStoreProcess ==>: {}", storeEnergyProcess);
     }
 
     public void drops() {

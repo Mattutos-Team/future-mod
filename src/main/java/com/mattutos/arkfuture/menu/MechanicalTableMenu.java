@@ -32,7 +32,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
-    private final ContainerData data;
+    private final EnumContainerData data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(MechanicalTableBlockEntity.DATA.class));
@@ -74,11 +74,19 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     }
 
     public boolean isEnergyIncreasing() {
-        int energy = this.data.get(2);
-        if (energy > MechanicalTableBlockEntity.CAPACITY) {
-            return false;
-        }
+//        long energy = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+//        if (energy > MechanicalTableBlockEntity.CAPACITY) {
+//            return false;
+//        }
         return true;
+    }
+
+    public int getScaledEnergyStoredProgress() {
+        long progress = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+        long maxProgress = data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
+        int arrowPixelSize = 14;
+
+        return Math.toIntExact(maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0);
     }
 
     public int getScaledArrowProgress() {

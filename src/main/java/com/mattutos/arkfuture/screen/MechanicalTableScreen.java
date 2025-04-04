@@ -57,15 +57,18 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isCrafting()) {
-            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
+            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 6, 22);
         }
     }
 
     private void renderEnergyIncreasingBar(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isEnergyIncreasing()) {
-            guiGraphics.blit(ENERGY_INCREASING_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
+            int energyHeight = (menu.getScaledEnergyStoredProgress());
+            guiGraphics.blit(ENERGY_INCREASING_BAR, x + 72, y + 36 + (14 - energyHeight),
+                    0, 0, 5, energyHeight, 5, 15);
         }
     }
+
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
