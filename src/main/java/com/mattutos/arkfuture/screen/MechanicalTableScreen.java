@@ -57,7 +57,7 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isCrafting()) {
-            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 6, 22);
+            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 18, 6);
         }
     }
 
@@ -65,7 +65,7 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
         if (menu.isEnergyIncreasing()) {
             int energyHeight = (menu.getScaledEnergyStoredProgress());
             guiGraphics.blit(ENERGY_INCREASING_BAR, x + 72, y + 36 + (14 - energyHeight),
-                    0, 0, 5, energyHeight, 5, 15);
+                    0, 0, 5, energyHeight, 5, 14);
         }
     }
 
@@ -91,7 +91,7 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
             long stored = menu.getStoredEnergy();
             long max = menu.getMaxEnergy();
             guiGraphics.renderTooltip(this.font,
-                    Component.literal("Energy: " + stored + " / " + max + " FE"),
+                    Component.literal(stored + "/" + max + " FE"),
                     mouseX, mouseY);
         }
     }
