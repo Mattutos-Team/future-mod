@@ -74,10 +74,10 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     }
 
     public boolean isEnergyIncreasing() {
-//        long energy = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
-//        if (energy > MechanicalTableBlockEntity.CAPACITY) {
-//            return false;
-//        }
+        long energy = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+        if (energy > MechanicalTableBlockEntity.CAPACITY) {
+            return false;
+        }
         return true;
     }
 
@@ -209,5 +209,13 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         }
 
         return validBases;
+    }
+
+    public long getStoredEnergy() {
+        return data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+    }
+
+    public long getMaxEnergy() {
+        return data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
     }
 }

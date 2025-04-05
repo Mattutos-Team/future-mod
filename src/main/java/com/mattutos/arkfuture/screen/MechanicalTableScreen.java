@@ -74,5 +74,25 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
+        renderEnergyTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private void renderEnergyTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        // Define energy bar position and size (based on renderEnergyIncreasingBar)
+        int barX = x + 72;
+        int barY = y + 36;
+        int barWidth = 5;
+        int barHeight = 14;
+
+        if (mouseX >= barX && mouseX < barX + barWidth && mouseY >= barY && mouseY < barY + barHeight) {
+            long stored = menu.getStoredEnergy();
+            long max = menu.getMaxEnergy();
+            guiGraphics.renderTooltip(this.font,
+                    Component.literal("Energy: " + stored + " / " + max + " FE"),
+                    mouseX, mouseY);
+        }
     }
 }
