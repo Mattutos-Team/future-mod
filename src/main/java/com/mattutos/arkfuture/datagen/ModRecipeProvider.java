@@ -2,12 +2,11 @@ package com.mattutos.arkfuture.datagen;
 
 import com.mattutos.arkfuture.ArkFuture;
 
+import com.mattutos.arkfuture.init.BlockInit;
+import com.mattutos.arkfuture.init.ItemInit;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.BlastingRecipe;
@@ -16,6 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -28,7 +28,31 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput pRecipeOutput) {
-        // TODO:...
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.ANCIENT_ORE_BLOCK_ITEM.get())
+                .pattern("AAA")
+                .pattern("AAA")
+                .pattern("AAA")
+                .define('A', ItemInit.ANCIENT_ORE_ITEM.get())
+                .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_ITEM.get()), has(ItemInit.ANCIENT_ORE_ITEM.get()))
+                .save(pRecipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get())
+                .pattern("AAA")
+                .pattern("AAA")
+                .pattern("AAA")
+                .define('A', ItemInit.ANCIENT_ORE_INGOT_ITEM.get())
+                .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()), has(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()))
+                .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_ORE_ITEM.get(), 9)
+                .requires(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get())
+                .unlockedBy(getHasName(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get()), has(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get()))
+                .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 9)
+                .requires(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get())
+                .unlockedBy(getHasName(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()), has(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()))
+                .save(pRecipeOutput);
     }
 
     protected static void oreSmelting(

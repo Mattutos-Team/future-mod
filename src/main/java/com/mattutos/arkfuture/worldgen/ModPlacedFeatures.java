@@ -24,12 +24,6 @@ public class ModPlacedFeatures {
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
 
-        register(context, ANCIENT_ORE_PLACED_UPPER_KEY,
-                configuredFeatures.getOrThrow(ModConfiguredFeatures.OVERWORLD_ANCIENT_ORE_KEY),
-                ModOrePlacement.commonOrePlacement(
-                        90,
-                        HeightRangePlacement.triangle(VerticalAnchor.absolute(80), VerticalAnchor.absolute(384))));
-
         register(context, ANCIENT_ORE_PLACED_MIDDLE_KEY,
                 configuredFeatures.getOrThrow(ModConfiguredFeatures.OVERWORLD_ANCIENT_ORE_KEY),
                 ModOrePlacement.commonOrePlacement(
