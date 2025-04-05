@@ -1,5 +1,5 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.21.20",
 	"minecraft:geometry": [
 		{
 			"description": {
@@ -146,7 +146,14 @@
 								"up": {"uv": [0, 4], "uv_size": [4.5, 2]},
 								"down": {"uv": [5, 2], "uv_size": [4.5, -2]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "ring_1",
+					"parent": "barrel",
+					"pivot": [0, 3, 0],
+					"cubes": [
 						{
 							"origin": [3, 3.8, -1.2],
 							"size": [0.2, 2.4, 2.4],
@@ -158,7 +165,14 @@
 								"up": {"uv": [1, 17], "uv_size": [0.25, 2.5]},
 								"down": {"uv": [17, 5.5], "uv_size": [0.25, -2.5]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "ring_2",
+					"parent": "barrel",
+					"pivot": [0, 3, 0],
+					"cubes": [
 						{
 							"origin": [3.3, 3.8, -1.2],
 							"size": [0.2, 2.4, 2.4],
@@ -170,7 +184,14 @@
 								"up": {"uv": [9, 17], "uv_size": [0.25, 2.5]},
 								"down": {"uv": [17, 11.5], "uv_size": [0.25, -2.5]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "ring_3",
+					"parent": "barrel",
+					"pivot": [0, 3, 0],
+					"cubes": [
 						{
 							"origin": [3.6, 3.8, -1.2],
 							"size": [0.2, 2.4, 2.4],
