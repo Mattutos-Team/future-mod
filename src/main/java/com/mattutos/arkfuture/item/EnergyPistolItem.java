@@ -2,8 +2,11 @@ package com.mattutos.arkfuture.item;
 
 import com.mattutos.arkfuture.item.client.energypistol.EnergyPistolRender;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.*;
@@ -14,13 +17,14 @@ import java.util.function.Consumer;
 public class EnergyPistolItem extends Item implements GeoItem {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+    private boolean isCharged = false;
 
     public EnergyPistolItem(Properties pProperties) {
         super(pProperties.stacksTo(1));
     }
 
     private PlayState predicate(AnimationState animationState) {
-        animationState.getController().setAnimation(RawAnimation.begin().then("idle", Animation.LoopType.LOOP));
+        animationState.getController().setAnimation(RawAnimation.begin().then("animation.energy_pistol.idle", Animation.LoopType.LOOP));
         return PlayState.CONTINUE;
     }
 
@@ -38,6 +42,7 @@ public class EnergyPistolItem extends Item implements GeoItem {
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             private EnergyPistolRender renderer;
+
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 if (this.renderer == null) {
@@ -49,7 +54,14 @@ public class EnergyPistolItem extends Item implements GeoItem {
     }
 
     public boolean shouldShowBattery() {
-        return false;
+        return isCharged;
     }
 
+    @Override
+    public @NotNull InteractionResult useOn(UseOnContext pContext) {
+        if (!pContext.getLevel().isClientSide) {
+            isCharged = !isCharged;
+        }
+        return InteractionResult.SUCCESS;
+    }
 }
