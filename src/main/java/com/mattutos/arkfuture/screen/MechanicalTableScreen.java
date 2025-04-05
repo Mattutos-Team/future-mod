@@ -1,7 +1,7 @@
 package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.MechanicalTableMenu;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,6 +16,9 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
 
     private static final ResourceLocation CRAFTING_PROGRESS_BAR =
             ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_crafting_bar.png");
+
+    private static final ResourceLocation ENERGY_INCREASING_BAR =
+            ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, "textures/gui/mechanical_table/mechanical_table_charged.png");
 
 
     public MechanicalTableScreen(MechanicalTableMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
@@ -49,17 +52,47 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
         pGuiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         renderProgressArrow(pGuiGraphics, x, y);
+        renderEnergyIncreasingBar(pGuiGraphics, x, y);
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if (menu.isCrafting()) {
-            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 22, 6);
+            guiGraphics.blit(CRAFTING_PROGRESS_BAR, x + 113, y + 40, 0, 0, menu.getScaledArrowProgress(), 6, 18, 6);
         }
     }
+
+    private void renderEnergyIncreasingBar(GuiGraphics guiGraphics, int x, int y) {
+        if (menu.isEnergyIncreasing()) {
+            int energyHeight = (menu.getScaledEnergyStoredProgress());
+            guiGraphics.blit(ENERGY_INCREASING_BAR, x + 72, y + 36 + (14 - energyHeight),
+                    0, 0, 5, energyHeight, 5, 14);
+        }
+    }
+
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
         renderTooltip(guiGraphics, mouseX, mouseY);
+        renderEnergyTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    private void renderEnergyTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        // Define energy bar position and size (based on renderEnergyIncreasingBar)
+        int barX = x + 72;
+        int barY = y + 36;
+        int barWidth = 5;
+        int barHeight = 14;
+
+        if (mouseX >= barX && mouseX < barX + barWidth && mouseY >= barY && mouseY < barY + barHeight) {
+            long stored = menu.getStoredEnergy();
+            long max = menu.getMaxEnergy();
+            guiGraphics.renderTooltip(this.font,
+                    Component.literal(stored + "/" + max + " FE"),
+                    mouseX, mouseY);
+        }
     }
 }

@@ -1,7 +1,9 @@
-package com.mattutos.arkfuture.menu.mechanicaltable;
+package com.mattutos.arkfuture.menu;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
+import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.init.BlockInit;
@@ -30,17 +32,17 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
-    private final ContainerData data;
+    private final EnumContainerData data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(MechanicalTableBlockEntity.DATA.class));
     }
 
-    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, ContainerData data) {
+    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, EnumContainerData<MechanicalTableBlockEntity.DATA> pContainerData) {
         super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId);
         this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
         this.level = inv.player.level();
-        this.data = data;
+        this.data = pContainerData;
 
         //TODO - CREATE A LOGIC TO GET RECIPES BY A SPECIFIC FOLDER
         List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
@@ -69,6 +71,22 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     //CHECK WHETHER IS CRAFTING OR NOT
     public boolean isCrafting() {
         return data.get(0) > 0;
+    }
+
+    public boolean isEnergyIncreasing() {
+        long energy = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+        if (energy > MechanicalTableBlockEntity.CAPACITY) {
+            return false;
+        }
+        return true;
+    }
+
+    public int getScaledEnergyStoredProgress() {
+        long progress = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+        long maxProgress = data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
+        int arrowPixelSize = 14;
+
+        return Math.toIntExact(maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0);
     }
 
     public int getScaledArrowProgress() {
@@ -191,5 +209,13 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         }
 
         return validBases;
+    }
+
+    public long getStoredEnergy() {
+        return data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+    }
+
+    public long getMaxEnergy() {
+        return data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
     }
 }

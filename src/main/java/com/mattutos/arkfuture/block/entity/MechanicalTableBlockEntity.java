@@ -1,10 +1,12 @@
 package com.mattutos.arkfuture.block.entity;
 
+import com.mattutos.arkfuture.core.inventory.BaseData;
+import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipeInput;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
-import com.mattutos.arkfuture.menu.mechanicaltable.MechanicalTableMenu;
+import com.mattutos.arkfuture.menu.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -13,7 +15,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -40,6 +44,29 @@ import java.util.List;
 import java.util.Optional;
 
 public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvider {
+
+    public enum DATA implements BaseData {
+        PROGRESS,
+        MAX_PROGRESS,
+        ENERGY_STORED,
+        MAX_ENERGY_CAPACITY;
+
+        private final int dataPackShort;
+
+        DATA() {
+            this.dataPackShort = 1;
+        }
+
+        DATA(int dataPackShort) {
+            this.dataPackShort = dataPackShort;
+        }
+
+        @Override
+        public int getDataPack() {
+            return this.dataPackShort;
+        }
+    }
+
     private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
     private static final Logger log = LoggerFactory.getLogger(MechanicalTableBlockEntity.class);
 
@@ -49,9 +76,15 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     //LAZY ITEM HANDLER
     private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-    protected final ContainerData data;
+    protected final EnumContainerData<DATA> data;
+
+    //DATA FOR PROGRESS BAR
     private int progress = 0;
     private int maxProgress = 72;
+
+    //DATA FOR ENERGY
+    private int storeEnergyProcess = 0;
+    private int maxEnergyCapability = CAPACITY;
 
     //TODO - ADD CRAFTING ENERGY USE LIMIT AT RECIPES
 
@@ -82,29 +115,31 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
-        data = new ContainerData() {
-            @Override
-            public int get(int i) {
-                return switch (i) {
-                    case 0 -> MechanicalTableBlockEntity.this.progress;
-                    case 1 -> MechanicalTableBlockEntity.this.maxProgress;
-                    default -> 0;
-                };
-            }
 
+        data = new EnumContainerData<DATA>(DATA.class) {
             @Override
-            public void set(int i, int value) {
-                switch (i) {
-                    case 0:
-                        MechanicalTableBlockEntity.this.progress = value;
-                    case 1:
-                        MechanicalTableBlockEntity.this.maxProgress = value;
+            public void set(DATA enumData, long value) {
+                switch (enumData) {
+                    case PROGRESS -> MechanicalTableBlockEntity.this.progress = (int) value;
+                    case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress = (int) value;
+                    case ENERGY_STORED -> MechanicalTableBlockEntity.this.storeEnergyProcess = (int) value;
+                    case MAX_ENERGY_CAPACITY -> MechanicalTableBlockEntity.this.maxEnergyCapability = (int) value;
                 }
             }
 
             @Override
-            public int getCount() {
-                return 2;
+            public long get(DATA enumData) {
+                return switch (enumData) {
+                    case PROGRESS -> MechanicalTableBlockEntity.this.progress;
+                    case MAX_PROGRESS -> MechanicalTableBlockEntity.this.maxProgress;
+                    case ENERGY_STORED -> energyStorage.getEnergyStored();
+                    case MAX_ENERGY_CAPACITY -> MechanicalTableBlockEntity.this.maxEnergyCapability;
+                };
+            }
+
+
+            public int size() {
+                return 3; // since you have 3 enum values
             }
         };
     }
@@ -162,7 +197,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         return new MechanicalTableMenu(pContainerId, pPlayerInventory, this, this.data);
     }
 
-
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
@@ -196,6 +230,15 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     private void increaseCraftingProgress() {
         progress++;
+    }
+
+    public void drops() {
+        SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
+        for (int i = 0; i < itemHandler.getSlots(); i++) {
+            inv.setItem(i, itemHandler.getStackInSlot(i));
+        }
+
+        Containers.dropContents(this.level, this.worldPosition, inv);
     }
 
     private void craftItem() {
