@@ -26,12 +26,6 @@ public class ModBiomeModifiers {
         HolderGetter<PlacedFeature> placedFeature = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
 
-        context.register(ADD_ANCIENT_ORE_UPPER,
-                new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                        biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
-                        HolderSet.direct(placedFeature.getOrThrow(ModPlacedFeatures.ANCIENT_ORE_PLACED_UPPER_KEY)),
-                        GenerationStep.Decoration.UNDERGROUND_ORES));
-
         context.register(ADD_ANCIENT_ORE_MIDDLE,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
