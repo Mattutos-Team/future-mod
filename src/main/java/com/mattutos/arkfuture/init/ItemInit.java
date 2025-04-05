@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.item.BatteryItem;
+import com.mattutos.arkfuture.item.EnergyPistolItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -16,7 +17,7 @@ public class ItemInit {
 
     public static final RegistryObject<Item> BATTERY_10K = ITEMS.register("battery_10k", () -> new BatteryItem(new Item.Properties(), 10_000, 100, 100));
 
-    public static final RegistryObject<Item> ENERGY_PISTOL = ITEMS.register("energy_pistol", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> ENERGY_PISTOL = ITEMS.register("energy_pistol", () -> new EnergyPistolItem(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

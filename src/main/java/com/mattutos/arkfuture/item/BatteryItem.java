@@ -25,7 +25,7 @@ public class BatteryItem extends Item {
         return new ItemEnergyCapability(stack, capacity, maxReceive, maxExtract);
     }
 
-    public int getEnergy(ItemStack pStack) {
+    private int getEnergy(ItemStack pStack) {
         return pStack.getOrDefault(DataComponentTypesInit.ENERGY.get(), 0).intValue();
     }
 
