@@ -4,6 +4,7 @@ import com.mattutos.arkfuture.ArkFuture;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
@@ -14,6 +15,7 @@ public class DataComponentTypesInit {
     public static final DeferredRegister<DataComponentType<?>> DATA_COMPONENT_TYPES = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, ArkFuture.MOD_ID);
 
     public static final RegistryObject<DataComponentType<Long>> ENERGY = register("energy", builder -> builder.persistent(Codec.LONG));
+    public static final RegistryObject<DataComponentType<ItemStack>> LOADED_BATTERY = register("loaded_battery", builder -> builder.persistent(ItemStack.CODEC));
 
     private static <T> RegistryObject<DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());

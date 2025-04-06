@@ -19,7 +19,7 @@ public class ItemEnergyCapability implements ICapabilityProvider {
 
     public ItemEnergyCapability(ItemStack stack, int capacity, int maxReceive, int maxExtract) {
         this.stack = stack;
-        int energy = getEnergy();
+        int energy = getEnergy(stack);
 
         // Define o armazenamento com delegação da lógica
         this.lazyEnergyStorage = LazyOptional.of(() -> createEnergyStorage(capacity, maxReceive, maxExtract, energy));
@@ -43,8 +43,8 @@ public class ItemEnergyCapability implements ICapabilityProvider {
         };
     }
 
-    private int getEnergy() {
-        return stack.getOrDefault(DataComponentTypesInit.ENERGY.get(), 0).intValue();
+    public static int getEnergy(ItemStack pStack) {
+        return pStack.getOrDefault(DataComponentTypesInit.ENERGY.get(), 0).intValue();
     }
 
     private void setEnergy(int energy) {
