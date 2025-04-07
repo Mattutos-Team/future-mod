@@ -2,7 +2,7 @@ package com.mattutos.arkfuture.block.entity;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
-import com.mattutos.arkfuture.block.entity.util.CustomBaseContainerBlockEntity;
+import com.mattutos.arkfuture.block.entity.util.AFBaseContainerBlockEntity;
 import com.mattutos.arkfuture.core.inventory.BaseData;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.init.BlockEntityInit;
@@ -15,8 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.Containers;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +32,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntity {
+public class CoalPowerGeneratorBlockEntity extends AFBaseContainerBlockEntity {
 
     public enum SLOT {
         FUEL, ENERGY_CHARGER, ENERGY_DISCHARGER;
@@ -140,18 +138,8 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         return new CoalPowerGeneratorMenu(pContainerId, pInventory, this, this.containerData);
     }
 
-    public void drops() {
-        SimpleContainer inv = new SimpleContainer(itemStackHandler.getSlots());
-        for (int i = 0; i < itemStackHandler.getSlots(); i++) {
-            inv.setItem(i, itemStackHandler.getStackInSlot(i));
-        }
-
-        if (this.level != null) Containers.dropContents(this.level, this.worldPosition, inv);
-    }
-
-    // metodo usado para salvar informações NBT do bloco
-
     /**
+     * Metodo usado para salvar informações NBT do bloco
      * Salva os dados da BlockEntity em um CompoundTag quando o jogo salva o mundo.
      * 🔹 Quando é chamado?
      * Quando o mundo é salvo (autosave ou ao sair do jogo).
@@ -173,9 +161,8 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         pTag.put(ArkFuture.MOD_ID, compoundTag);
     }
 
-    // metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
-
     /**
+     * Metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
      * Carrega os dados da BlockEntity a partir do CompoundTag quando o jogo carrega o mundo.
      * 🔹 Quando é chamado?
      * Quando o mundo é carregado.
@@ -217,10 +204,6 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
     }
 
     @Override
-    public int getContainerSize() {
-        return itemStackHandler.getSlots();
-    }
-
     public void tickServer() {
         generateEnergy();
         distributeEnergy();
@@ -303,9 +286,8 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         }
     }
 
-    // metodo usado para sincronização
-
     /**
+     * Metodo usado para sincronização
      * Define os dados que serão enviados para o cliente quando um chunk contendo o BlockEntity for carregado.
      * 🔹 Quando é chamado?
      * Quando o chunk que contém o BlockEntity é enviado para o cliente (exemplo: jogador se aproxima do bloco).
@@ -320,9 +302,8 @@ public class CoalPowerGeneratorBlockEntity extends CustomBaseContainerBlockEntit
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    // metodo usado para sincronização
-
     /**
+     * Metodo usado para sincronização
      * Controla a atualização do BlockEntity quando o seu estado muda dinamicamente sem precisar recarregar o chunk.
      * 🔹 Quando é chamado?
      * Quando algo muda no BlockEntity (por exemplo, um contador interno, carga de energia, temperatura de uma máquina, etc.).

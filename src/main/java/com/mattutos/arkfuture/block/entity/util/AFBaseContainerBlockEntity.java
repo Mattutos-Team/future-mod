@@ -10,10 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.Container;
-import net.minecraft.world.LockCode;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -31,12 +28,12 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public abstract class CustomBaseContainerBlockEntity extends BlockEntity implements Container, MenuProvider, Nameable {
+public abstract class AFBaseContainerBlockEntity extends BlockEntity implements Container, MenuProvider, Nameable {
     private LockCode lockKey = LockCode.NO_LOCK;
     @Nullable
     private Component name;
 
-    protected CustomBaseContainerBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
+    protected AFBaseContainerBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
     }
 
@@ -94,6 +91,13 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
 
     protected abstract void setItems(ItemStackHandler pItems);
 
+    public abstract void tickServer();
+
+    @Override
+    public int getContainerSize() {
+        return getItems().getSlots();
+    }
+
     @Override
     public boolean isEmpty() {
         for (int slot = 0; slot < this.getItems().getSlots(); slot++) {
@@ -135,6 +139,15 @@ public abstract class CustomBaseContainerBlockEntity extends BlockEntity impleme
     @Override
     public boolean stillValid(@NotNull Player pPlayer) {
         return Container.stillValidBlockEntity(this, pPlayer);
+    }
+
+    public void drops() {
+        SimpleContainer inv = new SimpleContainer(getItems().getSlots());
+        for (int i = 0; i < getItems().getSlots(); i++) {
+            inv.setItem(i, getItems().getStackInSlot(i));
+        }
+
+        if (this.level != null) Containers.dropContents(this.level, this.worldPosition, inv);
     }
 
     @Override
