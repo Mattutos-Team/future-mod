@@ -18,6 +18,7 @@ public class ItemInit {
     public static final RegistryObject<Item> BATTERY_10K = ITEMS.register("battery_10k", () -> new BatteryItem(new Item.Properties(), 10_000, 100, 100));
 
     public static final RegistryObject<Item> ENERGY_PISTOL = ITEMS.register("energy_pistol", () -> new EnergyPistolItem(new Item.Properties()));
+    public static final RegistryObject<Item> ENERGY_PROJECTILE = ITEMS.register("energy_projectile", () -> new Item(new Item.Properties()));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
