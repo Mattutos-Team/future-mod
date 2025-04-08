@@ -97,7 +97,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(6) { //5 TO CRAFT +1 TO OUTPUT
+    public final ItemStackHandler itemHandler = new ItemStackHandler(7) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
         @Override
         protected int getStackLimit(int slot, @NotNull ItemStack stack) {
             return 64;
@@ -206,11 +206,11 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         boolean hasEnergyEnoughToCraft = energyStorage.getEnergyStored() > 5;
 
-        if (!hasRecipe()) resetProgress();
+        if (!validateRecipe()) resetProgress();
 
         if (!hasEnergyEnoughToCraft) return;
 
-        if (hasRecipe()) {
+        if (validateRecipe()) {
             increaseCraftingProgress();
 
             //WASTE ENERGY PER TICK
@@ -242,12 +242,13 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private void craftItem() {
-
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
 
         if (recipe.isPresent()) {
             ItemStack output = recipe.get().value().getOutput();
 
+
+            //HERE IS FIVE (5) CAUSE IT JUST BEING CONSIDERED THE 5 PRINCIPAL SLOTS TO CRAFT
             for (int i = 0; i < 5; i++) {
                 itemHandler.extractItem(i, 1, false);
             }
@@ -258,7 +259,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
 
-    private boolean hasRecipe() {
+    private boolean validateRecipe() {
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
 
         if (recipe.isEmpty()) {
@@ -268,12 +269,35 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         MechanicalTableRecipe currentRecipe = recipe.get().value();
         boolean canCraft = true;
 
-        for (int i = 0; i < 5; i++) {
+        // LOOP FOR ALL 6 AVAILABLE SLOTS (4 TO INGREDIENTS + 1 TO BASE + 1 TO MECHANICAL PLIERS)
+        for (int i = 0; i <= 6; i++) {
             ItemStack inputSlotStack = itemHandler.getStackInSlot(i);
 
-            if (!currentRecipe.isBaseIngredient(inputSlotStack) && !currentRecipe.isAdditionIngredient(inputSlotStack)) {
-                canCraft = false;
-                break;
+            // BASE ITEM IS INDEX 1
+            if (i == 1) {
+                if (!currentRecipe.isBaseIngredient(inputSlotStack)) {
+                    canCraft = false;
+                    break;
+                }
+            }
+            // MECHANICAL PLIERS ITEM IS INDEX 6
+            else if (i == 6) {
+                if (!currentRecipe.hasMechanicalPliers(inputSlotStack)) {
+                    canCraft = false;
+                    break;
+                }
+            }
+            // FROM 0 TO 4 ( REMOVING INDEX 1 ) ARE ALL INGREDIENTS SLOTS
+            else {
+                int[] ingredientSlots = {0, 2, 3, 4};
+                for (int slot : ingredientSlots) {
+                    if (i == slot) {
+                        if (!currentRecipe.isAdditionIngredient(inputSlotStack)) {
+                            canCraft = false;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -282,27 +306,11 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private Optional<RecipeHolder<MechanicalTableRecipe>> getCurrentRecipe() {
-        List<ItemStack> inputs = new ArrayList<>();
+        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(itemHandler);
 
-        // Add input items (4 items)
-        for (int i = 0; i < 4; i++) {
-            ItemStack stack = itemHandler.getStackInSlot(i);
-            if (!stack.isEmpty()) {
-                inputs.add(stack);
-            }
-        }
-
-        // Get the base item (the 5th item)
-        ItemStack baseItem = itemHandler.getStackInSlot(1);  // BASE ITEM IS INDEX 1
-
-        // Create a new recipe input object, including both input items and base item
-        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(inputs, baseItem);
-
-        // Fetch the recipe using the recipe input
         return this.level.getRecipeManager()
                 .getRecipeFor(ModRecipe.MECHANICAL_TABLE_TYPE.get(), recipeInput, level);
     }
-
 
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {
         return itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();

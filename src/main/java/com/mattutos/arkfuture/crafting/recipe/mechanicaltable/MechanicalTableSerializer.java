@@ -14,6 +14,7 @@ public class MechanicalTableSerializer implements RecipeSerializer<MechanicalTab
             builder -> builder.group(
                     ItemStack.CODEC.fieldOf("output").forGetter(MechanicalTableRecipe::getOutput),
                     IngredientStack.ITEM_CODEC.fieldOf("base").forGetter(MechanicalTableRecipe::getBase),
+                    IngredientStack.ITEM_CODEC.fieldOf("mechanical_pliers").forGetter(MechanicalTableRecipe::getMechanicalPliers),
                     IngredientStack.ITEM_CODEC.listOf().fieldOf("input_items").forGetter(MechanicalTableRecipe::getInputs)
             ).apply(builder, MechanicalTableRecipe::new)
     );
@@ -23,6 +24,8 @@ public class MechanicalTableSerializer implements RecipeSerializer<MechanicalTab
             MechanicalTableRecipe::getOutput,
             IngredientStack.ITEM_STREAM_CODEC,
             MechanicalTableRecipe::getBase,
+            IngredientStack.ITEM_STREAM_CODEC,
+            MechanicalTableRecipe::getMechanicalPliers,
             GlodCodecs.list(IngredientStack.ITEM_STREAM_CODEC),
             MechanicalTableRecipe::getInputs,
             MechanicalTableRecipe::new

@@ -12,6 +12,11 @@
       "item": "minecraft:obsidian"
     }
   },
+  "mechanical_pliers": {
+    "ingredient": {
+      "item": "minecraft:obsidian"
+    }
+  },
   "output": {
     "count": 1,
     "id": "minecraft:iron_block"

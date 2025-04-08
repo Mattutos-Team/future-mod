@@ -14,16 +14,22 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class MechanicalTableRecipe implements Recipe<RecipeInput> {
+    private static final Logger log = LoggerFactory.getLogger(MechanicalTableRecipe.class);
     @Getter
     public final IngredientStack.Item base;
+
+    @Getter
+    public final IngredientStack.Item mechanicalPliers;
+
     protected List<IngredientStack.Item> inputItems;
     @Getter
     public final ItemStack output;
 
-    public MechanicalTableRecipe(ItemStack pOutput, IngredientStack.Item pBase, List<IngredientStack.Item> pInputItems) {
+    public MechanicalTableRecipe(ItemStack pOutput, IngredientStack.Item pBase, IngredientStack.Item mechanicalPliers, List<IngredientStack.Item> pInputItems) {
         this.output = pOutput;
         this.base = pBase;
         this.inputItems = pInputItems;
+        this.mechanicalPliers = mechanicalPliers;
     }
 
     public List<IngredientStack.Item> getInputs() {
@@ -35,20 +41,25 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     public boolean matches(RecipeInput pInput, Level pLevel) {
         int ingredientIndex = 0;
 
-        // Loop through input items and check against the provided recipe input
-        for (int i = 0; i < inputItems.size() + 1; i++) {  // +1 to account for the base item
+        for (int i = 0; i < pInput.size(); i++) {
             ItemStack stack = pInput.getItem(i);
 
             if (!stack.isEmpty()) {
                 if (ingredientIndex < inputItems.size()) {
-                    // CHECKING INPUT ITEMS
+                    // CHECKING INPUT ITEMS (0-4 ARE THE INDEX MAPPED BY MECHANICAL TABLE RECIPE INPUT)
                     if (!inputItems.get(ingredientIndex).getIngredient().test(stack)) {
                         return false;
                     }
                     ingredientIndex++;
                 } else {
-                    // CHECKING BASE ITEM
-                    if (!base.getIngredient().test(stack)) {
+                    // CHECKING BASE ITEM (4 IS THE INDEX MAPPED BY MECHANICAL TABLE RECIPE INPUT)
+                    if (i == 4 && !base.getIngredient().test(stack)) {
+                        log.info("Mechanical Table Recipe - Base not found");
+                        return false;
+                    }
+                    // CHECKING MECHANICAL (6 IS THE INDEX MAPPED BY MECHANICAL TABLE RECIPE INPUT)
+                    else if (i == 6 && !mechanicalPliers.getIngredient().test(stack)) {
+                        log.info("Mechanical Table Recipe - Mechanical Pliers not found");
                         return false;
                     }
                 }
@@ -76,6 +87,10 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
 
     public boolean isBaseIngredient(@NotNull ItemStack pStack) {
         return this.base.getIngredient().test(pStack);
+    }
+
+    public boolean hasMechanicalPliers(@NotNull ItemStack pStack) {
+        return this.mechanicalPliers.getIngredient().test(pStack);
     }
 
     public boolean isAdditionIngredient(@NotNull ItemStack pStack) {
