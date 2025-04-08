@@ -22,6 +22,6 @@ public class BlockEntityInit {
             () -> BlockEntityType.Builder.of(CoalPowerGeneratorBlockEntity::new, BlockInit.COAL_POWER_GENERATOR.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<MechanicalTableBlockEntity>> MECHANICAL_TABLE =
-            BLOCK_ENTITIES.register("pedestal_be", () -> BlockEntityType.Builder.of(
+            BLOCK_ENTITIES.register("mechanical_table", () -> BlockEntityType.Builder.of(
                     MechanicalTableBlockEntity::new, BlockInit.MECHANICAL_TABLE.get()).build(null));
 }

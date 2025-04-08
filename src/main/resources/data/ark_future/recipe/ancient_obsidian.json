@@ -12,6 +12,13 @@
       "item": "minecraft:obsidian"
     }
   },
+  "mechanical_pliers": {
+    "ingredient": {
+      "item": "minecraft:obsidian"
+    }
+  },
+  "max_ticket_per_craft": 15,
+  "energy_expenditure_per_tick": 5,
   "output": {
     "count": 1,
     "id": "minecraft:iron_block"
