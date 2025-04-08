@@ -16,6 +16,7 @@ public class DataComponentTypesInit {
 
     public static final RegistryObject<DataComponentType<Long>> ENERGY = register("energy", builder -> builder.persistent(Codec.LONG));
     public static final RegistryObject<DataComponentType<ItemStack>> LOADED_BATTERY = register("loaded_battery", builder -> builder.persistent(ItemStack.CODEC));
+    public static final RegistryObject<DataComponentType<Integer>> POWER_INT = register("power_int", builder -> builder.persistent(Codec.INT));
 
     private static <T> RegistryObject<DataComponentType<T>> register(String name, UnaryOperator<DataComponentType.Builder<T>> builderOperator) {
         return DATA_COMPONENT_TYPES.register(name, () -> builderOperator.apply(DataComponentType.builder()).build());

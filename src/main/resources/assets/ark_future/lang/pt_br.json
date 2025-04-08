@@ -15,8 +15,11 @@
     "block.ark_future.coal_power_generator": "Gerador de Energia a Carvão",
     "block.ark_future.mechanical_table": "Mesa Mecânica",
 
-    "message.ark_future.energy.not.enough": "Energia não é o suficiente!",
+    "message.ark_future.energy_pistol.energy.not.enough": "Energia não é o suficiente!",
+    "message.ark_future.energy_pistol.power.defined": "Potencia definida na pistola de energia: %s",
 
     "tooltip.ark_future.press.shift": "Pressione SHIFT para mais informações",
-    "tooltip.ark_future.item.battery": "Energia: %s / %s FE"
+    "tooltip.ark_future.item.battery.energy": "Energia: %s / %s FE",
+    "tooltip.ark_future.item.energy_pistol.power": "Força: %s",
+    "tooltip.ark_future.item.energy_pistol.consume": "Consumo: %s FE"
 }

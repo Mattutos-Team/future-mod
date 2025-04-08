@@ -58,7 +58,7 @@ public class BatteryItem extends Item {
             int energy = ItemEnergyCapability.getEnergy(pStack);
             int capacity = batteryItem.getCapacity();
 
-            pTooltipComponents.add(Component.translatable("tooltip.ark_future.item.battery", energy, capacity).withStyle(ChatFormatting.DARK_GREEN));
+            pTooltipComponents.add(Component.translatable("tooltip.ark_future.item.battery.energy", energy, capacity).withStyle(ChatFormatting.DARK_GREEN));
         }
     }
 }

@@ -110,6 +110,9 @@ public class EnergyPistolItem extends Item implements GeoItem {
     public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
         if (!Screen.hasShiftDown()) {
             pTooltipComponents.add(Component.translatable("tooltip.ark_future.press.shift"));
+        } else {
+            pTooltipComponents.add(Component.translatable("tooltip.ark_future.item.energy_pistol.power", getPower(pStack)));
+            pTooltipComponents.add(Component.translatable("tooltip.ark_future.item.energy_pistol.consume", energyUsePerShoot(pStack)));
         }
 
         super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
@@ -140,6 +143,17 @@ public class EnergyPistolItem extends Item implements GeoItem {
 
     private void setCharged(ItemStack stack, ItemStack value) {
         stack.set(DataComponentTypesInit.LOADED_BATTERY.get(), value);
+    }
+
+    public int getPower(ItemStack stack) {
+        Integer power = stack.get(DataComponentTypesInit.POWER_INT.get());
+        return power == null ? 1 : power;
+    }
+
+    public void setPower(ItemStack stack, int power) {
+        if (power <= 0) power = 1;
+        else if (power > 3) power = 3;
+        stack.set(DataComponentTypesInit.POWER_INT.get(), power);
     }
 
     private ItemStack getBetterBattery(Player pPlayer) {
@@ -204,19 +218,35 @@ public class EnergyPistolItem extends Item implements GeoItem {
         return success;
     }
 
+    private int energyUsePerShoot(ItemStack pItemStack) {
+        return  (int) (100 * Math.pow(10, (getPower(pItemStack) - 1)));
+    }
+
     public void shoot(ServerPlayer pPlayer, ItemStack pItemStack) {
         ItemStack mainHandItem = pPlayer.getMainHandItem();
         if (pPlayer.getCooldowns().isOnCooldown(this) || !(mainHandItem.getItem() instanceof EnergyPistolItem)) return;
 
-        if (consumeBattery(pItemStack, 1000)) {
-            pPlayer.getCooldowns().addCooldown(this, 20); // 1 segundo de cooldown
+        int energyToUse = energyUsePerShoot(pItemStack);
+        if (consumeBattery(pItemStack, energyToUse)) {
+            // força 1: 10 * 2 = 20 ticks
+            // força 2: 10 * 4 = 40 ticks
+            // força 3: 10 * 8 = 80 ticks
+            int tickFreezyEntity = (int) (10 * (Math.pow(2, getPower(pItemStack)))); // Paralisia depende da força
+
+            pPlayer.getCooldowns().addCooldown(this, (int)(tickFreezyEntity * 1.25)); // cooldown é o tempo de freeze + 25%
             ItemStackSyncUtil.syncItemInHand(pPlayer, InteractionHand.MAIN_HAND);
 
-            EnergyProjectileEntity projectile = new EnergyProjectileEntity(pPlayer.level(), pPlayer, new Vec3(pPlayer.getLookAngle().x * 0.5, pPlayer.getLookAngle().y * 0.5, pPlayer.getLookAngle().z * 0.5));
+            Vec3 vec3 = new Vec3(pPlayer.getLookAngle().x * 0.5, pPlayer.getLookAngle().y * 0.5, pPlayer.getLookAngle().z * 0.5);
+            EnergyProjectileEntity projectile = new EnergyProjectileEntity(pPlayer.level(), pPlayer, vec3, tickFreezyEntity);
             projectile.setPos(pPlayer.getX(), pPlayer.getEyeY() - 0.1, pPlayer.getZ());
             pPlayer.level().addFreshEntity(projectile);
         } else {
-            pPlayer.displayClientMessage(Component.translatable("message.ark_future.energy.not.enough"), true);
+            pPlayer.displayClientMessage(Component.translatable("message.ark_future.energy_pistol.energy.not.enough"), true);
         }
+    }
+
+    public void changePower(ServerPlayer pPlayer, ItemStack pItemStack, double power) {
+        setPower(pItemStack, (int) (getPower(pItemStack) + power));
+        pPlayer.displayClientMessage(Component.translatable("message.ark_future.energy_pistol.power.defined", getPower(pItemStack)), true);
     }
 }
