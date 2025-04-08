@@ -174,7 +174,6 @@ public class EnergyPistolItem extends Item implements GeoItem {
         if (pPlayer.getCooldowns().isOnCooldown(this) || !(mainHandItem.getItem() instanceof EnergyPistolItem)) return;
 
         if (consumeBattery(pItemStack, 100)) {
-            log.info("atirou");
             pPlayer.getCooldowns().addCooldown(this, 20); // 1 segundo de cooldown
             ItemStackSyncUtil.syncItemInHand(pPlayer, InteractionHand.MAIN_HAND);
 
