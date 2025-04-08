@@ -12,16 +12,16 @@ public class AFEnergyStorage extends EnergyStorage {
     }
 
     public int forceExtractEnergy(int amount, boolean simulate) {
-        int energyExtracted = Math.min(energy, amount);
+        int energyExtracted = Math.min(this.energy, amount);
         if (!simulate)
-            energy -= energyExtracted;
+            this.energy -= energyExtracted;
         return energyExtracted;
     }
 
     public int forceReceiveEnergy(int amount, boolean simulate) {
-        int energyReceived = Math.min(capacity - energy, amount);
+        int energyReceived = Math.min(this.capacity - this.energy, amount);
         if (!simulate)
-            energy += energyReceived;
+            this.energy += energyReceived;
         return energyReceived;
     }
 }

@@ -15,5 +15,8 @@
     "block.ark_future.coal_power_generator": "Coal Power Generator",
     "block.ark_future.mechanical_table": "Mechanical Table",
 
-    "message.energy.not.enough": "Energy not enough!"
+    "message.ark_future.energy.not.enough": "Energy not enough!",
+
+    "tooltip.ark_future.press.shift": "Press SHIFT for more information",
+    "tooltip.ark_future.item.battery": "Energy: %s / %s FE"
 }

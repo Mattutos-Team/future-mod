@@ -1,10 +1,14 @@
 package com.mattutos.arkfuture.item;
 
+import com.mattutos.arkfuture.core.energy.AFEnergyStorage;
 import com.mattutos.arkfuture.entity.EnergyProjectileEntity;
 import com.mattutos.arkfuture.init.DataComponentTypesInit;
 import com.mattutos.arkfuture.item.client.energypistol.EnergyPistolRender;
+import com.mattutos.arkfuture.item.common.SingleItemTooltip;
+import com.mattutos.arkfuture.item.util.ItemEnergyCapability;
 import com.mattutos.arkfuture.networking.ItemStackSyncUtil;
 import lombok.extern.slf4j.Slf4j;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,8 +18,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
@@ -27,6 +33,7 @@ import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -99,6 +106,29 @@ public class EnergyPistolItem extends Item implements GeoItem {
         return 0;
     }
 
+    @Override
+    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
+        if (!Screen.hasShiftDown()) {
+            pTooltipComponents.add(Component.translatable("tooltip.ark_future.press.shift"));
+        }
+
+        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
+        if (Screen.hasShiftDown()) {
+            ItemStack battery = getBattery(pStack);
+            if (battery != null && !battery.isEmpty()) {
+                String textBattery = battery.getCapability(ForgeCapabilities.ENERGY)
+                        .map(iEnergyStorage -> (iEnergyStorage.getEnergyStored()) + " / " + (iEnergyStorage.getMaxEnergyStored()))
+                        .orElse(null);
+                return Optional.of(new SingleItemTooltip(battery, textBattery));
+            }
+        }
+        return super.getTooltipImage(pStack);
+    }
+
     public ItemStack getBattery(ItemStack stack) {
         return stack.get(DataComponentTypesInit.LOADED_BATTERY.get());
     }
@@ -159,12 +189,17 @@ public class EnergyPistolItem extends Item implements GeoItem {
         ItemStack battery = this.getBattery(stack);
         if (battery == null) return false;
 
-        Optional<Integer> optionalExtractEnergy = battery.getCapability(ForgeCapabilities.ENERGY)
-                .map(iEnergyStorage -> iEnergyStorage.extractEnergy(energy, false));
+        Optional<Integer> optionalExtractEnergy = battery.getCapability(ForgeCapabilities.ENERGY) // testa se a bateria tem energia
+                .map(iEnergyStorage -> ((AFEnergyStorage) iEnergyStorage).forceExtractEnergy(energy, true));
 
         boolean success = optionalExtractEnergy.isPresent() && optionalExtractEnergy.get() == energy;
 
-        if (success) setCharged(stack, battery);
+        if (success) {
+            battery.getCapability(ForgeCapabilities.ENERGY) // remove a energia da bateria
+                    .map(iEnergyStorage -> ((AFEnergyStorage) iEnergyStorage).forceExtractEnergy(energy, false));
+
+            setCharged(stack, battery);
+        }
 
         return success;
     }
@@ -173,7 +208,7 @@ public class EnergyPistolItem extends Item implements GeoItem {
         ItemStack mainHandItem = pPlayer.getMainHandItem();
         if (pPlayer.getCooldowns().isOnCooldown(this) || !(mainHandItem.getItem() instanceof EnergyPistolItem)) return;
 
-        if (consumeBattery(pItemStack, 100)) {
+        if (consumeBattery(pItemStack, 1000)) {
             pPlayer.getCooldowns().addCooldown(this, 20); // 1 segundo de cooldown
             ItemStackSyncUtil.syncItemInHand(pPlayer, InteractionHand.MAIN_HAND);
 
@@ -181,7 +216,7 @@ public class EnergyPistolItem extends Item implements GeoItem {
             projectile.setPos(pPlayer.getX(), pPlayer.getEyeY() - 0.1, pPlayer.getZ());
             pPlayer.level().addFreshEntity(projectile);
         } else {
-            pPlayer.displayClientMessage(Component.translatable("message.energy.not.enough"), true);
+            pPlayer.displayClientMessage(Component.translatable("message.ark_future.energy.not.enough"), true);
         }
     }
 }
