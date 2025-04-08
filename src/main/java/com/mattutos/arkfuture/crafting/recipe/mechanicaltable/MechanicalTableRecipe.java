@@ -21,15 +21,24 @@ public class MechanicalTableRecipe implements Recipe<RecipeInput> {
     @Getter
     public final IngredientStack.Item mechanicalPliers;
 
+    @Getter
+    public final Integer energyExpenditurePerTick;
+
+    @Getter
+    public final Integer maxTickPerCraft;
+
     protected List<IngredientStack.Item> inputItems;
     @Getter
     public final ItemStack output;
 
-    public MechanicalTableRecipe(ItemStack pOutput, IngredientStack.Item pBase, IngredientStack.Item mechanicalPliers, List<IngredientStack.Item> pInputItems) {
+    public MechanicalTableRecipe(ItemStack pOutput, IngredientStack.Item pBase, IngredientStack.Item mechanicalPliers, List<IngredientStack.Item> pInputItems, Integer energyExpenditurePerTick, Integer maxTickPerCraft) {
         this.output = pOutput;
         this.base = pBase;
-        this.inputItems = pInputItems;
         this.mechanicalPliers = mechanicalPliers;
+        this.inputItems = pInputItems;
+        this.energyExpenditurePerTick = energyExpenditurePerTick == null ? 5 : energyExpenditurePerTick;
+        this.maxTickPerCraft = maxTickPerCraft == null ? 50 : maxTickPerCraft;
+        ;
     }
 
     public List<IngredientStack.Item> getInputs() {
