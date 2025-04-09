@@ -239,7 +239,8 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
                 if (itemHandler.extractItem(i, 1, false).isEmpty()) return;
             }
 
-            itemHandler.insertItem(OUTPUT_SLOT, output, false);
+            ItemStack stackOutput = new ItemStack(output.getItem(), output.getCount());
+            itemHandler.insertItem(OUTPUT_SLOT, stackOutput, false);
         }
     }
 
