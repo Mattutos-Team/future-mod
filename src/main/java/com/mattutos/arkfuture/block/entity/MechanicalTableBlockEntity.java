@@ -237,7 +237,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             ItemStack mechanicalPliers = itemHandler.getStackInSlot(6);
 
             if (mechanicalPliers.getItem() instanceof MechanicalPliersItem) {
-                mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, null);
+                mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {});
             }
 
             //HERE IS FIVE (5) CAUSE IT JUST BEING CONSIDERED THE 5 PRINCIPAL SLOTS TO CRAFT
