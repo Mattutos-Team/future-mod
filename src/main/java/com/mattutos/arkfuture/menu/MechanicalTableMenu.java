@@ -55,6 +55,9 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         //BASE ITEM
         this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 29, 35, validBaseIngridientsList));
 
+        //MECHANICAL PLIERS (INDEX 6)
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 6, 84, 35));
+
         //INGREDIENTS ITEMS
         this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 11, 35)); // LEFT
         this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 47, 35)); // RIGHT
@@ -114,7 +117,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 6;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 7;  // must be the number of slots you have!
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
