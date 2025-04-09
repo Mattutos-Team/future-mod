@@ -37,8 +37,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -67,7 +65,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
-    private static final Logger log = LoggerFactory.getLogger(MechanicalTableBlockEntity.class);
 
     private final EnergyStorage energyStorage = createEnergyStorage();
     private final LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
@@ -90,11 +87,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
     public final ItemStackHandler itemHandler = new ItemStackHandler(7) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
         @Override
-        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-            return 64;
-        }
-
-        @Override
         protected void onContentsChanged(int slot) {
             setChanged();
             if (!level.isClientSide()) {
@@ -102,7 +94,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             }
         }
     };
-
 
     public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
@@ -124,11 +115,9 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         };
     }
 
-
     private void resetProgress() {
         this.progress = 0;
     }
-
 
     //AVOID UNNECESSARY LOADS
     @Override
@@ -143,7 +132,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         super.invalidateCaps();
         lazyItemHandler.invalidate();
     }
-
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
@@ -169,7 +157,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         return Component.translatable("block.ark_future.mechanical_table");
     }
 
-
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
@@ -180,7 +167,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
     }
-
 
     public void tick(Level level, BlockPos blockPos, BlockState blockState) {
         Optional<RecipeHolder<MechanicalTableRecipe>> optionalCurrentRecipe = getCurrentRecipe();
@@ -250,7 +236,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         }
     }
 
-
     private boolean validateRecipe() {
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
 
@@ -309,7 +294,6 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
         return maxCount >= currentCount + count;
     }
-
 
     @Nullable
     @Override
