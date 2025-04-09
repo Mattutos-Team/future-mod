@@ -14,7 +14,7 @@
   },
   "mechanical_pliers": {
     "ingredient": {
-      "item": "minecraft:obsidian"
+      "item": "ark_future:mechanical_pliers"
     }
   },
   "max_ticket_per_craft": 15,
