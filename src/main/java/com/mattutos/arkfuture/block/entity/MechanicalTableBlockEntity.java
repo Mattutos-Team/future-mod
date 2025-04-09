@@ -6,6 +6,7 @@ import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRec
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipeInput;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
+import com.mattutos.arkfuture.item.MechanicalPliersItem;
 import com.mattutos.arkfuture.menu.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
@@ -232,7 +234,11 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
         if (recipe.isPresent()) {
             ItemStack output = recipe.get().value().getOutput();
+            ItemStack mechanicalPliers = itemHandler.getStackInSlot(6);
 
+            if (mechanicalPliers.getItem() instanceof MechanicalPliersItem) {
+                mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {});
+            }
 
             //HERE IS FIVE (5) CAUSE IT JUST BEING CONSIDERED THE 5 PRINCIPAL SLOTS TO CRAFT
             for (int i = 0; i < 5; i++) {
@@ -240,6 +246,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             }
 
             itemHandler.insertItem(OUTPUT_SLOT, output, false);
+
         }
     }
 
