@@ -246,6 +246,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             }
 
             itemHandler.insertItem(OUTPUT_SLOT, output, false);
+
         }
     }
 
