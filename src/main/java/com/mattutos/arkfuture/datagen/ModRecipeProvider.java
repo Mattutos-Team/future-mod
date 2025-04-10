@@ -64,6 +64,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('S', Items.STICK)
                 .unlockedBy(getHasName(ItemInit.MECHANICAL_PLIERS.get()), has(ItemInit.MECHANICAL_PLIERS.get()))
                 .save(pRecipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.GOLDEN_THREAD.get(), 24)
+                .requires(Items.GOLD_INGOT, 1)
+                .requires(ItemInit.MECHANICAL_PLIERS.get())
+                .unlockedBy(String.valueOf(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
+                .save(pRecipeOutput);
     }
 
     protected static void oreSmelting(
