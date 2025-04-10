@@ -83,19 +83,15 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
         return itemstack;
     }
 
-    public long getData(CoalPowerGeneratorBlockEntity.DATA data) {
-        return this.containerData.get(data);
-    }
-
     public boolean isBurning() {
         return this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.REMAINING_BURN_TIME) > 0;
     }
 
-    public int getScaledFlameProgress(int pixelSize) {
+    public float getScaledFlameProgress() {
         long progress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.REMAINING_BURN_TIME);
         long maxProgress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.TOTAL_BURN_TIME);
 
-        return maxProgress != 0 && progress != 0 ? (int) (progress * pixelSize / maxProgress) : 0;
+        return maxProgress != 0 && progress != 0 ? ((float)progress / (float)maxProgress) : 0;
     }
 
     public int getGenerating() {

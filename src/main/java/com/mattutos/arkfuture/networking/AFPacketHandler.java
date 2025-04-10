@@ -1,6 +1,7 @@
 package com.mattutos.arkfuture.networking;
 
 import com.mattutos.arkfuture.ArkFuture;
+import com.mattutos.arkfuture.networking.packet.MouseScrollingVerticalC2SPacket;
 import com.mattutos.arkfuture.networking.packet.ShootPistolC2SPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +30,12 @@ public class AFPacketHandler {
                 .decoder(ShootPistolC2SPacket::new)
                 .encoder(ShootPistolC2SPacket::toBytes)
                 .consumerMainThread(ShootPistolC2SPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(MouseScrollingVerticalC2SPacket.class, id(), NetworkDirection.PLAY_TO_SERVER)
+                .decoder(MouseScrollingVerticalC2SPacket::new)
+                .encoder(MouseScrollingVerticalC2SPacket::toBytes)
+                .consumerMainThread(MouseScrollingVerticalC2SPacket::handle)
                 .add();
     }
 

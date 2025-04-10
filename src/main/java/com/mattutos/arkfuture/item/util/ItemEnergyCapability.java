@@ -1,5 +1,6 @@
-package com.mattutos.arkfuture.item;
+package com.mattutos.arkfuture.item.util;
 
+import com.mattutos.arkfuture.core.energy.AFEnergyStorage;
 import com.mattutos.arkfuture.init.DataComponentTypesInit;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -7,7 +8,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,19 +26,33 @@ public class ItemEnergyCapability implements ICapabilityProvider {
     }
 
     private IEnergyStorage createEnergyStorage(int capacity, int maxReceive, int maxExtract, int energy) {
-        return new EnergyStorage(capacity, maxReceive, maxExtract, energy) {
+        return new AFEnergyStorage(capacity, maxReceive, maxExtract, energy) {
             @Override
             public int receiveEnergy(int maxReceive, boolean simulate) {
                 int received = super.receiveEnergy(maxReceive, simulate);
-                if (!simulate) setEnergy(this.getEnergyStored());
+                if (!simulate) setDataComponentEnergy(this.getEnergyStored());
                 return received;
             }
 
             @Override
             public int extractEnergy(int maxExtract, boolean simulate) {
                 int extracted = super.extractEnergy(maxExtract, simulate);
-                if (!simulate) setEnergy(this.getEnergyStored());
+                if (!simulate) setDataComponentEnergy(this.getEnergyStored());
                 return extracted;
+            }
+
+            @Override
+            public int forceExtractEnergy(int amount, boolean simulate) {
+                int extracted = super.forceExtractEnergy(amount, simulate);
+                if (!simulate) setDataComponentEnergy(this.getEnergyStored());
+                return extracted;
+            }
+
+            @Override
+            public int forceReceiveEnergy(int amount, boolean simulate) {
+                int received = super.forceReceiveEnergy(amount, simulate);
+                if (!simulate) setDataComponentEnergy(this.getEnergyStored());
+                return received;
             }
         };
     }
@@ -47,7 +61,7 @@ public class ItemEnergyCapability implements ICapabilityProvider {
         return pStack.getOrDefault(DataComponentTypesInit.ENERGY.get(), 0).intValue();
     }
 
-    private void setEnergy(int energy) {
+    private void setDataComponentEnergy(int energy) {
         stack.set(DataComponentTypesInit.ENERGY.get(), (long) energy);
     }
 

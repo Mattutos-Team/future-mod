@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.screen;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.menu.CoalPowerGeneratorMenu;
+import com.mattutos.arkfuture.screen.util.MouseUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -46,27 +47,24 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);
 
-        int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-
-        pGuiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-        renderProgressFlame(pGuiGraphics, x, y);
-        renderProgressEnergyStored(pGuiGraphics, x, y);
+        pGuiGraphics.blit(GUI_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        renderProgressFlame(pGuiGraphics);
+        renderProgressEnergyStored(pGuiGraphics);
     }
 
-    private void renderProgressEnergyStored(GuiGraphics pGuiGraphics, int x, int y) {
-        pGuiGraphics.fill(x + ENERGY_X, y + ENERGY_Y, x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xff666666);
+    private void renderProgressEnergyStored(GuiGraphics pGuiGraphics) {
+        pGuiGraphics.fill(leftPos + ENERGY_X, topPos + ENERGY_Y, leftPos + (ENERGY_X + ENERGY_WIDTH), topPos + (ENERGY_Y + ENERGY_HEIGHT), 0xff666666);
         if (menu.getEnergyStored() > 0 && menu.getMaxEnergyStored() != 0) {
             int percentEnergyHeight = (int) (menu.getEnergyStored() * ENERGY_HEIGHT / menu.getMaxEnergyStored());
-            pGuiGraphics.fillGradient(x + ENERGY_X, y + (ENERGY_Y + (ENERGY_HEIGHT - percentEnergyHeight)), x + (ENERGY_X + ENERGY_WIDTH), y + (ENERGY_Y + ENERGY_HEIGHT), 0xffcc0000, 0xffaa0000);
+            pGuiGraphics.fillGradient(leftPos + ENERGY_X, topPos + (ENERGY_Y + (ENERGY_HEIGHT - percentEnergyHeight)), leftPos + (ENERGY_X + ENERGY_WIDTH), topPos + (ENERGY_Y + ENERGY_HEIGHT), 0xffcc0000, 0xffaa0000);
         }
     }
 
-    private void renderProgressFlame(GuiGraphics pGuiGraphics, int x, int y) {
-        if(menu.isBurning()) {
-            int scaledFlameProgressHeight = menu.getScaledFlameProgress(FLAME_HEIGHT);
+    private void renderProgressFlame(GuiGraphics pGuiGraphics) {
+        if (menu.isBurning()) {
+            int scaledFlameProgressHeight = (int) (menu.getScaledFlameProgress() * FLAME_HEIGHT);
             int yFlameHeightProgress = FLAME_HEIGHT - scaledFlameProgressHeight;
-            pGuiGraphics.blit(FLAME_TEXTURE,x + 26, y + (22 + yFlameHeightProgress), 0, (0 + yFlameHeightProgress), FLAME_WIDTH, (FLAME_HEIGHT - yFlameHeightProgress), FLAME_WIDTH, FLAME_HEIGHT);
+            pGuiGraphics.blit(FLAME_TEXTURE, leftPos + 26, topPos + (22 + yFlameHeightProgress), 0, yFlameHeightProgress, FLAME_WIDTH, scaledFlameProgressHeight, FLAME_WIDTH, FLAME_HEIGHT);
         }
     }
 
@@ -75,27 +73,25 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
 
         renderLabelsEnergy(pGuiGraphics);
+        renderTooltip(pGuiGraphics, pMouseX, pMouseY);
         renderTooltipEnergy(pGuiGraphics, pMouseX, pMouseY);
     }
 
     private void renderLabelsEnergy(GuiGraphics pGuiGraphics) {
-        int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-
         int generating = menu.getGenerating();
         long energyStored = menu.getEnergyStored();
 
         int xTempGenerating = this.font.width(generating + "");
         int xTempEnergyStored = this.font.width(energyStored + "");
 
-        pGuiGraphics.drawString(this.font, energyStored + " FE", (x - xTempEnergyStored) + 98, y + 48, 0x404040, false);
-        pGuiGraphics.drawString(this.font, generating + " FE/T", (x - xTempGenerating) + 98, y + 58, 0x404040, false);
+        pGuiGraphics.drawString(this.font, energyStored + " FE", (leftPos - xTempEnergyStored) + 98, topPos + 48, 0x404040, false);
+        pGuiGraphics.drawString(this.font, generating + " FE/T", (leftPos - xTempGenerating) + 98, topPos + 58, 0x404040, false);
 
     }
 
     private void renderTooltipEnergy(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
         // Renderiza o tooltip de energia se o mouse estiver em cima da barra de energia
-        if (pMouseX >= leftPos + ENERGY_X && pMouseX < leftPos + ENERGY_X + ENERGY_WIDTH && pMouseY >= topPos + ENERGY_Y && pMouseY < topPos + ENERGY_Y + ENERGY_HEIGHT) {
+        if (MouseUtils.isMouseOver(pMouseX, pMouseY, leftPos + ENERGY_X, topPos + ENERGY_Y, ENERGY_WIDTH, ENERGY_HEIGHT)) {
             long power = menu.getEnergyStored();
             pGuiGraphics.renderTooltip(this.font, Component.literal(power + " FE"), pMouseX, pMouseY);
         }
