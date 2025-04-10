@@ -7,6 +7,8 @@ import com.mattutos.arkfuture.init.ItemInit;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.crafting.BlastingRecipe;
@@ -15,7 +17,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -52,6 +53,16 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 9)
                 .requires(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get())
                 .unlockedBy(getHasName(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()), has(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()))
+                .save(pRecipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.MECHANICAL_PLIERS.get())
+                .pattern(" A ")
+                .pattern("N N")
+                .pattern("S S")
+                .define('A', ItemInit.ANCIENT_ORE_INGOT_ITEM.get())
+                .define('N', Items.IRON_NUGGET)
+                .define('S', Items.STICK)
+                .unlockedBy(getHasName(ItemInit.MECHANICAL_PLIERS.get()), has(ItemInit.MECHANICAL_PLIERS.get()))
                 .save(pRecipeOutput);
     }
 

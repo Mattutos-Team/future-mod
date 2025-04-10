@@ -95,4 +95,9 @@ public class MechanicalTableScreen extends AbstractContainerScreen<MechanicalTab
                     mouseX, mouseY);
         }
     }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(this.font, "Tier 1", 137, 5, 0xffffff); // x=8, y=6 is typical top-left padding
+    }
 }
