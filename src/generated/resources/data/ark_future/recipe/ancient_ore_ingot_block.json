@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
+    "B": {
       "item": "ark_future:ancient_ore_ingot"
     }
   },
   "pattern": [
-    "AAA",
-    "AAA",
-    "AAA"
+    "BBB",
+    "BBB",
+    "BBB"
   ],
   "result": {
     "count": 1,
