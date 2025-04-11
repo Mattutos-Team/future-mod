@@ -1,5 +1,7 @@
 package com.mattutos.arkfuture.block.entity;
 
+import com.mattutos.arkfuture.block.entity.util.AFEnergyContainerBlockEntity;
+import com.mattutos.arkfuture.core.energy.AFEnergyStorage;
 import com.mattutos.arkfuture.core.inventory.BaseData;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
@@ -9,40 +11,21 @@ import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import com.mattutos.arkfuture.item.MechanicalPliersItem;
 import com.mattutos.arkfuture.menu.MechanicalTableMenu;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.Containers;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.EnergyStorage;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvider {
+public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
 
     public enum DATA implements BaseData {
         PROGRESS,
@@ -67,15 +50,10 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
-    private static final Logger log = LoggerFactory.getLogger(MechanicalTableBlockEntity.class);
 
-    private final EnergyStorage energyStorage = createEnergyStorage();
-    private final LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
-
-    //LAZY ITEM HANDLER
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
-
-    protected final EnumContainerData<DATA> data;
+    private final ItemStackHandler itemStackHandler = createItemHandler();
+    private final AFEnergyStorage energyStorage = createEnergyStorage();
+    private final EnumContainerData<DATA> containerData = createEnumContainerData();
 
     //DATA FOR PROGRESS BAR
     private int progress = 0;
@@ -84,30 +62,24 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     //TODO - DEFINE MAX TABLE ENERGY CAPACITY BASED ON THE TABLE TIER
     public static final int CAPACITY = 5_000;
 
-    private @NotNull EnergyStorage createEnergyStorage() {
-        return new EnergyStorage(CAPACITY);
+    private ItemStackHandler createItemHandler() {
+        return new ItemStackHandler(7) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                if (!level.isClientSide()) {
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+                }
+            }
+        };
     }
 
-    public final ItemStackHandler itemHandler = new ItemStackHandler(7) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
-        @Override
-        protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-            return 64;
-        }
+    private @NotNull AFEnergyStorage createEnergyStorage() {
+        return new AFEnergyStorage(CAPACITY);
+    }
 
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-            if (!level.isClientSide()) {
-                level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-            }
-        }
-    };
-
-
-    public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
-        super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
-
-        data = new EnumContainerData<>(DATA.class) {
+    private @NotNull EnumContainerData<DATA> createEnumContainerData() {
+        return new EnumContainerData<>(DATA.class) {
             @Override
             public void set(DATA enumData, long value) {
             }
@@ -124,30 +96,37 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         };
     }
 
+    public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
+        super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
+    }
+
+    @Override
+    protected AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory) {
+        return new MechanicalTableMenu(pContainerId, pInventory, this, this.containerData);
+    }
+
+    @Override
+    protected Component getDefaultName() {
+        return Component.translatable("block.ark_future.mechanical_table");
+    }
+
+    @Override
+    public ItemStackHandler getItemStackHandler() {
+        return itemStackHandler;
+    }
+
+    @Override
+    protected AFEnergyStorage getEnergyStorage() {
+        return energyStorage;
+    }
 
     private void resetProgress() {
         this.progress = 0;
     }
 
-
-    //AVOID UNNECESSARY LOADS
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    }
-
-    //ENSURE THAT OLD CRAFTING WON'T BE USED
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-    }
-
-
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        pTag.put("inventory", itemHandler.serializeNBT(pRegistries));
+        pTag.put("inventory", itemStackHandler.serializeNBT(pRegistries));
         pTag.putInt("mechanical_table.progress", progress);
         pTag.putInt("mechanical_table.max_progress", maxProgress);
         pTag.put("mechanical_table.energy_stored", energyStorage.serializeNBT(pRegistries));
@@ -158,31 +137,14 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
 
-        itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+        itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("mechanical_table.progress");
         maxProgress = pTag.getInt("mechanical_table.max_progress");
         energyStorage.deserializeNBT(pRegistries, pTag.get("mechanical_table.energy_stored"));
     }
 
     @Override
-    public Component getDisplayName() {
-        return Component.translatable("block.ark_future.mechanical_table");
-    }
-
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        return new MechanicalTableMenu(pContainerId, pPlayerInventory, this, this.data);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        return saveWithoutMetadata(pRegistries);
-    }
-
-
-    public void tick(Level level, BlockPos blockPos, BlockState blockState) {
+    public void tickServer() {
         Optional<RecipeHolder<MechanicalTableRecipe>> optionalCurrentRecipe = getCurrentRecipe();
 
         if (optionalCurrentRecipe.isEmpty() || !validateRecipe()) {
@@ -207,7 +169,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
             if (hasCraftingFinished()) {
                 craftItem();
                 resetProgress();
-                setChanged(level, blockPos, blockState);
+                setChanged(level, this.getBlockPos(), this.getBlockState());
             }
         }
     }
@@ -220,21 +182,12 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         progress++;
     }
 
-    public void drops() {
-        SimpleContainer inv = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            inv.setItem(i, itemHandler.getStackInSlot(i));
-        }
-
-        Containers.dropContents(this.level, this.worldPosition, inv);
-    }
-
     private void craftItem() {
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
 
         if (recipe.isPresent()) {
             ItemStack output = recipe.get().value().getOutput();
-            ItemStack mechanicalPliers = itemHandler.getStackInSlot(6);
+            ItemStack mechanicalPliers = itemStackHandler.getStackInSlot(6);
 
             if (mechanicalPliers.getItem() instanceof MechanicalPliersItem) {
                 mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {});
@@ -242,14 +195,13 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
 
             //HERE IS FIVE (5) CAUSE IT JUST BEING CONSIDERED THE 5 PRINCIPAL SLOTS TO CRAFT
             for (int i = 0; i < 5; i++) {
-                if (itemHandler.extractItem(i, 1, false).isEmpty()) return;
+                if (itemStackHandler.extractItem(i, 1, false).isEmpty()) return;
             }
 
             ItemStack stackOutput = new ItemStack(output.getItem(), output.getCount());
-            itemHandler.insertItem(OUTPUT_SLOT, stackOutput, false);
+            itemStackHandler.insertItem(OUTPUT_SLOT, stackOutput, false);
         }
     }
-
 
     private boolean validateRecipe() {
         Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
@@ -261,7 +213,7 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
         MechanicalTableRecipe currentRecipe = recipe.get().value();
         // LOOP FOR ALL 6 AVAILABLE SLOTS (4 TO INGREDIENTS + 1 TO BASE + 1 TO MECHANICAL PLIERS)
         for (int i = 0; i <= 6; i++) {
-            ItemStack inputSlotStack = itemHandler.getStackInSlot(i);
+            ItemStack inputSlotStack = itemStackHandler.getStackInSlot(i);
 
             // BASE ITEM IS INDEX 1
             if (i == 1) {
@@ -293,39 +245,21 @@ public class MechanicalTableBlockEntity extends BlockEntity implements MenuProvi
     }
 
     private Optional<RecipeHolder<MechanicalTableRecipe>> getCurrentRecipe() {
-        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(itemHandler);
+        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(itemStackHandler);
 
         return this.level.getRecipeManager()
                 .getRecipeFor(ModRecipe.MECHANICAL_TABLE_TYPE.get(), recipeInput, level);
     }
 
     private boolean canInsertItemIntoOutputSlot(ItemStack output) {
-        return itemHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();
+        return itemStackHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemStackHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();
     }
 
     private boolean canInsertAmountIntoOutputSlot(int count) {
-        int maxCount = itemHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
-        int currentCount = itemHandler.getStackInSlot(OUTPUT_SLOT).getCount();
+        int maxCount = itemStackHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
+        int currentCount = itemStackHandler.getStackInSlot(OUTPUT_SLOT).getCount();
 
         return maxCount >= currentCount + count;
-    }
-
-
-    @Nullable
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            return lazyItemHandler.cast();
-        } else if (cap == ForgeCapabilities.ENERGY) {
-            return lazyEnergyHandler.cast();
-        } else {
-            return super.getCapability(cap, side);
-        }
     }
 
 }
