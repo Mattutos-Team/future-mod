@@ -150,16 +150,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         return energyStorage;
     }
 
-    /**
-     * Metodo usado para salvar informações NBT do bloco
-     * Salva os dados da BlockEntity em um CompoundTag quando o jogo salva o mundo.
-     * 🔹 Quando é chamado?
-     * Quando o mundo é salvo (autosave ou ao sair do jogo).
-     * Quando o bloco é exportado para um Structure Block.
-     * <p>
-     * 🔹 Para que serve?
-     * Salva os dados personalizados da BlockEntity para que eles sejam restaurados ao carregar o mundo novamente.
-     */
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.saveAdditional(pTag, pRegistries);
@@ -173,16 +163,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         pTag.put(ArkFuture.MOD_ID, compoundTag);
     }
 
-    /**
-     * Metodo usado para carregar(quando o bloco for instanciado/renderizado) as informações do NBT do bloco
-     * Carrega os dados da BlockEntity a partir do CompoundTag quando o jogo carrega o mundo.
-     * 🔹 Quando é chamado?
-     * Quando o mundo é carregado.
-     * Quando o bloco é colocado a partir de um Structure Block.
-     * <p>
-     * 🔹 Para que serve?
-     * Recupera os dados salvos e restaura o estado da BlockEntity.
-     */
     @Override
     protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
