@@ -1,9 +1,10 @@
 name: Build & Create PR for Develop
 
 permissions:
+  actions: write
+  checks: write
   contents: write
   pull-requests: write
-  workflows: write
 
 on:
   push:
