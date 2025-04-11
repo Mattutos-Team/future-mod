@@ -3,6 +3,7 @@ name: Build & Create PR for Develop
 permissions:
   contents: write
   pull-requests: write
+  workflows: write
 
 on:
   push:
@@ -63,6 +64,8 @@ jobs:
           else
             git commit -m "🔄 Atualização automática do DataGen"
             git push
+            echo "Alterações detectadas e commit realizado. Finalizando workflow atual."
+            exit 0
           fi
   # Job de build
   build:
