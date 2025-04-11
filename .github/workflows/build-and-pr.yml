@@ -66,8 +66,16 @@ jobs:
             git commit -m "🔄 Atualização automática do DataGen"
             git push
             echo "Alterações detectadas e commit realizado. Finalizando workflow atual."
-            exit 0
           fi
+          echo "commit_realizado=true" >> $GITHUB_ENV
+      - name: Cancelar o workflow atual
+        if: env.commit_realizado == 'true'
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
+
   # Job de build
   build:
     runs-on: ubuntu-latest
