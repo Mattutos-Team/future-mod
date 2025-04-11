@@ -1,25 +1,19 @@
 {
   "type": "ark_future:mechanical_table",
-  "input_items": [
+  "additions": [
     {
-      "ingredient": {
-        "tag": "c:ingots/iron"
-      }
+      "tag": "c:ingots/iron"
     }
   ],
   "base": {
-    "ingredient": {
-      "item": "minecraft:obsidian"
-    }
+    "item": "minecraft:obsidian"
   },
-  "mechanical_pliers": {
-    "ingredient": {
-      "item": "ark_future:mechanical_pliers"
-    }
+  "pliers": {
+    "item": "ark_future:mechanical_pliers"
   },
-  "max_ticket_per_craft": 15,
+  "total_ticks_per_craft": 15,
   "energy_expenditure_per_tick": 5,
-  "output": {
+  "result": {
     "count": 1,
     "id": "minecraft:iron_block"
   }

@@ -5,7 +5,6 @@ import com.mattutos.arkfuture.core.energy.AFEnergyStorage;
 import com.mattutos.arkfuture.core.inventory.BaseData;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
-import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipeInput;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import com.mattutos.arkfuture.item.MechanicalPliersItem;
@@ -23,9 +22,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
+
+    public enum SLOT {
+        BASE,
+        PLIERS,
+        INGREDIENT_1,
+        INGREDIENT_2,
+        INGREDIENT_3,
+        INGREDIENT_4,
+        OUTPUT;
+
+        static public int count() {
+            return SLOT.values().length;
+        }
+    }
 
     public enum DATA implements BaseData {
         PROGRESS,
@@ -49,8 +64,6 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
         }
     }
 
-    private static final int OUTPUT_SLOT = 5;   //RESULT SLOT
-
     private final ItemStackHandler itemStackHandler = createItemHandler();
     private final AFEnergyStorage energyStorage = createEnergyStorage();
     private final EnumContainerData<DATA> containerData = createEnumContainerData();
@@ -63,7 +76,7 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     public static final int CAPACITY = 5_000;
 
     private ItemStackHandler createItemHandler() {
-        return new ItemStackHandler(7) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
+        return new ItemStackHandler(SLOT.count()) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
             @Override
             protected void onContentsChanged(int slot) {
                 setChanged();
@@ -147,31 +160,35 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     public void tickServer() {
         Optional<RecipeHolder<MechanicalTableRecipe>> optionalCurrentRecipe = getCurrentRecipe();
 
-        if (optionalCurrentRecipe.isEmpty() || !validateRecipe()) {
+        if (optionalCurrentRecipe.isEmpty()) {
             resetProgress();
             return;
         }
+        RecipeHolder<MechanicalTableRecipe> mechanicalTableRecipeRecipeHolder = optionalCurrentRecipe.get();
 
+        if (!canCraft(mechanicalTableRecipeRecipeHolder)) return;
 
-        Integer energyExpenditurePerTick = optionalCurrentRecipe.get().value().energyExpenditurePerTick;
+        //SETTING MAX PROGRESS BASED ON RECIPE
+        maxProgress = mechanicalTableRecipeRecipeHolder.value().totalTicksPerCraft();
+
+        Integer energyExpenditurePerTick = mechanicalTableRecipeRecipeHolder.value().energyExpenditurePerTick();
         if (energyStorage.extractEnergy(energyExpenditurePerTick, true) != energyExpenditurePerTick)
             return;
 
-        if (validateRecipe()) {
-            increaseCraftingProgress();
+        //ENERGY EXPENDITURE PER TICK
+        energyStorage.extractEnergy(energyExpenditurePerTick, false);
 
-            //SETTING MAX PROGRESS BASED ON RECIPE
-            maxProgress = optionalCurrentRecipe.get().value().maxTickPerCraft;
+        increaseCraftingProgress();
 
-            //ENERGY EXPENDITURE PER TICK (MULTIPLE THIS EXTRACT VALUE BY MAX PROGRESS CRAFT (50))
-            energyStorage.extractEnergy(energyExpenditurePerTick, false);
-
-            if (hasCraftingFinished()) {
-                craftItem();
-                resetProgress();
-                setChanged(level, this.getBlockPos(), this.getBlockState());
-            }
+        if (hasCraftingFinished()) {
+            craftItem(mechanicalTableRecipeRecipeHolder);
+            resetProgress();
         }
+        setChanged();
+    }
+
+    private boolean canCraft(RecipeHolder<MechanicalTableRecipe> recipe) {
+        return itemStackHandler.insertItem(SLOT.OUTPUT.ordinal(), recipe.value().output(), true).isEmpty();
     }
 
     private boolean hasCraftingFinished() {
@@ -179,87 +196,40 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     }
 
     private void increaseCraftingProgress() {
-        progress++;
+        this.progress++;
+        if (this.progress > this.maxProgress) this.progress = this.maxProgress;
     }
 
-    private void craftItem() {
-        Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
+    private void craftItem(RecipeHolder<MechanicalTableRecipe> recipe) {
+        ItemStack output = recipe.value().output();
+        ItemStack mechanicalPliers = itemStackHandler.getStackInSlot(1);
 
-        if (recipe.isPresent()) {
-            ItemStack output = recipe.get().value().getOutput();
-            ItemStack mechanicalPliers = itemStackHandler.getStackInSlot(6);
-
-            if (mechanicalPliers.getItem() instanceof MechanicalPliersItem) {
-                mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {});
-            }
-
-            //HERE IS FIVE (5) CAUSE IT JUST BEING CONSIDERED THE 5 PRINCIPAL SLOTS TO CRAFT
-            for (int i = 0; i < 5; i++) {
-                if (itemStackHandler.extractItem(i, 1, false).isEmpty()) return;
-            }
-
-            ItemStack stackOutput = new ItemStack(output.getItem(), output.getCount());
-            itemStackHandler.insertItem(OUTPUT_SLOT, stackOutput, false);
-        }
-    }
-
-    private boolean validateRecipe() {
-        Optional<RecipeHolder<MechanicalTableRecipe>> recipe = getCurrentRecipe();
-
-        if (recipe.isEmpty()) {
-            return false;
+        if (mechanicalPliers.getItem() instanceof MechanicalPliersItem) {
+            mechanicalPliers.hurtAndBreak(1, (ServerLevel) this.level, null, item -> {});
         }
 
-        MechanicalTableRecipe currentRecipe = recipe.get().value();
-        // LOOP FOR ALL 6 AVAILABLE SLOTS (4 TO INGREDIENTS + 1 TO BASE + 1 TO MECHANICAL PLIERS)
-        for (int i = 0; i <= 6; i++) {
-            ItemStack inputSlotStack = itemStackHandler.getStackInSlot(i);
-
-            // BASE ITEM IS INDEX 1
-            if (i == 1) {
-                if (!currentRecipe.isBaseIngredient(inputSlotStack)) {
-                    return false;
-                }
-            }
-            // MECHANICAL PLIERS ITEM IS INDEX 6
-            else if (i == 6) {
-                if (!currentRecipe.hasMechanicalPliers(inputSlotStack)) {
-                    return false;
-                }
-            }
-            // FROM 0 TO 4 ( REMOVING INDEX 1 ) ARE ALL INGREDIENTS SLOTS
-            else {
-                int[] ingredientSlots = {0, 2, 3, 4};
-                for (int slot : ingredientSlots) {
-                    if (i == slot) {
-                        if (!currentRecipe.isAdditionIngredient(inputSlotStack)) {
-                            return false;
-                        }
-                    }
-                }
-            }
+        if (itemStackHandler.extractItem(SLOT.BASE.ordinal(), 1, false).isEmpty()) return;
+        for (int i = SLOT.INGREDIENT_1.ordinal(); i <= SLOT.INGREDIENT_4.ordinal(); i++) {
+            if (itemStackHandler.extractItem(i, 1, false).isEmpty()) return;
         }
 
-        ItemStack output = currentRecipe.getOutput();
-        return canInsertItemIntoOutputSlot(output) && canInsertAmountIntoOutputSlot(output.getCount());
+        ItemStack stackOutput = new ItemStack(output.getItem(), output.getCount());
+        itemStackHandler.insertItem(SLOT.OUTPUT.ordinal(), stackOutput, false);
     }
 
     private Optional<RecipeHolder<MechanicalTableRecipe>> getCurrentRecipe() {
-        MechanicalTableRecipeInput recipeInput = new MechanicalTableRecipeInput(itemStackHandler);
+        List<RecipeHolder<MechanicalTableRecipe>> allRecipesForMechanicalTable = this.level.getRecipeManager().getAllRecipesFor(ModRecipe.MECHANICAL_TABLE_TYPE.get());
+        List<ItemStack> listAdditions = Arrays.stream(new SLOT[]{SLOT.INGREDIENT_1, SLOT.INGREDIENT_2, SLOT.INGREDIENT_3, SLOT.INGREDIENT_4})
+                .map(slot -> itemStackHandler.getStackInSlot(slot.ordinal()))
+                .toList();
 
-        return this.level.getRecipeManager()
-                .getRecipeFor(ModRecipe.MECHANICAL_TABLE_TYPE.get(), recipeInput, level);
-    }
-
-    private boolean canInsertItemIntoOutputSlot(ItemStack output) {
-        return itemStackHandler.getStackInSlot(OUTPUT_SLOT).isEmpty() || this.itemStackHandler.getStackInSlot(OUTPUT_SLOT).getItem() == output.getItem();
-    }
-
-    private boolean canInsertAmountIntoOutputSlot(int count) {
-        int maxCount = itemStackHandler.getStackInSlot(OUTPUT_SLOT).getMaxStackSize();
-        int currentCount = itemStackHandler.getStackInSlot(OUTPUT_SLOT).getCount();
-
-        return maxCount >= currentCount + count;
+        return allRecipesForMechanicalTable.stream()
+                .filter(rh -> rh.value().base().test(itemStackHandler.getStackInSlot(SLOT.BASE.ordinal())))
+                .filter(rh -> rh.value().pliers().test(itemStackHandler.getStackInSlot(SLOT.PLIERS.ordinal())))
+                .filter(rh -> listAdditions.stream()
+                        .allMatch(itemStack -> rh.value().additions().test(itemStack))
+                )
+                .findFirst();
     }
 
 }
