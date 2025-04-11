@@ -9,6 +9,7 @@ import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRec
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.menu.common.BaseSlot;
+import com.mattutos.arkfuture.menu.common.ResultSlot;
 import lombok.extern.slf4j.Slf4j;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +66,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 4, 29, 53)); // BOTTOM
 
         //RESULT SLOT
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 5, 152, 35));
+        this.addSlot(new ResultSlot(this.blockEntity.getItemStackHandler(), 5, 152, 35));
 
         addDataSlots(data);
     }
