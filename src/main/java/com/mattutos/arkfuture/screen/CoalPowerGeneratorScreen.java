@@ -30,14 +30,8 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
 
     public CoalPowerGeneratorScreen(CoalPowerGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
-    }
-
-    @Override
-    protected void init() {
-        super.init();
 
         // Ajustando posição do título do inventário
-        this.inventoryLabelX = 8;
         this.inventoryLabelY = this.imageHeight - 92;
     }
 
@@ -86,7 +80,6 @@ public class CoalPowerGeneratorScreen extends AbstractContainerScreen<CoalPowerG
 
         pGuiGraphics.drawString(this.font, energyStored + " FE", (leftPos - xTempEnergyStored) + 98, topPos + 48, 0x404040, false);
         pGuiGraphics.drawString(this.font, generating + " FE/T", (leftPos - xTempGenerating) + 98, topPos + 58, 0x404040, false);
-
     }
 
     private void renderTooltipEnergy(GuiGraphics pGuiGraphics, int pMouseX, int pMouseY) {
