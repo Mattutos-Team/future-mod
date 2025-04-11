@@ -57,13 +57,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b feature/datagen-update
           git add .
           if git diff --staged --quiet; then
             echo "Sem alterações para commitar."
           else
             git commit -m "🔄 Atualização automática do DataGen"
-            git push --set-upstream origin feature/datagen-update
+            git push
           fi
   # Job de build
   build:
