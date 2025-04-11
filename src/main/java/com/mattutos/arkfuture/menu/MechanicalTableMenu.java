@@ -4,35 +4,35 @@ import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
-import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
+import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.menu.common.BaseSlot;
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.SlotItemHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Slf4j
 public class MechanicalTableMenu extends AbstractContainerMenu {
 
-    private static final Logger log = LoggerFactory.getLogger(MechanicalTableMenu.class);
     public final MechanicalTableBlockEntity blockEntity;
     private final Level level;
-    private final EnumContainerData data;
+    private final EnumContainerData<MechanicalTableBlockEntity.DATA> data;
 
     public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
         this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(MechanicalTableBlockEntity.DATA.class));
@@ -53,19 +53,19 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
         addPlayerHotbar(inv);
 
         //BASE ITEM
-        this.addSlot(new BaseSlot(this.blockEntity.itemHandler, 1, 29, 35, validBaseIngridientsList));
+        this.addSlot(new BaseSlot(this.blockEntity.getItemStackHandler(), 1, 29, 35, validBaseIngridientsList));
 
         //MECHANICAL PLIERS (INDEX 6)
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 6, 84, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 6, 84, 35));
 
         //INGREDIENTS ITEMS
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 11, 35)); // LEFT
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 47, 35)); // RIGHT
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 29, 17)); // UP
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 4, 29, 53)); // BOTTOM
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 0, 11, 35)); // LEFT
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 2, 47, 35)); // RIGHT
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 3, 29, 17)); // UP
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 4, 29, 53)); // BOTTOM
 
         //RESULT SLOT
-        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 5, 152, 35));
+        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 5, 152, 35));
 
         addDataSlots(data);
     }
@@ -122,7 +122,7 @@ public class MechanicalTableMenu extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        if (!sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 

@@ -36,7 +36,7 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
     // construtor utilizado no lado do servidor
     public CoalPowerGeneratorMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, EnumContainerData<CoalPowerGeneratorBlockEntity.DATA> pContainerData) {
         super(MenuInit.COAL_POWER_GENERATOR_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
-        this.itemHandler = ((CoalPowerGeneratorBlockEntity) pBlockEntity).getItems();
+        this.itemHandler = ((CoalPowerGeneratorBlockEntity) pBlockEntity).getItemStackHandler();
 
         checkItemHandlerCount(this.itemHandler, CoalPowerGeneratorBlockEntity.SLOT.count());
 
@@ -91,7 +91,7 @@ public class CoalPowerGeneratorMenu extends ArkFutureContainerMenu<CoalPowerGene
         long progress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.REMAINING_BURN_TIME);
         long maxProgress = this.containerData.get(CoalPowerGeneratorBlockEntity.DATA.TOTAL_BURN_TIME);
 
-        return maxProgress != 0 && progress != 0 ? ((float)progress / (float)maxProgress) : 0;
+        return maxProgress != 0 && progress != 0 ? ((float) progress / (float) maxProgress) : 0;
     }
 
     public int getGenerating() {

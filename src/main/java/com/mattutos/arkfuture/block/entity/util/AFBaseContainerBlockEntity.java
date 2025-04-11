@@ -8,6 +8,9 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
@@ -20,10 +23,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -33,8 +36,11 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
     @Nullable
     private Component name;
 
+    protected LazyOptional<IItemHandler> lazyItemHandler;
+
     protected AFBaseContainerBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
+        lazyItemHandler = LazyOptional.of(this::getItemStackHandler);
     }
 
     @Override
@@ -87,21 +93,19 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         }
     }
 
-    protected abstract ItemStackHandler getItems();
-
-    protected abstract void setItems(ItemStackHandler pItems);
+    public abstract ItemStackHandler getItemStackHandler();
 
     public abstract void tickServer();
 
     @Override
     public int getContainerSize() {
-        return getItems().getSlots();
+        return getItemStackHandler().getSlots();
     }
 
     @Override
     public boolean isEmpty() {
-        for (int slot = 0; slot < this.getItems().getSlots(); slot++) {
-            if (!this.getItems().getStackInSlot(slot).isEmpty()) {
+        for (int slot = 0; slot < this.getItemStackHandler().getSlots(); slot++) {
+            if (!this.getItemStackHandler().getStackInSlot(slot).isEmpty()) {
                 return false;
             }
         }
@@ -111,12 +115,12 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
 
     @Override
     public @NotNull ItemStack getItem(int pSlot) {
-        return this.getItems().getStackInSlot(pSlot);
+        return this.getItemStackHandler().getStackInSlot(pSlot);
     }
 
     @Override
     public @NotNull ItemStack removeItem(int pSlot, int pAmount) {
-        ItemStack itemstack = this.getItems().extractItem(pSlot, pAmount, false);
+        ItemStack itemstack = this.getItemStackHandler().extractItem(pSlot, pAmount, false);
         if (!itemstack.isEmpty()) {
             this.setChanged();
         }
@@ -126,12 +130,12 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int pSlot) {
-        return this.getItems().extractItem(pSlot, this.getItems().getStackInSlot(pSlot).getCount(), false);
+        return this.getItemStackHandler().extractItem(pSlot, this.getItemStackHandler().getStackInSlot(pSlot).getCount(), false);
     }
 
     @Override
     public void setItem(int pSlot, @NotNull ItemStack pStack) {
-        this.getItems().setStackInSlot(pSlot, pStack);
+        this.getItemStackHandler().setStackInSlot(pSlot, pStack);
         pStack.limitSize(this.getMaxStackSize(pStack));
         this.setChanged();
     }
@@ -142,9 +146,9 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
     }
 
     public void drops() {
-        SimpleContainer inv = new SimpleContainer(getItems().getSlots());
-        for (int i = 0; i < getItems().getSlots(); i++) {
-            inv.setItem(i, getItems().getStackInSlot(i));
+        SimpleContainer inv = new SimpleContainer(getItemStackHandler().getSlots());
+        for (int i = 0; i < getItemStackHandler().getSlots(); i++) {
+            inv.setItem(i, getItemStackHandler().getStackInSlot(i));
         }
 
         if (this.level != null) Containers.dropContents(this.level, this.worldPosition, inv);
@@ -152,8 +156,8 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
 
     @Override
     public void clearContent() {
-        for (int slot = 0; slot < this.getItems().getSlots(); slot++) {
-            this.getItems().setStackInSlot(slot, ItemStack.EMPTY);
+        for (int slot = 0; slot < this.getItemStackHandler().getSlots(); slot++) {
+            this.getItemStackHandler().setStackInSlot(slot, ItemStack.EMPTY);
         }
     }
 
@@ -167,8 +171,8 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
 
     private NonNullList<ItemStack> getItemsForDisplay() {
         NonNullList<ItemStack> nonnulllist = NonNullList.create();
-        for (int slot = 0; slot < this.getItems().getSlots(); slot++) {
-            nonnulllist.add(this.getItems().getStackInSlot(slot));
+        for (int slot = 0; slot < this.getItemStackHandler().getSlots(); slot++) {
+            nonnulllist.add(this.getItemStackHandler().getStackInSlot(slot));
         }
 
         return nonnulllist;
@@ -200,27 +204,61 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         pTag.remove("Items");
     }
 
-    private LazyOptional<?> itemHandler = LazyOptional.of(this::createUnSidedHandler);
-
-    protected IItemHandler createUnSidedHandler() {
-        return new InvWrapper(this);
-    }
-
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == net.minecraftforge.common.capabilities.ForgeCapabilities.ITEM_HANDLER && !this.remove)
-            return itemHandler.cast();
+        if (cap == ForgeCapabilities.ITEM_HANDLER && !this.remove)
+            return lazyItemHandler.cast();
         return super.getCapability(cap, side);
     }
 
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        itemHandler.invalidate();
+        lazyItemHandler.invalidate();
     }
 
     @Override
     public void reviveCaps() {
         super.reviveCaps();
-        itemHandler = LazyOptional.of(this::createUnSidedHandler);
+        lazyItemHandler = LazyOptional.of(this::getItemStackHandler);
     }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        lazyItemHandler = LazyOptional.of(this::getItemStackHandler);
+    }
+
+    /**
+     * Metodo usado para sincronização
+     * Define os dados que serão enviados para o cliente quando um chunk contendo o BlockEntity for carregado.
+     * 🔹 Quando é chamado?
+     * Quando o chunk que contém o BlockEntity é enviado para o cliente (exemplo: jogador se aproxima do bloco).
+     * Ele envia um NBT inicial para sincronizar o estado do bloco com o cliente.
+     * <p>
+     * 🔹 Para que serve?
+     * Mantém a sincronização inicial do estado do bloco ao carregar chunks.
+     * Se o bloco tiver informações personalizadas (energia, inventário, etc.), elas são enviadas para o cliente.
+     */
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    /**
+     * Metodo usado para sincronização
+     * Controla a atualização do BlockEntity quando o seu estado muda dinamicamente sem precisar recarregar o chunk.
+     * 🔹 Quando é chamado?
+     * Quando algo muda no BlockEntity (por exemplo, um contador interno, carga de energia, temperatura de uma máquina, etc.).
+     * Se o código chamar level.sendBlockUpdated(), ele força a atualização para os clientes.
+     * <p>
+     * 🔹 Para que serve?
+     * Sincroniza mudanças no bloco sem precisar descarregar e recarregar o chunk.
+     * Mantém o cliente atualizado sem causar lag, pois só envia dados necessários.
+     * 🔹 Exemplo de uso: Se o BlockEntity gerencia um valor de energia, você pode chamar esse método para atualizar o cliente sempre que a energia mudar.
+     */
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
+        return saveWithoutMetadata(pRegistries);
+    }
+
 }
