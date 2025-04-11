@@ -29,31 +29,11 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     @Override
     protected void buildRecipes(RecipeOutput pRecipeOutput) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.ANCIENT_ORE_BLOCK_ITEM.get())
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .define('A', ItemInit.ANCIENT_ORE_ITEM.get())
-                .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_ITEM.get()), has(ItemInit.ANCIENT_ORE_ITEM.get()))
-                .save(pRecipeOutput);
+        craft3x3(pRecipeOutput, ItemInit.ANCIENT_ORE_ITEM.get(), BlockInit.ANCIENT_ORE_BLOCK_ITEM.get(), 1);
+        craft3x3(pRecipeOutput, ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get(), 1);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get())
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .define('A', ItemInit.ANCIENT_ORE_INGOT_ITEM.get())
-                .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()), has(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()))
-                .save(pRecipeOutput);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_ORE_ITEM.get(), 9)
-                .requires(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get())
-                .unlockedBy(getHasName(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get()), has(BlockInit.ANCIENT_ORE_BLOCK_ITEM.get()))
-                .save(pRecipeOutput);
-
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 9)
-                .requires(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get())
-                .unlockedBy(getHasName(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()), has(BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get()))
-                .save(pRecipeOutput);
+        craftConvert(pRecipeOutput, BlockInit.ANCIENT_ORE_BLOCK_ITEM.get(), ItemInit.ANCIENT_ORE_ITEM.get(), 9);
+        craftConvert(pRecipeOutput, BlockInit.ANCIENT_ORE_INGOT_BLOCK_ITEM.get(), ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 9);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.MECHANICAL_PLIERS.get())
                 .pattern(" A ")
@@ -68,7 +48,24 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.GOLDEN_THREAD.get(), 24)
                 .requires(Items.GOLD_INGOT, 1)
                 .requires(ItemInit.MECHANICAL_PLIERS.get())
-                .unlockedBy(String.valueOf(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
+                .unlockedBy(getHasName(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
+                .save(pRecipeOutput);
+    }
+
+    protected static void craft3x3(RecipeOutput pRecipeOutput, ItemLike pIngredient, ItemLike pResult, int pCount) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, pResult, pCount)
+                .pattern("AAA")
+                .pattern("AAA")
+                .pattern("AAA")
+                .define('A', pIngredient)
+                .unlockedBy(getHasName(pIngredient), has(pIngredient))
+                .save(pRecipeOutput);
+    }
+
+    protected static void craftConvert(RecipeOutput pRecipeOutput, ItemLike pIngredient, ItemLike pResult, int pCount) {
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, pResult, pCount)
+                .requires(pIngredient)
+                .unlockedBy(getHasName(pIngredient), has(pIngredient))
                 .save(pRecipeOutput);
     }
 
@@ -108,8 +105,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
             String pGroup,
             String pRecipeName) {
         for (ItemLike itemlike : pIngredients) {
-            String cookedItemPid =
-                    ArkFuture.MOD_ID + ":" + RecipeProvider.getItemName(pResult) + pRecipeName + "_" + RecipeProvider.getItemName(itemlike);
+            String cookedItemPid = ArkFuture.MOD_ID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike);
 
             SimpleCookingRecipeBuilder.generic(
                             Ingredient.of(itemlike),
