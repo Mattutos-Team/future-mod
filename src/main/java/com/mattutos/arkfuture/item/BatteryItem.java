@@ -20,11 +20,11 @@ public class BatteryItem extends Item {
     private final int maxReceive;
     private final int maxExtract;
 
-    public BatteryItem(Properties pProperties, int capacity, int maxReceive, int maxExtract) {
+    public BatteryItem(Properties pProperties, int capacity, int maxTransfer) {
         super(pProperties.stacksTo(1));
         this.capacity = capacity;
-        this.maxReceive = maxReceive;
-        this.maxExtract = maxExtract;
+        this.maxReceive = maxTransfer;
+        this.maxExtract = maxTransfer;
     }
 
     @Override
