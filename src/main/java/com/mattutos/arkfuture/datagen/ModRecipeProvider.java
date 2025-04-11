@@ -54,10 +54,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
 
     protected static void craft3x3(RecipeOutput pRecipeOutput, ItemLike pIngredient, ItemLike pResult, int pCount) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, pResult, pCount)
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .define('A', pIngredient)
+                .pattern("BBB")
+                .pattern("BBB")
+                .pattern("BBB")
+                .define('B', pIngredient)
                 .unlockedBy(getHasName(pIngredient), has(pIngredient))
                 .save(pRecipeOutput);
     }
