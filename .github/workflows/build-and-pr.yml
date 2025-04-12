@@ -1,7 +1,6 @@
 name: Build & Create PR for Develop
 
 permissions:
-  checks: write
   contents: write
   pull-requests: write
 
@@ -11,10 +10,12 @@ on:
       - feature/*  # Dispara o workflow quando há um push em uma branch feature
       - fix/*  # Dispara o workflow quando há um push em uma branch fix
       - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
+  workflow_dispatch:  # adiciona o dispatch manual/por API
 
 jobs:
   # Job para limpar e gerar os dados (DataGen), caso necessário
   datagen:
+    if: "! contains(github.event.head_commit.message, '🔄 Atualização automática do DataGen')"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
@@ -68,38 +69,18 @@ jobs:
             echo "Alterações detectadas e commit realizado."
             echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           fi
-      - name: Criar check‑run “build” no novo commit
+      - name: Disparar workflow via dispatch
         if: steps.datagen_commit.outputs.sha != ''
         env:
           REPO: ${{ github.repository }}
-          SHA: ${{ steps.datagen_commit.outputs.sha }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl -s -X POST \
-          -H "Authorization: Bearer $TOKEN" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/$REPO/check-runs \
-          -d '{
-           "name": "build",
-           "head_sha": "'"$SHA"'",
-           "status": "queued"
-          }'
-
-      - name: Criar check‑run “test” no novo commit
-        if: steps.datagen_commit.outputs.sha != ''
-        env:
-          REPO: ${{ github.repository }}
-          SHA: ${{ steps.datagen_commit.outputs.sha }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -s -X POST \
             -H "Authorization: Bearer $TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/$REPO/check-runs \
+            https://api.github.com/repos/$REPO/actions/workflows/build-and-pr.yml/dispatches \
             -d '{
-              "name": "test",
-              "head_sha": "'"$SHA"'",
-              "status": "queued"
+              "ref": "'"${{ github.ref }}"'"
             }'
 
   # Job de build
