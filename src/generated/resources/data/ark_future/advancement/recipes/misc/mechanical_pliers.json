@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_mechanical_pliers": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ark_future:mechanical_pliers"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ark_future:mechanical_pliers"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_mechanical_pliers"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ark_future:mechanical_pliers"
+    ]
+  }
+}
