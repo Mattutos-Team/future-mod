@@ -31,34 +31,34 @@ jobs:
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-#      - name: Configurar JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: 'temurin'
-#          java-version: '21'
-#          cache: 'gradle'
-#
-#      - name: Configurar cache do Gradle
-#        uses: actions/cache@v4
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper/dists
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      - name: Dar permissão de execução ao Gradle Wrapper
-#        run: chmod +x gradlew
-#
-#      - name: Gerar Data (runData)
-#        run: ./gradlew runData
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Configurar cache do Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper/dists
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Gerar Data (runData)
+        run: ./gradlew runData
 
       - name: Verifica alterações Datagen para fazer commit & push
         id: datagen_commit
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "relrypesan"
+          git config --global user.email "relrypesan@gmail.com"
           git add .
           if git diff --staged --quiet; then
             echo "Sem alterações para commitar."
