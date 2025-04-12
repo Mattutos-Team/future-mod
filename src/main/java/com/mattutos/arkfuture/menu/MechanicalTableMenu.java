@@ -31,18 +31,18 @@ public class MechanicalTableMenu extends AFAbstractContainerMenu<DATA> {
         super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
 
         List<RecipeHolder<MechanicalTableRecipe>> allRecipesForMechanicalTable = this.level.getRecipeManager().getAllRecipesFor(ModRecipe.MECHANICAL_TABLE_TYPE.get());
-        Set<Ingredient> validBaseIngridientsList = getValidBaseIngredients(allRecipesForMechanicalTable);
-        Set<Ingredient> validPliersIngridientsList = getValidPliersIngredients(allRecipesForMechanicalTable);
+        Set<Ingredient> validBaseIngredientsList = getValidBaseIngredients(allRecipesForMechanicalTable);
+        Set<Ingredient> validPliersIngredientsList = getValidPliersIngredients(allRecipesForMechanicalTable);
         Set<Ingredient> validAdditionsIngredients = getValidAdditionsIngredients(allRecipesForMechanicalTable);
 
         addPlayerInventorySlots(pPlayerInventory);
 
         ItemStackHandler itemStackHandler = ((MechanicalTableBlockEntity) pBlockEntity).getItemStackHandler();
         //BASE ITEM
-        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.BASE.ordinal(), 29, 35, validBaseIngridientsList));
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.BASE.ordinal(), 29, 35, validBaseIngredientsList));
 
         //MECHANICAL PLIERS
-        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.PLIERS.ordinal(), 84, 35, validPliersIngridientsList));
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.PLIERS.ordinal(), 84, 35, validPliersIngredientsList));
 
         //INGREDIENTS ITEMS
         this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_1.ordinal(), 11, 35, validAdditionsIngredients)); // LEFT
@@ -51,7 +51,7 @@ public class MechanicalTableMenu extends AFAbstractContainerMenu<DATA> {
         this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_4.ordinal(), 29, 53, validAdditionsIngredients)); // BOTTOM
 
         //RESULT SLOT
-        this.addSlot(new ResultSlot(itemStackHandler, 6, 152, 35));
+        this.addSlot(new ResultSlot(itemStackHandler, SLOT.OUTPUT.ordinal(), 152, 35));
 
         addDataSlots(containerData);
     }
