@@ -31,30 +31,30 @@ jobs:
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-#      - name: Configurar JDK
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: 'temurin'
-#          java-version: '21'
-#          cache: 'gradle'
-#
-#      - name: Configurar cache do Gradle
-#        uses: actions/cache@v4
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper/dists
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
-#
-#      - name: Dar permissão de execução ao Gradle Wrapper
-#        run: chmod +x gradlew
-#
-#      - name: Gerar Data (runData)
-#        run: ./gradlew runData
+      - name: Configurar JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
 
-      - name: Verifica alterações Datagen para Atualizar commit
+      - name: Configurar cache do Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper/dists
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Dar permissão de execução ao Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Gerar Data (runData)
+        run: ./gradlew runData
+
+      - name: Verifica alterações Datagen para fazer commit & push
         id: datagen_commit
         run: |
           git config --global user.name "github-actions[bot]"
@@ -62,11 +62,11 @@ jobs:
           git add .
           if git diff --staged --quiet; then
             echo "Sem alterações para commitar."
+            echo "sha="
           else
             git commit -m "🔄 Atualização automática do DataGen"
-            # Usar PAT para que o push dispare workflows
-            git push https://x-access-token:${{ secrets.PAT_FOR_PUSH }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
-            echo "Alterações detectadas e commit realizado."
+            # === PUSH COM PAT PARA DISPARAR WORKFLOWS ===
+            git push https://x-access-token:${{ secrets.PAT_FOR_PUSH }}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
             echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           fi
 
