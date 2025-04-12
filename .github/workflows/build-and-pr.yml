@@ -1,8 +1,6 @@
 name: Build & Create PR for Develop
 
 permissions:
-  actions: write
-  checks: write
   contents: write
   pull-requests: write
 
@@ -12,7 +10,6 @@ on:
       - feature/*  # Dispara o workflow quando há um push em uma branch feature
       - fix/*  # Dispara o workflow quando há um push em uma branch fix
       - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
-  workflow_dispatch:  # adiciona o dispatch manual/por API
 
 jobs:
   # Job para limpar e gerar os dados (DataGen), caso necessário
@@ -31,31 +28,31 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git pull origin ${{ github.ref }} --rebase || echo "Nenhuma mudança remota encontrada"
 
-      - name: Configurar JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '21'
-          cache: 'gradle'
-
-      - name: Configurar cache do Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper/dists
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Dar permissão de execução ao Gradle Wrapper
-        run: chmod +x gradlew
-
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-      - name: Gerar Data (runData)
-        run: ./gradlew runData
+#      - name: Configurar JDK
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'temurin'
+#          java-version: '21'
+#          cache: 'gradle'
+#
+#      - name: Configurar cache do Gradle
+#        uses: actions/cache@v4
+#        with:
+#          path: |
+#            ~/.gradle/caches
+#            ~/.gradle/wrapper/dists
+#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+#          restore-keys: |
+#            ${{ runner.os }}-gradle-
+#
+#      - name: Dar permissão de execução ao Gradle Wrapper
+#        run: chmod +x gradlew
+#
+#      - name: Gerar Data (runData)
+#        run: ./gradlew runData
 
       - name: Verifica alterações Datagen para Atualizar commit
         id: datagen_commit
@@ -67,20 +64,11 @@ jobs:
             echo "Sem alterações para commitar."
           else
             git commit -m "🔄 Atualização automática do DataGen"
-            git push
+            # Usar PAT para que o push dispare workflows
+            git push https://x-access-token:${{ secrets.PAT_FOR_PUSH }}@github.com/${{ github.repository }} HEAD:${{ github.ref }}
             echo "Alterações detectadas e commit realizado."
             echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           fi
-      - name: Disparar workflow via dispatch
-        if: steps.datagen_commit.outputs.sha != ''
-        run: |
-          curl -s -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-and-pr.yml/dispatches \
-            -d '{
-              "ref": "'"${{ github.ref }}"'"
-            }'
 
   # Job de build
   build:
