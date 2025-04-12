@@ -53,8 +53,8 @@ jobs:
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-      - name: Gerar Data (runData)
-        run: ./gradlew runData
+#      - name: Gerar Data (runData)
+#        run: ./gradlew runData
 
       - name: Verifica alterações Datagen para Atualizar commit
         run: |
@@ -68,6 +68,8 @@ jobs:
             git push
             echo "Alterações detectadas e commit realizado. Finalizando workflow atual."
             echo "commit_realizado=true" >> $GITHUB_ENV
+            NEW_COMMIT_SHA=$(git rev-parse HEAD)
+            echo "new_commit_sha=$NEW_COMMIT_SHA" >> $GITHUB_ENV
           fi
       - name: Cancelar o workflow atual
         if: env.commit_realizado == 'true'
@@ -83,7 +85,7 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-and-pr.yml/dispatches \
-            -d '{"ref":"${{ github.ref_name }}"}'
+            -d '{"ref":"${{ github.ref_name }}", "inputs": {"commit_sha": "${{ env.new_commit_sha }}"}}'
 
   # Job de build
   build:
