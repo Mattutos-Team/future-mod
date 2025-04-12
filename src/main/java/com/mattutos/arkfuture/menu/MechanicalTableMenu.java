@@ -1,225 +1,114 @@
 package com.mattutos.arkfuture.menu;
 
-import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity.DATA;
+import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity.SLOT;
 import com.mattutos.arkfuture.core.inventory.EnumContainerData;
 import com.mattutos.arkfuture.core.inventory.SimpleEnumContainerData;
-import com.mattutos.arkfuture.crafting.recipe.common.IngredientStack;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
-import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.MenuInit;
-import com.mattutos.arkfuture.menu.common.BaseSlot;
+import com.mattutos.arkfuture.init.recipe.ModRecipe;
+import com.mattutos.arkfuture.menu.common.IngredientSlot;
 import com.mattutos.arkfuture.menu.common.ResultSlot;
-import lombok.extern.slf4j.Slf4j;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Slf4j
-public class MechanicalTableMenu extends AbstractContainerMenu {
+public class MechanicalTableMenu extends AFAbstractContainerMenu<DATA> {
 
-    public final MechanicalTableBlockEntity blockEntity;
-    private final Level level;
-    private final EnumContainerData<MechanicalTableBlockEntity.DATA> data;
-
-    public MechanicalTableMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleEnumContainerData<>(MechanicalTableBlockEntity.DATA.class));
+    public MechanicalTableMenu(int pContainerId, Inventory pInventory, FriendlyByteBuf pExtraData) {
+        this(pContainerId, pInventory, pInventory.player.level().getBlockEntity(pExtraData.readBlockPos()), new SimpleEnumContainerData<>(DATA.class));
     }
 
-    public MechanicalTableMenu(int pContainerId, Inventory inv, BlockEntity blockEntity, EnumContainerData<MechanicalTableBlockEntity.DATA> pContainerData) {
-        super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId);
-        this.blockEntity = ((MechanicalTableBlockEntity) blockEntity);
-        this.level = inv.player.level();
-        this.data = pContainerData;
+    public MechanicalTableMenu(int pContainerId, Inventory pPlayerInventory, BlockEntity pBlockEntity, EnumContainerData<DATA> pContainerData) {
+        super(MenuInit.MECHANICAL_TABLE_MENU.get(), pContainerId, pPlayerInventory, pBlockEntity, pContainerData);
 
-        //TODO - CREATE A LOGIC TO GET RECIPES BY A SPECIFIC FOLDER
-        List<String> recipePaths = List.of("ancient_obsidian", "ancient_iron");
-        List<MechanicalTableRecipe> recipes = getMultipleRecipes(recipePaths);
-        List<IngredientStack.Item> validBaseIngridientsList = getValidBaseIngredients(recipes);
+        List<RecipeHolder<MechanicalTableRecipe>> allRecipesForMechanicalTable = this.level.getRecipeManager().getAllRecipesFor(ModRecipe.MECHANICAL_TABLE_TYPE.get());
+        Set<Ingredient> validBaseIngridientsList = getValidBaseIngredients(allRecipesForMechanicalTable);
+        Set<Ingredient> validPliersIngridientsList = getValidPliersIngredients(allRecipesForMechanicalTable);
+        Set<Ingredient> validAdditionsIngredients = getValidAdditionsIngredients(allRecipesForMechanicalTable);
 
-        addPlayerInventory(inv);
-        addPlayerHotbar(inv);
+        addPlayerInventorySlots(pPlayerInventory);
 
+        ItemStackHandler itemStackHandler = ((MechanicalTableBlockEntity) pBlockEntity).getItemStackHandler();
         //BASE ITEM
-        this.addSlot(new BaseSlot(this.blockEntity.getItemStackHandler(), 1, 29, 35, validBaseIngridientsList));
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.BASE.ordinal(), 29, 35, validBaseIngridientsList));
 
-        //MECHANICAL PLIERS (INDEX 6)
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 6, 84, 35));
+        //MECHANICAL PLIERS
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.PLIERS.ordinal(), 84, 35, validPliersIngridientsList));
 
         //INGREDIENTS ITEMS
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 0, 11, 35)); // LEFT
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 2, 47, 35)); // RIGHT
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 3, 29, 17)); // UP
-        this.addSlot(new SlotItemHandler(this.blockEntity.getItemStackHandler(), 4, 29, 53)); // BOTTOM
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_1.ordinal(), 11, 35, validAdditionsIngredients)); // LEFT
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_2.ordinal(), 47, 35, validAdditionsIngredients)); // RIGHT
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_3.ordinal(), 29, 17, validAdditionsIngredients)); // UP
+        this.addSlot(new IngredientSlot(itemStackHandler, SLOT.INGREDIENT_4.ordinal(), 29, 53, validAdditionsIngredients)); // BOTTOM
 
         //RESULT SLOT
-        this.addSlot(new ResultSlot(this.blockEntity.getItemStackHandler(), 5, 152, 35));
+        this.addSlot(new ResultSlot(itemStackHandler, 6, 152, 35));
 
-        addDataSlots(data);
+        addDataSlots(containerData);
     }
-
 
     //CHECK WHETHER IS CRAFTING OR NOT
     public boolean isCrafting() {
-        return data.get(0) > 0;
+        return containerData.get(DATA.PROGRESS) > 0;
     }
 
     public boolean isEnergyIncreasing() {
-        long energy = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
-        if (energy > MechanicalTableBlockEntity.CAPACITY) {
-            return false;
-        }
-        return true;
+        long energy = containerData.get(DATA.ENERGY_STORED);
+        return energy <= containerData.get(DATA.MAX_ENERGY_CAPACITY);
     }
 
-    public int getScaledEnergyStoredProgress() {
-        long progress = data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
-        long maxProgress = data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
-        int arrowPixelSize = 14;
+    public float getScaledEnergyStoredProgress() {
+        long progress = containerData.get(DATA.ENERGY_STORED);
+        long maxProgress = containerData.get(DATA.MAX_ENERGY_CAPACITY);
 
-        return Math.toIntExact(maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0);
+        return maxProgress != 0 && progress != 0 ? ((float) progress / (float) maxProgress) : 0;
     }
 
-    public int getScaledArrowProgress() {
-        int progress = this.data.get(0);
-        int maxProgress = this.data.get(1);
-        int arrowPixelSize = 18;
+    public float getScaledArrowProgress() {
+        long progress = this.containerData.get(DATA.PROGRESS);
+        long maxProgress = this.containerData.get(DATA.MAX_PROGRESS);
 
-        return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
+        return maxProgress != 0 && progress != 0 ? ((float) progress / (float) maxProgress) : 0;
     }
 
-
-    // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
-    // must assign a slot number to each of the slots used by the GUI.
-    // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
-    // Each time we add a Slot to the container, it automatically increases the slotIndex, which means
-    //  0 - 8 = hotbar slots (which will map to the InventoryPlayer slot numbers 0 - 8)
-    //  9 - 35 = player inventory slots (which map to the InventoryPlayer slot numbers 9 - 35)
-    //  36 - 44 = TileInventory slots, which map to our TileEntity slot numbers 0 - 8)
-    private static final int HOTBAR_SLOT_COUNT = 9;
-    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
-    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
-    private static final int VANILLA_FIRST_SLOT_INDEX = 0;
-    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-
-    // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 7;  // must be the number of slots you have!
-
-    @Override
-    public ItemStack quickMoveStack(Player playerIn, int pIndex) {
-        Slot sourceSlot = slots.get(pIndex);
-        if (!sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyOfSourceStack = sourceStack.copy();
-
-        // Check if the slot clicked is one of the vanilla container slots
-        if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
-            // This is a vanilla container slot so merge the stack into the tile inventory
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
-                    + TE_INVENTORY_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;  // EMPTY_ITEM
-            }
-        } else if (pIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
-            // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;
-            }
-        } else {
-            System.out.println("Invalid slotIndex:" + pIndex);
-            return ItemStack.EMPTY;
-        }
-        // If stack size == 0 (the entire stack was moved) set slot contents to null
-        if (sourceStack.getCount() == 0) {
-            sourceSlot.set(ItemStack.EMPTY);
-        } else {
-            sourceSlot.setChanged();
-        }
-        sourceSlot.onTake(playerIn, sourceStack);
-        return copyOfSourceStack;
+    private Set<Ingredient> getValidBaseIngredients(List<RecipeHolder<MechanicalTableRecipe>> recipes) {
+        return recipes.stream()
+                .map(RecipeHolder::value)
+                .map(MechanicalTableRecipe::base)
+                .filter(base -> base != null && !base.isEmpty())
+                .collect(Collectors.toSet());
     }
 
-
-    @Override
-    public boolean stillValid(Player pPlayer) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                pPlayer, BlockInit.MECHANICAL_TABLE.get());
+    private Set<Ingredient> getValidAdditionsIngredients(List<RecipeHolder<MechanicalTableRecipe>> recipes) {
+        return recipes.stream()
+                .map(RecipeHolder::value)
+                .map(MechanicalTableRecipe::additions)
+                .filter(addition -> addition != null && !addition.isEmpty())
+                .collect(Collectors.toSet());
     }
 
-    private void addPlayerInventory(Inventory playerInventory) {
-        for (int i = 0; i < 3; ++i) {
-            for (int l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
-            }
-        }
-    }
-
-    private void addPlayerHotbar(Inventory playerInventory) {
-        for (int i = 0; i < 9; ++i) {
-            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
-        }
-    }
-
-
-    private List<MechanicalTableRecipe> getMultipleRecipes(List<String> paths) {
-        RecipeManager recipeManager = level.getRecipeManager();
-        List<MechanicalTableRecipe> validRecipes = new ArrayList<>();
-
-        for (String path : paths) {
-            ResourceLocation recipeId = ResourceLocation.fromNamespaceAndPath(ArkFuture.MOD_ID, path);
-
-            log.info("Processing recipe ID: {}", recipeId);
-
-            RecipeHolder<?> recipeHolder = recipeManager.byKey(recipeId).orElse(null);
-
-            if (recipeHolder == null) {
-                log.warn("No recipe found for ID: {}", recipeId);
-            }
-
-            if (recipeHolder != null && recipeHolder.value() instanceof MechanicalTableRecipe) {
-                validRecipes.add((MechanicalTableRecipe) recipeHolder.value());
-                log.info("Valid recipe found: {}", recipeId);
-            }
-        }
-        log.info("Total valid recipes found: {}", validRecipes.size());
-
-        return validRecipes;
-    }
-
-
-    private List<IngredientStack.Item> getValidBaseIngredients(List<MechanicalTableRecipe> recipes) {
-        List<IngredientStack.Item> validBases = new ArrayList<>();
-
-        for (MechanicalTableRecipe recipe : recipes) {
-            IngredientStack.Item base = recipe.getBase();
-
-            if (base != null && !base.isEmpty()) {
-                validBases.add(base);
-            }
-        }
-
-        return validBases;
+    private Set<Ingredient> getValidPliersIngredients(List<RecipeHolder<MechanicalTableRecipe>> recipes) {
+        return recipes.stream()
+                .map(RecipeHolder::value)
+                .map(MechanicalTableRecipe::pliers)
+                .filter(pliers -> pliers != null && !pliers.isEmpty())
+                .collect(Collectors.toSet());
     }
 
     public long getStoredEnergy() {
-        return data.get(MechanicalTableBlockEntity.DATA.ENERGY_STORED);
+        return containerData.get(DATA.ENERGY_STORED);
     }
 
     public long getMaxEnergy() {
-        return data.get(MechanicalTableBlockEntity.DATA.MAX_ENERGY_CAPACITY);
+        return containerData.get(DATA.MAX_ENERGY_CAPACITY);
     }
 }
