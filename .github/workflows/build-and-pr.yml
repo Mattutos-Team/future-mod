@@ -12,6 +12,7 @@ on:
       - feature/*  # Dispara o workflow quando há um push em uma branch feature
       - fix/*  # Dispara o workflow quando há um push em uma branch fix
       - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
+  workflow_dispatch: # Permite disparar o workflow manualmente
 
 jobs:
   # Job para limpar e gerar os dados (DataGen), caso necessário
@@ -52,8 +53,8 @@ jobs:
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-      - name: Gerar Data (runData)
-        run: ./gradlew runData
+#      - name: Gerar Data (runData)
+#        run: ./gradlew runData
 
       - name: Verifica alterações Datagen para Atualizar commit
         run: |
@@ -66,8 +67,8 @@ jobs:
             git commit -m "🔄 Atualização automática do DataGen"
             git push
             echo "Alterações detectadas e commit realizado. Finalizando workflow atual."
+            echo "commit_realizado=true" >> $GITHUB_ENV
           fi
-          echo "commit_realizado=true" >> $GITHUB_ENV
       - name: Cancelar o workflow atual
         if: env.commit_realizado == 'true'
         run: |
@@ -75,6 +76,14 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
+      - name: Disparar o workflow manualmente
+        if: env.commit_realizado == 'true'
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/${{ github.workflow }}/dispatches \
+            -d '{"ref":"${{ github.ref_name }}"}'
 
   # Job de build
   build:
