@@ -1,7 +1,6 @@
 name: Build & Create PR for Develop
 
 permissions:
-  actions: write
   checks: write
   contents: write
   pull-requests: write
@@ -12,11 +11,6 @@ on:
       - feature/*  # Dispara o workflow quando há um push em uma branch feature
       - fix/*  # Dispara o workflow quando há um push em uma branch fix
       - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
-  workflow_dispatch: # Permite disparar o workflow manualmente
-    inputs:
-      commit_sha:
-        description: 'SHA do commit para associar ao workflow'
-        required: false
 
 jobs:
   # Job para limpar e gerar os dados (DataGen), caso necessário
@@ -57,10 +51,11 @@ jobs:
       - name: Limpar a pasta 'generated'
         run: rm -rf src/generated
 
-#      - name: Gerar Data (runData)
-#        run: ./gradlew runData
+      - name: Gerar Data (runData)
+        run: ./gradlew runData
 
       - name: Verifica alterações Datagen para Atualizar commit
+        id: datagen_commit
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -70,35 +65,42 @@ jobs:
           else
             git commit -m "🔄 Atualização automática do DataGen"
             git push
-            echo "Alterações detectadas e commit realizado. Finalizando workflow atual."
-            echo "commit_realizado=true" >> $GITHUB_ENV
-            NEW_COMMIT_SHA=$(git rev-parse HEAD)
-            echo "new_commit_sha=$NEW_COMMIT_SHA" >> $GITHUB_ENV
+            echo "Alterações detectadas e commit realizado."
+            echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           fi
-      - name: Cancelar o workflow atual
-        if: env.commit_realizado == 'true'
+      - name: Criar check‑run “build” no novo commit
+        if: steps.datagen_commit.outputs.sha != ''
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ steps.datagen_commit.outputs.sha }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/cancel
-      - name: Disparar o workflow manualmente
-        if: env.commit_realizado == 'true'
+          curl -s -X POST \
+          -H "Authorization: Bearer $TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/$REPO/check-runs \
+          -d '{
+           "name": "build",
+           "head_sha": "'"$SHA"'",
+           "status": "queued"
+          }'
+
+      - name: Criar check‑run “test” no novo commit
+        if: steps.datagen_commit.outputs.sha != ''
+        env:
+          REPO: ${{ github.repository }}
+          SHA: ${{ steps.datagen_commit.outputs.sha }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/actions/workflows/build-and-pr.yml/dispatches \
-            -d '{"ref":"${{ github.ref_name }}", "inputs": {"commit_sha": "${{ env.new_commit_sha }}"}}'
-      - name: Criar Check Run do build e test para o commit
-        if: ${{ inputs.commit_sha != '' }}
-        run: |
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/check-runs \
-            -d '{"name":"build","head_sha":"${{ inputs.commit_sha }}","status":"in_progress","external_id":"42","output":{"title":"build title","summary":"","text":""}}'
+          curl -s -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/$REPO/check-runs \
+            -d '{
+              "name": "test",
+              "head_sha": "'"$SHA"'",
+              "status": "queued"
+            }'
 
   # Job de build
   build:
