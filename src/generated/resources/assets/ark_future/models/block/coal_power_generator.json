@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "ark_future:block/coal_power_generator/coal_power_generator_front",
-    "side": "ark_future:block/coal_power_generator/coal_power_generator_side",
-    "top": "ark_future:block/coal_power_generator/coal_power_generator_top"
-  }
-}
