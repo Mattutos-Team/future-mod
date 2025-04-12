@@ -7,9 +7,9 @@ permissions:
 on:
   push:
     branches:
-      - feature/*  # Dispara o workflow quando há um push em uma branch feature
-      - fix/*  # Dispara o workflow quando há um push em uma branch fix
-      - hotfix/*  # Dispara o workflow quando há um push em uma branch hotfix
+      - feature/**  # Dispara o workflow quando há um push em uma branch feature
+      - fix/**  # Dispara o workflow quando há um push em uma branch fix
+      - hotfix/**  # Dispara o workflow quando há um push em uma branch hotfix
 
 jobs:
   # Job para limpar e gerar os dados (DataGen), caso necessário
