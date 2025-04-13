@@ -3,6 +3,8 @@ package com.mattutos.arkfuture.init.recipe;
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableSerializer;
+import com.mattutos.arkfuture.crafting.recipe.transform.TransformRecipe;
+import com.mattutos.arkfuture.crafting.recipe.transform.TransformRecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -33,6 +35,19 @@ public class ModRecipe {
                 }
             });
 
+
+    //TRANSFORM RECIPE SERIALIZER
+    public static final RegistryObject<TransformRecipeSerializer> TRANSFORM_SERIALIZER =
+            SERIALIZERS.register("transform_recipe_serializer", TransformRecipeSerializer::new);
+
+    //TRANSFORM RECIPE TYPE
+    public static final RegistryObject<RecipeType<TransformRecipe>> TRANSFORM_RECIPE_TYPE =
+            TYPES.register("transform_recipe_type", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "transform_recipe_type";
+                }
+            });
 
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);

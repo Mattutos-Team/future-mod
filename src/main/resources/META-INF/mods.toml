@@ -8,6 +8,10 @@ license="${mod_license}"
     authors="${mod_authors}"
     description='''${mod_description}'''
 
+# Necessário para o Mixin
+[[mixins]]
+ref="mixin.arkfuture.json"
+
 [[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true

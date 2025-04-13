@@ -1,0 +1,13 @@
+{
+  "type": "ark_future:transform",
+  "ingredients": [
+    { "item": "minecraft:coal" }
+  ],
+  "result": {
+    "item": "minecraft:diamond",
+    "count": 1
+  },
+  "circumstance": {
+    "type": "ark_future:explosion"
+  }
+}
