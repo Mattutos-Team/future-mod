@@ -1,21 +1,15 @@
 package com.mattutos.arkfuture.datagen;
 
 import com.mattutos.arkfuture.ArkFuture;
-
+import com.mattutos.arkfuture.datagen.custom.MechanicalTableRecipeBuilder;
 import com.mattutos.arkfuture.init.BlockInit;
 import com.mattutos.arkfuture.init.ItemInit;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
-import net.minecraft.world.item.crafting.BlastingRecipe;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
-
 import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
 
 import java.util.List;
@@ -49,6 +43,22 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .requires(Items.GOLD_INGOT, 1)
                 .requires(ItemInit.MECHANICAL_PLIERS.get())
                 .unlockedBy(getHasName(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
+                .save(pRecipeOutput);
+
+        MechanicalTableRecipeBuilder.resultRecipe(Items.IRON_BLOCK, 1)
+                .requireBase(Items.OBSIDIAN)
+                .requirePliers(ItemInit.MECHANICAL_PLIERS.get())
+                .requireAdditions(Items.IRON_INGOT)
+                .requireEnergyExpenditurePerTick(5)
+                .requireTotalTicksPerCraft(50)
+                .save(pRecipeOutput);
+
+        MechanicalTableRecipeBuilder.resultRecipe(Items.OBSIDIAN, 1)
+                .requireBase(Items.IRON_BLOCK)
+                .requirePliers(ItemInit.MECHANICAL_PLIERS.get())
+                .requireAdditions(Items.IRON_INGOT)
+                .requireEnergyExpenditurePerTick(5)
+                .requireTotalTicksPerCraft(50)
                 .save(pRecipeOutput);
     }
 

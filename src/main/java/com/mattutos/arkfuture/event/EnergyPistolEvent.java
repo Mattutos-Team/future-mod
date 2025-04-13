@@ -54,7 +54,6 @@ public class EnergyPistolEvent {
         }
     }
 
-
     @SubscribeEvent
     public static void onScroll(InputEvent.MouseScrollingEvent event) {
         Minecraft mc = Minecraft.getInstance();
