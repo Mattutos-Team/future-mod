@@ -30,7 +30,6 @@ public class ArkFuture {
         ModRecipe.register(modEventBus);
         MenuInit.register(modEventBus);
 
-        // ✅ Register your event handler here
         MinecraftForge.EVENT_BUS.register(ExplosionHandler.class);
 
         MinecraftForge.EVENT_BUS.register(this);
