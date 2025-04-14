@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @GameTestHolder(ArkFuture.MOD_ID)
-class BlockInitTest {
+public class BlockInitTest {
 
     @GameTest
-    void register(GameTestHelper helper) {
+    public static void testRegister(GameTestHelper helper) {
         log.info("Testing BlockInit");
         var block = BlockInit.COAL_POWER_GENERATOR.get();
         BlockState blockState = block.defaultBlockState();
@@ -29,10 +29,10 @@ class BlockInitTest {
         // Obtém a posição do jogador (posição do 'player')
         var playerPos = player.blockPosition();
 
-        // Coloca um bloco em uma posição ao redor do jogador (por exemplo, abaixo dele)
-        helper.setBlock(playerPos.below(), blockState);
+        // Coloca um bloco em uma posição ao redor do jogador (por exemplo, a frente dele)
+        helper.setBlock(playerPos.north(), blockState);
 
         // Verifique se o bloco foi colocado corretamente
-        helper.assertBlockPresent(block, playerPos.below());
+        helper.assertBlockPresent(block, playerPos.north());
     }
 }
