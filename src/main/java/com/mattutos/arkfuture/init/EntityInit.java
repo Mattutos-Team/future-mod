@@ -1,7 +1,6 @@
 package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.block.entity.FusionTNTPrimedEntity;
 import com.mattutos.arkfuture.entity.EnergyProjectileEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

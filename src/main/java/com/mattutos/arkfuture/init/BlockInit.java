@@ -2,7 +2,6 @@ package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
-import com.mattutos.arkfuture.block.FusionTNTBlock;
 import com.mattutos.arkfuture.block.MechanicalTableBlock;
 
 import net.minecraft.util.valueproviders.UniformInt;
