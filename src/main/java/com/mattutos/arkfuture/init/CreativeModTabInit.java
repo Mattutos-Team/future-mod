@@ -31,6 +31,7 @@ public class CreativeModTabInit {
 
                         output.accept(ItemInit.GOLDEN_THREAD.get());
                         output.accept(ItemInit.MECHANICAL_PLIERS.get());
+                        output.accept(BlockInit.FUSION_TNT_BLOCK.get());
 
                         output.accept(ItemInit.ENERGY_PISTOL.get());
                     })

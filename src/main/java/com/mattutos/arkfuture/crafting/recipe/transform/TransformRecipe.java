@@ -1,7 +1,6 @@
 package com.mattutos.arkfuture.crafting.recipe.transform;
 
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
-import lombok.Getter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;

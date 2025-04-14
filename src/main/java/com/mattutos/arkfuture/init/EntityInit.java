@@ -1,6 +1,7 @@
 package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
+import com.mattutos.arkfuture.block.entity.FusionTNTPrimedEntity;
 import com.mattutos.arkfuture.entity.EnergyProjectileEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -19,6 +20,15 @@ public class EntityInit {
                             .clientTrackingRange(4)
                             .updateInterval(10)
                             .build("energy_projectile"));
+
+
+    public static final RegistryObject<EntityType<FusionTNTPrimedEntity>> FUSION_TNT_PRIMED =
+            ENTITIES.register("fusion_tnt_primed", () ->
+                    EntityType.Builder.<FusionTNTPrimedEntity>of(FusionTNTPrimedEntity::new, MobCategory.MISC)
+                            .sized(0.25f, 0.25f)
+                            .clientTrackingRange(4)
+                            .updateInterval(10)
+                            .build("fusion_tnt_primed"));
 
     public static void register(IEventBus eventBus) {
         ENTITIES.register(eventBus);
