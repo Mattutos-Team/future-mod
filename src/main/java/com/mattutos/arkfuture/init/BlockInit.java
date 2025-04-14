@@ -45,10 +45,6 @@ public class BlockInit {
                     UniformInt.of(2, 4),
                     BlockBehaviour.Properties.of().strength(4.5f, 3f).requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
 
-    public static final RegistryObject<FusionTNTBlock> FUSION_TNT_BLOCK = registerBlock("fusion_tnt_block",
-            () -> new FusionTNTBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.SOUL_SOIL)));
-
-
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);

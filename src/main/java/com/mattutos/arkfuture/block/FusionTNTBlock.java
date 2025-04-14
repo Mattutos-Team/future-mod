@@ -40,6 +40,25 @@ public class FusionTNTBlock extends Block {
         super(pProperties);
     }
 
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block blockIn, BlockPos fromPos,
+                                boolean isMoving) {
+        if (level.getBestNeighborSignal(pos) > 0) {
+            this.startFuse(level, pos, null);
+            level.removeBlock(pos, false);
+        }
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+
+        if (level.getBestNeighborSignal(pos) > 0) {
+            this.startFuse(level, pos, null);
+            level.removeBlock(pos, false);
+        }
+    }
+
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack pStack, BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHitResult) {
@@ -78,6 +97,7 @@ public class FusionTNTBlock extends Block {
         }
     }
 
+
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
         return SHAPE;
@@ -89,12 +109,20 @@ public class FusionTNTBlock extends Block {
     }
 
     @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        super.onExplosionHit(pState, pLevel, pPos, pExplosion, pDropConsumer);
+    public boolean dropFromExplosion(Explosion pExplosion) {
+        return false;
     }
 
     @Override
-    public boolean dropFromExplosion(Explosion pExplosion) {
-        return false;
+    public void wasExploded(Level level, BlockPos pos, Explosion exp) {
+        super.wasExploded(level, pos, exp);
+        if (!level.isClientSide) {
+            final FusionTNTPrimedEntity primedTinyTNTEntity = new FusionTNTPrimedEntity(level, pos.getX() + 0.5F,
+                    pos.getY(), pos.getZ() + 0.5F, exp.getIndirectSourceEntity());
+            primedTinyTNTEntity
+                    .setFuse(level.random.nextInt(primedTinyTNTEntity.getFuse() / 4)
+                            + primedTinyTNTEntity.getFuse() / 8);
+            level.addFreshEntity(primedTinyTNTEntity);
+        }
     }
 }
