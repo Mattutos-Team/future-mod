@@ -1,0 +1,18 @@
+{
+  "type": "ark_future:mechanical_table",
+  "additions": {
+    "item": "minecraft:iron_ingot"
+  },
+  "base": {
+    "item": "minecraft:iron_block"
+  },
+  "energy_expenditure_per_tick": 5,
+  "pliers": {
+    "item": "ark_future:mechanical_pliers"
+  },
+  "result": {
+    "count": 1,
+    "id": "minecraft:obsidian"
+  },
+  "total_ticks_per_craft": 50
+}
