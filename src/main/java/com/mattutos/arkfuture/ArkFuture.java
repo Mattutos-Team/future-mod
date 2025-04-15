@@ -1,5 +1,6 @@
 package com.mattutos.arkfuture;
 
+import com.mattutos.arkfuture.event.ExplosionHandler;
 import com.mattutos.arkfuture.init.*;
 import com.mattutos.arkfuture.init.recipe.ModRecipe;
 import com.mattutos.arkfuture.networking.AFPacketHandler;
@@ -28,6 +29,8 @@ public class ArkFuture {
         ItemInit.register(modEventBus);
         ModRecipe.register(modEventBus);
         MenuInit.register(modEventBus);
+
+        MinecraftForge.EVENT_BUS.register(ExplosionHandler.class);
 
         MinecraftForge.EVENT_BUS.register(this);
     }

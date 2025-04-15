@@ -3,7 +3,6 @@ package com.mattutos.arkfuture.init;
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.item.BatteryItem;
 import com.mattutos.arkfuture.item.EnergyPistolItem;
-import com.mattutos.arkfuture.item.GoldenThreadItem;
 import com.mattutos.arkfuture.item.MechanicalPliersItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -21,7 +20,8 @@ public class ItemInit {
 
     public static final RegistryObject<Item> MECHANICAL_PLIERS = ITEMS.register("mechanical_pliers", () -> new MechanicalPliersItem(new Item.Properties().durability(50)));
 
-    public static final RegistryObject<Item> GOLDEN_THREAD = ITEMS.register("golden_thread", () -> new GoldenThreadItem(new Item.Properties()));
+    public static final RegistryObject<Item> GOLDEN_THREAD = ITEMS.register("golden_thread", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> SIMPLE_ENERGIZED_ANCIENT_IRON = ITEMS.register("simple_energized_ancient_ingot", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> ENERGY_PISTOL = ITEMS.register("energy_pistol", () -> new EnergyPistolItem(new Item.Properties()));
     public static final RegistryObject<Item> ENERGY_PROJECTILE = ITEMS.register("energy_projectile", () -> new Item(new Item.Properties()));
