@@ -2,10 +2,10 @@
   "type": "ark_future:explosion_crafting",
   "ingredients": [
     {
-      "item": "minecraft:coal"
+      "id": "minecraft:redstone"
     },
     {
-      "item": "minecraft:iron_ingot"
+      "id": "ark_future:ancient_ore_ingot"
     }
   ],
   "result": {

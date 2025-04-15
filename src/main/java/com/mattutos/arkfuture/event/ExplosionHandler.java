@@ -43,7 +43,13 @@ public class ExplosionHandler {
 
                 int resultCount = result.getCount();
 
-                ItemStack stack = new ItemStack(result.getItem(), resultCount * input.getItem(0).getCount());
+                int smallestIngredientCount = input.ingredients().stream()
+                        .map(ItemStack::getCount)
+                        .mapToInt(Integer::intValue)
+                        .min()
+                        .orElse(0);
+
+                ItemStack stack = new ItemStack(result.getItem(), resultCount * smallestIngredientCount);
                 level.addFreshEntity(new ItemEntity(level, center.x, center.y, center.z, stack));
             } else {
                 log.info("Recipe did not match: {}", recipe);
