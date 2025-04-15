@@ -64,9 +64,9 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
         }
     }
 
-    private final ItemStackHandler itemStackHandler = createItemHandler();
-    private final AFEnergyStorage energyStorage = createEnergyStorage();
-    private final EnumContainerData<DATA> containerData = createEnumContainerData();
+    private final ItemStackHandler itemStackHandler;
+    private final AFEnergyStorage energyStorage;
+    private final EnumContainerData<DATA> containerData;
 
     //DATA FOR PROGRESS BAR
     private int progress = 0;
@@ -74,22 +74,6 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
 
     //TODO - DEFINE MAX TABLE ENERGY CAPACITY BASED ON THE TABLE TIER
     public static final int CAPACITY = 5_000;
-
-    private ItemStackHandler createItemHandler() {
-        return new ItemStackHandler(SLOT.count()) { //5 TO CRAFT +1 TO MECHANICAL PLIERS +1 TO OUTPUT
-            @Override
-            protected void onContentsChanged(int slot) {
-                setChanged();
-                if (!level.isClientSide()) {
-                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-                }
-            }
-        };
-    }
-
-    private @NotNull AFEnergyStorage createEnergyStorage() {
-        return new AFEnergyStorage(CAPACITY);
-    }
 
     private @NotNull EnumContainerData<DATA> createEnumContainerData() {
         return new EnumContainerData<>(DATA.class) {
@@ -111,6 +95,10 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
 
     public MechanicalTableBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.MECHANICAL_TABLE.get(), pPos, pBlockState);
+
+        itemStackHandler = createItemStackHandler(SLOT.count());
+        energyStorage = createEnergyStorage(CAPACITY);
+        containerData = createEnumContainerData();
     }
 
     @Override
@@ -138,7 +126,7 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         pTag.put("inventory", itemStackHandler.serializeNBT(pRegistries));
         pTag.putInt("mechanical_table.progress", progress);
         pTag.putInt("mechanical_table.max_progress", maxProgress);
@@ -147,7 +135,7 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+    protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
 
         itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));

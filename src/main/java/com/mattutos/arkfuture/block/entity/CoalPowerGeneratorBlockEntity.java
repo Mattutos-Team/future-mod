@@ -71,15 +71,15 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
     public static final int GENERATE = 10;
     public static final int CAPACITY = 20_000;
 
-    private final ItemStackHandler itemStackHandler = createItemStackHandler();
-    private final AFEnergyStorage energyStorage = createEnergyStorage();
-    protected final EnumContainerData<DATA> containerData = createContainerData();
+    private final ItemStackHandler itemStackHandler;
+    private final AFEnergyStorage energyStorage;
+    protected final EnumContainerData<DATA> containerData;
 
     private int remainingBurnTime = 0;
     private int totalBurnTime = 0;
     private int generating = 0;
 
-    private @NotNull ItemStackHandler createItemStackHandler() {
+    private @NotNull ItemStackHandler customCreateItemStackHandler() {
         return new ItemStackHandler(SLOT.values().length) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -98,10 +98,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
             }
 
         };
-    }
-
-    private @NotNull AFEnergyStorage createEnergyStorage() {
-        return new AFEnergyStorage(CAPACITY);
     }
 
     private EnumContainerData<DATA> createContainerData() {
@@ -128,6 +124,10 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
 
     public CoalPowerGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.COAL_POWER_GENERATOR.get(), pPos, pBlockState);
+
+        itemStackHandler = customCreateItemStackHandler();
+        energyStorage = createEnergyStorage(CAPACITY);
+        containerData = createContainerData();
     }
 
     @Override

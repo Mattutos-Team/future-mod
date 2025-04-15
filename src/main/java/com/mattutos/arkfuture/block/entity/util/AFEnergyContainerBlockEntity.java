@@ -46,4 +46,14 @@ public abstract class AFEnergyContainerBlockEntity extends AFBaseContainerBlockE
         }
         return super.getCapability(cap, side);
     }
+
+    protected @NotNull AFEnergyStorage createEnergyStorage(int capacity) {
+        return new AFEnergyStorage(capacity);
+    }
+    protected @NotNull AFEnergyStorage createEnergyStorage(int capacity, int maxTransfer) {
+        return new AFEnergyStorage(capacity, maxTransfer, maxTransfer, 0);
+    }
+    protected @NotNull AFEnergyStorage createEnergyStorage(int capacity, int maxReceive, int maxExtract, int energy) {
+        return new AFEnergyStorage(capacity, maxReceive, maxExtract, energy);
+    }
 }

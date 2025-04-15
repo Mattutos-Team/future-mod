@@ -2,6 +2,7 @@ package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
+import com.mattutos.arkfuture.block.MechanicalAssemblerBlock;
 import com.mattutos.arkfuture.block.MechanicalTableBlock;
 
 import net.minecraft.util.valueproviders.UniformInt;
@@ -24,6 +25,9 @@ public class BlockInit {
 
     public static final RegistryObject<CoalPowerGeneratorBlock> COAL_POWER_GENERATOR = registerBlock("coal_power_generator",
             () -> new CoalPowerGeneratorBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.STONE)));
+
+    public static final RegistryObject<MechanicalAssemblerBlock> MECHANICAL_ASSEMBLER = registerBlock("mechanical_assembler",
+            () -> new MechanicalAssemblerBlock(BlockBehaviour.Properties.of().noOcclusion()));
 
     public static final RegistryObject<MechanicalTableBlock> MECHANICAL_TABLE = registerBlock("mechanical_table",
             () -> new MechanicalTableBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.WOOD)));
