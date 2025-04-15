@@ -14,14 +14,14 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 public class ExplosionRecipeSerializer implements RecipeSerializer<ExplosionRecipe> {
 
     public static final MapCodec<ExplosionRecipe> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
-            Ingredient.CODEC_NONEMPTY.fieldOf("ingredients").forGetter(ExplosionRecipe::ingredients),
+            ItemStack.STRICT_CODEC.listOf().fieldOf("ingredients").forGetter(ExplosionRecipe::ingredients),
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(ExplosionRecipe::output)
     ).apply(inst, ExplosionRecipe::new));
 
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ExplosionRecipe> STREAM_CODEC =
             StreamCodec.composite(
-                    Ingredient.CONTENTS_STREAM_CODEC, ExplosionRecipe::ingredients,
+                    ItemStack.LIST_STREAM_CODEC, ExplosionRecipe::ingredients,
                     ItemStack.STREAM_CODEC, ExplosionRecipe::output,
                     ExplosionRecipe::new);
 
