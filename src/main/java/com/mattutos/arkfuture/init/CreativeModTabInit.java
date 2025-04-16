@@ -33,6 +33,7 @@ public class CreativeModTabInit {
                         output.accept(ItemInit.SIMPLE_ENERGIZED_ANCIENT_IRON.get());
                         output.accept(ItemInit.MECHANICAL_PLIERS.get());
                         output.accept(ItemInit.ANCIENT_HAMMER.get());
+                        output.accept(ItemInit.ANCIENT_PLATE.get());
 
                         output.accept(ItemInit.ENERGY_PISTOL.get());
                     })
