@@ -3,7 +3,7 @@ package com.mattutos.arkfuture.init;
 import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.item.BatteryItem;
 import com.mattutos.arkfuture.item.EnergyPistolItem;
-import com.mattutos.arkfuture.item.MechanicalPliersItem;
+import com.mattutos.arkfuture.item.common.AFRemainingItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -18,8 +18,9 @@ public class ItemInit {
 
     public static final RegistryObject<Item> BATTERY_10K = ITEMS.register("battery_10k", () -> new BatteryItem(new Item.Properties(), 10_000, 100));
 
-    public static final RegistryObject<Item> MECHANICAL_PLIERS = ITEMS.register("mechanical_pliers", () -> new MechanicalPliersItem(new Item.Properties().durability(50)));
-
+    public static final RegistryObject<Item> MECHANICAL_PLIERS = ITEMS.register("mechanical_pliers", () -> new AFRemainingItem(new Item.Properties().durability(50),4 ));
+    public static final RegistryObject<Item> ANCIENT_HAMMER = ITEMS.register("ancient_hammer", () -> new AFRemainingItem(new Item.Properties().durability(20)));
+    
     public static final RegistryObject<Item> GOLDEN_THREAD = ITEMS.register("golden_thread", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SIMPLE_ENERGIZED_ANCIENT_IRON = ITEMS.register("simple_energized_ancient_ingot", () -> new Item(new Item.Properties()));
 
