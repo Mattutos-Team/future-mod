@@ -23,5 +23,6 @@ public class ModItemModelProvider extends ItemModelProvider {
         this.basicItem(ItemInit.ANCIENT_PLATE.get());
         this.basicItem(ItemInit.GOLDEN_THREAD.get());
         this.basicItem(ItemInit.SIMPLE_ENERGIZED_ANCIENT_IRON.get());
+        this.basicItem(ItemInit.BASIC_PROCESSOR.get());
     }
 }

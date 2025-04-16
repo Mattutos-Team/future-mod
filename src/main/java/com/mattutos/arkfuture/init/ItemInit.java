@@ -21,7 +21,9 @@ public class ItemInit {
     public static final RegistryObject<Item> MECHANICAL_PLIERS = ITEMS.register("mechanical_pliers", () -> new AFRemainingItem(new Item.Properties().durability(50),4 ));
     public static final RegistryObject<Item> ANCIENT_HAMMER = ITEMS.register("ancient_hammer", () -> new AFRemainingItem(new Item.Properties().durability(20)));
     public static final RegistryObject<Item> ANCIENT_PLATE = ITEMS.register("ancient_plate", () -> new Item(new Item.Properties()));
-    
+
+    public static final RegistryObject<Item> BASIC_PROCESSOR = ITEMS.register("basic_processor", () -> new Item(new Item.Properties()));
+
     public static final RegistryObject<Item> GOLDEN_THREAD = ITEMS.register("golden_thread", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> SIMPLE_ENERGIZED_ANCIENT_IRON = ITEMS.register("simple_energized_ancient_ingot", () -> new Item(new Item.Properties()));
 

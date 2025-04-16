@@ -35,6 +35,8 @@ public class CreativeModTabInit {
                         output.accept(ItemInit.ANCIENT_HAMMER.get());
                         output.accept(ItemInit.ANCIENT_PLATE.get());
 
+                        output.accept(ItemInit.BASIC_PROCESSOR.get());
+
                         output.accept(ItemInit.ENERGY_PISTOL.get());
                     })
                     .build()
