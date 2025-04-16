@@ -11,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.pattern.BlockInWorld;
 import net.minecraft.world.level.block.state.pattern.BlockPattern;
@@ -34,7 +33,7 @@ public class MechanicalAssemblerBlockEntity extends AFEnergyContainerBlockEntity
     public MechanicalAssemblerBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.MECHANICAL_ASSEMBLER.get(), pPos, pBlockState);
 
-        itemStackHandler = createItemStackHandler();
+        itemStackHandler = createItemStackHandlerSingle();
         energyStorage = createEnergyStorage(10_000);
     }
 
@@ -86,10 +85,10 @@ public class MechanicalAssemblerBlockEntity extends AFEnergyContainerBlockEntity
     private BlockPattern getMechanicalAssemblyPattern() {
         return BlockPatternBuilder.start()
                 .aisle(" M ")
-                .aisle("III")
-                .aisle(" I ")
-                .aisle(" I ")
-                .where('I', BlockInWorld.hasState(blockInWorld -> blockInWorld.getBlock().equals(Blocks.IRON_BLOCK)))
+                .aisle("PPP")
+                .aisle(" P ")
+                .aisle(" P ")
+                .where('P', BlockInWorld.hasState(blockInWorld -> blockInWorld.getBlock().equals(BlockInit.ASSEMBLER_PART.get())))
                 .where('M', BlockInWorld.hasState(blockInWorld -> blockInWorld.getBlock().equals(BlockInit.MECHANICAL_ASSEMBLER.get())))
                 .build();
     }

@@ -1,7 +1,7 @@
 package com.mattutos.arkfuture.block;
 
 import com.mattutos.arkfuture.block.entity.MechanicalAssemblerBlockEntity;
-import com.mattutos.arkfuture.block.util.AFBaseEntityBlock;
+import com.mattutos.arkfuture.block.util.AFAssemblerBaseEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicalAssemblerBlock extends AFBaseEntityBlock {
+public class MechanicalAssemblerBlock extends AFAssemblerBaseEntityBlock {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final MapCodec<MechanicalAssemblerBlock> CODEC = simpleCodec(MechanicalAssemblerBlock::new);
 
@@ -39,16 +39,6 @@ public class MechanicalAssemblerBlock extends AFBaseEntityBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
         pBuilder.add(FACING);
-    }
-
-    @Override
-    protected BlockState rotate(BlockState pState, Rotation pRot) {
-        return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
-    }
-
-    @Override
-    protected BlockState mirror(BlockState pState, Mirror pMirror) {
-        return pState.rotate(pMirror.getRotation(pState.getValue(FACING)));
     }
 
     @Override

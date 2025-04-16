@@ -281,6 +281,23 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         return saveWithoutMetadata(pRegistries);
     }
 
+    protected @NotNull ItemStackHandler createItemStackHandlerSingle() {
+        return new ItemStackHandler(1) {
+            @Override
+            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+                return 1;
+            }
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                if (level != null && !level.isClientSide()) {
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+                }
+            }
+        };
+    }
+
     protected @NotNull ItemStackHandler createItemStackHandler() {
         return this.createItemStackHandler(1);
     }

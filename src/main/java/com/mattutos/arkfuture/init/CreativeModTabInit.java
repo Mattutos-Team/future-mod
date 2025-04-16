@@ -26,6 +26,7 @@ public class CreativeModTabInit {
 
                         output.accept(BlockInit.COAL_POWER_GENERATOR.get());
                         output.accept(BlockInit.MECHANICAL_ASSEMBLER.get());
+                        output.accept(BlockInit.ASSEMBLER_PART.get());
                         output.accept(BlockInit.MECHANICAL_TABLE.get());
 
                         output.accept(ItemInit.BATTERY_10K.get());
