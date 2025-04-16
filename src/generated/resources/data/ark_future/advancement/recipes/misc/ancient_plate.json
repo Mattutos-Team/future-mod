@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ancient_ore_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ark_future:ancient_hammer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "ark_future:ancient_plate"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ancient_ore_ingot"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "ark_future:ancient_plate"
+    ]
+  }
+}

@@ -45,6 +45,12 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
                 .save(pRecipeOutput);
 
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_PLATE.get(), 1)
+                .requires(ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 1)
+                .requires(ItemInit.ANCIENT_HAMMER.get())
+                .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()), has(ItemInit.ANCIENT_HAMMER.get()))
+                .save(pRecipeOutput);
+
         MechanicalTableRecipeBuilder.resultRecipe(Items.IRON_BLOCK, 1)
                 .requireBase(Items.OBSIDIAN)
                 .requirePliers(ItemInit.MECHANICAL_PLIERS.get())
