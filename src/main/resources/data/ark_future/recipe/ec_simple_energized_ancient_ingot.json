@@ -1,0 +1,15 @@
+{
+  "type": "ark_future:explosion_crafting",
+  "ingredients": [
+    {
+      "id": "minecraft:redstone"
+    },
+    {
+      "id": "ark_future:ancient_ore_ingot"
+    }
+  ],
+  "result": {
+    "id": "ark_future:simple_energized_ancient_ingot",
+    "count": 1
+  }
+}

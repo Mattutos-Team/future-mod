@@ -209,7 +209,7 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
             }
         }
 
-        // este metodo cria somente um estado novo, nao atualiza o bloco atual.
+        // CREATE A NEW STATE
         BlockState blockState = this.getBlockState().setValue(CoalPowerGeneratorBlock.POWERED, generating > 0);
         if (this.level != null)
             this.level.setBlock(this.worldPosition, blockState, Block.UPDATE_ALL); // seta o novo estado

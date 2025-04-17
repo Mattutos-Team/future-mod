@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ark_future:ancient_ore_ingot"
+    },
+    {
+      "item": "ark_future:ancient_hammer"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "ark_future:ancient_plate"
+  }
+}

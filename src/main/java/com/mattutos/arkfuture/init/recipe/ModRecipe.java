@@ -1,6 +1,8 @@
 package com.mattutos.arkfuture.init.recipe;
 
 import com.mattutos.arkfuture.ArkFuture;
+import com.mattutos.arkfuture.crafting.recipe.explosion.ExplosionRecipe;
+import com.mattutos.arkfuture.crafting.recipe.explosion.ExplosionRecipeSerializer;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableRecipe;
 import com.mattutos.arkfuture.crafting.recipe.mechanicaltable.MechanicalTableSerializer;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -24,7 +26,7 @@ public class ModRecipe {
     public static final RegistryObject<MechanicalTableSerializer> MECHANICAL_TABLE_SERIALIZER =
             SERIALIZERS.register("mechanical_table", MechanicalTableSerializer::new);
 
-    //MECHANICAL TABLE TPYE
+    //MECHANICAL TABLE TYPE
     public static final RegistryObject<RecipeType<MechanicalTableRecipe>> MECHANICAL_TABLE_TYPE =
             TYPES.register("mechanical_table", () -> new RecipeType<>() {
                 @Override
@@ -33,6 +35,18 @@ public class ModRecipe {
                 }
             });
 
+    //EXPLOSION CRAFT SERIALIZER
+    public static final RegistryObject<ExplosionRecipeSerializer> EXPLOSION_RECIPE_SERIALIZER =
+            SERIALIZERS.register("explosion_crafting", ExplosionRecipeSerializer::new);
+
+    //EXPLOSION CRAFT TYPE
+    public static final RegistryObject<RecipeType<ExplosionRecipe>> EXPLOSION_RECIPE_TYPE =
+            TYPES.register("explosion_crafting", () -> new RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "explosion_crafting";
+                }
+            });
 
     public static void register(IEventBus eventBus) {
         SERIALIZERS.register(eventBus);
