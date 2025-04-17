@@ -155,8 +155,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         super.saveAdditional(pTag, pRegistries);
 
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
-        compoundTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
         compoundTag.putInt(NBT.REMAINING_BURN_TIME.key, remainingBurnTime);
         compoundTag.putInt(NBT.TOTAL_BURN_TIME.key, totalBurnTime);
 
@@ -168,8 +166,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         super.loadAdditional(pTag, pRegistries);
 
         CompoundTag compoundTag = pTag.getCompound(ArkFuture.MOD_ID);
-        itemStackHandler.deserializeNBT(pRegistries, compoundTag.getCompound(NBT.INVENTORY.key));
-        energyStorage.deserializeNBT(pRegistries, compoundTag.get(NBT.ENERGY.key));
         remainingBurnTime = compoundTag.getInt(NBT.REMAINING_BURN_TIME.key);
         totalBurnTime = compoundTag.getInt(NBT.TOTAL_BURN_TIME.key);
     }

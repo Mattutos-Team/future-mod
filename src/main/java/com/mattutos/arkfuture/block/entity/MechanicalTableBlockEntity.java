@@ -127,10 +127,8 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
-        pTag.put("inventory", itemStackHandler.serializeNBT(pRegistries));
         pTag.putInt("mechanical_table.progress", progress);
         pTag.putInt("mechanical_table.max_progress", maxProgress);
-        pTag.put("mechanical_table.energy_stored", energyStorage.serializeNBT(pRegistries));
         super.saveAdditional(pTag, pRegistries);
     }
 
@@ -138,10 +136,8 @@ public class MechanicalTableBlockEntity extends AFEnergyContainerBlockEntity {
     protected void loadAdditional(@NotNull CompoundTag pTag, HolderLookup.@NotNull Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
 
-        itemStackHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
         progress = pTag.getInt("mechanical_table.progress");
         maxProgress = pTag.getInt("mechanical_table.max_progress");
-        energyStorage.deserializeNBT(pRegistries, pTag.get("mechanical_table.energy_stored"));
     }
 
     @Override

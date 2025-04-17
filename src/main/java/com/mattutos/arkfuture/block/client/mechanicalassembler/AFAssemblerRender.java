@@ -27,16 +27,19 @@ public abstract class AFAssemblerRender<T extends AFBaseContainerBlockEntity & G
     @Override
     public void render(T pBlockEntity, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBufferSource, int pPackedLight, int pPackedOverlay) {
         super.render(pBlockEntity, pPartialTick, pPoseStack, pBufferSource, pPackedLight, pPackedOverlay);
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
         ItemStack itemStack = pBlockEntity.getItem(0);
 
-        pPoseStack.pushPose();
-        pPoseStack.translate(0.5, 0.96, 0.5);
-        pPoseStack.scale(0.5f, 0.5f, 0.5f);
-        pPoseStack.mulPose(Axis.XP.rotationDegrees(90));
-        Level level = pBlockEntity.getLevel();
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, getLightLevel(level, pBlockEntity.getBlockPos()), OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, level, 1);
-        pPoseStack.popPose();
+        if (!itemStack.isEmpty()) {
+            ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+
+            pPoseStack.pushPose();
+            pPoseStack.translate(0.5, 0.96, 0.5);
+            pPoseStack.scale(0.5f, 0.5f, 0.5f);
+            pPoseStack.mulPose(Axis.XP.rotationDegrees(90));
+            Level level = pBlockEntity.getLevel();
+            itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, getLightLevel(level, pBlockEntity.getBlockPos()), OverlayTexture.NO_OVERLAY, pPoseStack, pBufferSource, level, 1);
+            pPoseStack.popPose();
+        }
     }
 
     private int getLightLevel(Level pLvel, BlockPos pBlockPos) {

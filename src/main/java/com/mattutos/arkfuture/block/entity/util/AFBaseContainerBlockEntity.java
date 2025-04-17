@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public abstract class AFBaseContainerBlockEntity extends BlockEntity implements Container, MenuProvider, Nameable {
+    public static final String INVENTORY_KEY = "Inventory";
     protected LazyOptional<IItemHandler> lazyItemHandler;
     private LockCode lockKey = LockCode.NO_LOCK;
     @Nullable
@@ -70,6 +71,7 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         if (pTag.contains("CustomName", 8)) {
             this.name = parseCustomNameSafe(pTag.getString("CustomName"), pRegistries);
         }
+        getItemStackHandler().deserializeNBT(pRegistries, pTag.getCompound(INVENTORY_KEY));
     }
 
     /**
@@ -89,6 +91,7 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         if (this.name != null) {
             pTag.putString("CustomName", Component.Serializer.toJson(this.name, pRegistries));
         }
+        pTag.put(INVENTORY_KEY, getItemStackHandler().serializeNBT(pRegistries));
     }
 
     @Override
@@ -282,10 +285,20 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
     }
 
     protected @NotNull ItemStackHandler createItemStackHandlerSingle() {
-        return new ItemStackHandler(1) {
+        return this.createItemStackHandler(1, 1);
+    }
+
+    protected @NotNull ItemStackHandler createItemStackHandler(int slots, int stackLimit) {
+        return new ItemStackHandler(slots) {
             @Override
             protected int getStackLimit(int slot, @NotNull ItemStack stack) {
-                return 1;
+                return stackLimit;
+            }
+
+            @Override
+            public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag nbt) {
+                this.setSize(this.getSlots());
+                super.deserializeNBT(lookup, nbt);
             }
 
             @Override
