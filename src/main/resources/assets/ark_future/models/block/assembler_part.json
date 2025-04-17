@@ -223,7 +223,32 @@
 							"name": "indicators_on",
 							"origin": [8, 14.25, 8],
 							"color": 0,
-							"children": [8, 9, 10, 11]
+							"children": [
+								{
+									"name": "indicator_green_1",
+									"origin": [14, 14.25, 2],
+									"color": 0,
+									"children": [8]
+								},
+								{
+									"name": "indicator_green_2",
+									"origin": [2, 14.25, 2],
+									"color": 0,
+									"children": [9]
+								},
+								{
+									"name": "indicator_green_3",
+									"origin": [2, 14.25, 14],
+									"color": 0,
+									"children": [10]
+								},
+								{
+									"name": "indicator_green_4",
+									"origin": [14, 14.25, 14],
+									"color": 0,
+									"children": [11]
+								}
+							]
 						}
 					]
 				}

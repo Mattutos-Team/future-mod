@@ -1,5 +1,5 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.21.20",
 	"minecraft:geometry": [
 		{
 			"description": {
@@ -128,7 +128,12 @@
 				{
 					"name": "indicators_on",
 					"parent": "indicators",
-					"pivot": [0, 14.25, 0],
+					"pivot": [0, 14.25, 0]
+				},
+				{
+					"name": "indicator_green_1",
+					"parent": "indicators_on",
+					"pivot": [-6, 14.25, -6],
 					"cubes": [
 						{
 							"origin": [-7, 14, -7],
@@ -141,7 +146,14 @@
 								"up": {"uv": [12, 49], "uv_size": [2, 2]},
 								"down": {"uv": [12, 51], "uv_size": [2, -2]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "indicator_green_2",
+					"parent": "indicators_on",
+					"pivot": [6, 14.25, -6],
+					"cubes": [
 						{
 							"origin": [5, 14, -7],
 							"size": [2, 0.5, 2],
@@ -153,7 +165,14 @@
 								"up": {"uv": [12, 49], "uv_size": [2, 2]},
 								"down": {"uv": [12, 51], "uv_size": [2, -2]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "indicator_green_3",
+					"parent": "indicators_on",
+					"pivot": [6, 14.25, 6],
+					"cubes": [
 						{
 							"origin": [5, 14, 5],
 							"size": [2, 0.5, 2],
@@ -165,7 +184,14 @@
 								"up": {"uv": [12, 49], "uv_size": [2, 2]},
 								"down": {"uv": [12, 51], "uv_size": [2, -2]}
 							}
-						},
+						}
+					]
+				},
+				{
+					"name": "indicator_green_4",
+					"parent": "indicators_on",
+					"pivot": [-6, 14.25, 6],
+					"cubes": [
 						{
 							"origin": [-7, 14, 5],
 							"size": [2, 0.5, 2],
