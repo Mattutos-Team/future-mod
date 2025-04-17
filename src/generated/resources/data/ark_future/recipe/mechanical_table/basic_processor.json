@@ -1,0 +1,18 @@
+{
+  "type": "ark_future:mechanical_table",
+  "additions": {
+    "item": "ark_future:simple_energized_ancient_ingot"
+  },
+  "base": {
+    "item": "ark_future:simple_circuit_board"
+  },
+  "energy_expenditure_per_tick": 10,
+  "pliers": {
+    "item": "ark_future:mechanical_pliers"
+  },
+  "result": {
+    "count": 1,
+    "id": "ark_future:basic_processor"
+  },
+  "total_ticks_per_craft": 100
+}

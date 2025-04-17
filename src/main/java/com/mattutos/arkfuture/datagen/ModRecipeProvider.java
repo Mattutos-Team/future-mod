@@ -39,32 +39,33 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .unlockedBy(getHasName(ItemInit.MECHANICAL_PLIERS.get()), has(ItemInit.MECHANICAL_PLIERS.get()))
                 .save(pRecipeOutput);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.SIMPLE_CIRCUIT_BOARD.get())
+                .pattern("GGG")
+                .pattern(" S ")
+                .pattern("GGG")
+                .define('G', ItemInit.GOLDEN_THREAD.get())
+                .define('S', ItemInit.ANCIENT_PLATE.get())
+                .unlockedBy(getHasName(ItemInit.GOLDEN_THREAD.get()), has(ItemInit.MECHANICAL_PLIERS.get()))
+                .save(pRecipeOutput);
+
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.GOLDEN_THREAD.get(), 24)
                 .requires(Items.GOLD_INGOT, 1)
                 .requires(ItemInit.MECHANICAL_PLIERS.get())
                 .unlockedBy(getHasName(Items.GOLD_INGOT), has(ItemInit.MECHANICAL_PLIERS.get()))
                 .save(pRecipeOutput);
 
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.ANCIENT_PLATE.get(), 1)
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit. ANCIENT_PLATE.get(), 1)
                 .requires(ItemInit.ANCIENT_ORE_INGOT_ITEM.get(), 1)
                 .requires(ItemInit.ANCIENT_HAMMER.get())
                 .unlockedBy(getHasName(ItemInit.ANCIENT_ORE_INGOT_ITEM.get()), has(ItemInit.ANCIENT_HAMMER.get()))
                 .save(pRecipeOutput);
 
-        MechanicalTableRecipeBuilder.resultRecipe(Items.IRON_BLOCK, 1)
-                .requireBase(Items.OBSIDIAN)
+        MechanicalTableRecipeBuilder.resultRecipe(ItemInit.BASIC_PROCESSOR.get(), 1)
+                .requireBase(ItemInit.SIMPLE_CIRCUIT_BOARD.get())
                 .requirePliers(ItemInit.MECHANICAL_PLIERS.get())
-                .requireAdditions(Items.IRON_INGOT)
-                .requireEnergyExpenditurePerTick(5)
-                .requireTotalTicksPerCraft(50)
-                .save(pRecipeOutput);
-
-        MechanicalTableRecipeBuilder.resultRecipe(Items.OBSIDIAN, 1)
-                .requireBase(Items.IRON_BLOCK)
-                .requirePliers(ItemInit.MECHANICAL_PLIERS.get())
-                .requireAdditions(Items.IRON_INGOT)
-                .requireEnergyExpenditurePerTick(5)
-                .requireTotalTicksPerCraft(50)
+                .requireAdditions(ItemInit.SIMPLE_ENERGIZED_ANCIENT_IRON.get())
+                .requireEnergyExpenditurePerTick(10)
+                .requireTotalTicksPerCraft(100)
                 .save(pRecipeOutput);
     }
 

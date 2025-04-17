@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "ark_future:golden_thread"
+    },
+    "S": {
+      "item": "ark_future:ancient_plate"
+    }
+  },
+  "pattern": [
+    "GGG",
+    " S ",
+    "GGG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "ark_future:simple_circuit_board"
+  }
+}
