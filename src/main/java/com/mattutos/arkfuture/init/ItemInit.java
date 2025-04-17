@@ -22,6 +22,7 @@ public class ItemInit {
     public static final RegistryObject<Item> ANCIENT_HAMMER = ITEMS.register("ancient_hammer", () -> new AFRemainingItem(new Item.Properties().durability(20)));
     public static final RegistryObject<Item> ANCIENT_PLATE = ITEMS.register("ancient_plate", () -> new Item(new Item.Properties()));
 
+    public static final RegistryObject<Item> SIMPLE_CIRCUIT_BOARD = ITEMS.register("simple_circuit_board", () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> BASIC_PROCESSOR = ITEMS.register("basic_processor", () -> new Item(new Item.Properties()));
 
     public static final RegistryObject<Item> GOLDEN_THREAD = ITEMS.register("golden_thread", () -> new Item(new Item.Properties()));
