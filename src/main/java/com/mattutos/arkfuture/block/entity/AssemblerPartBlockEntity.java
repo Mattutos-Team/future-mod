@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoAnimatable;
@@ -103,6 +104,8 @@ public class AssemblerPartBlockEntity extends AFBaseContainerBlockEntity impleme
             }
             setChanged();
         }
+        BlockState newBlockState = this.getBlockState().setValue(BlockStateProperties.POWERED, this.entityCore != null && this.entityCore.isAssembling());
+        this.level.setBlock(this.worldPosition, newBlockState, Block.UPDATE_ALL);
     }
 
     @Override
