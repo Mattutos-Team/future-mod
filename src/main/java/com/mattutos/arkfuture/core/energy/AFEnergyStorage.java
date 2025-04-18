@@ -12,39 +12,76 @@ public class AFEnergyStorage extends EnergyStorage {
         super(capacity, maxReceive, maxExtract, energy);
     }
 
+    public void setChanged() {
+    }
+
     public void setEnergy(int amount) {
         this.energy = amount;
+        setChanged();
     }
 
     public void setCapacity(int amount) {
         this.capacity = amount;
+        setChanged();
+    }
+
+    public void setMaxReceive(int amount) {
+        this.maxReceive = amount;
+        setChanged();
+    }
+
+    public void setMaxExtract(int amount) {
+        this.maxExtract = amount;
+        setChanged();
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        int extractEnergy = super.extractEnergy(maxExtract, simulate);
+        setChanged();
+        return extractEnergy;
+    }
+
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        int receiveEnergy = super.receiveEnergy(maxReceive, simulate);
+        setChanged();
+        return receiveEnergy;
     }
 
     public int extractMaxEnergy(boolean simulate) {
         int energyExtracted = Math.min(this.energy, this.maxExtract);
-        if (!simulate)
+        if (!simulate) {
             this.energy -= energyExtracted;
+            setChanged();
+        }
         return energyExtracted;
     }
 
     public int receiveMaxEnergy(boolean simulate) {
         int energyReceived = Math.min(this.capacity - this.energy, this.maxReceive);
-        if (!simulate)
+        if (!simulate) {
             this.energy += energyReceived;
+            setChanged();
+        }
         return energyReceived;
     }
 
     public int forceExtractEnergy(int amount, boolean simulate) {
         int energyExtracted = Math.min(this.energy, amount);
-        if (!simulate)
+        if (!simulate) {
             this.energy -= energyExtracted;
+            setChanged();
+        }
         return energyExtracted;
     }
 
     public int forceReceiveEnergy(int amount, boolean simulate) {
         int energyReceived = Math.min(this.capacity - this.energy, amount);
-        if (!simulate)
+        if (!simulate) {
             this.energy += energyReceived;
+            setChanged();
+        }
         return energyReceived;
     }
 
