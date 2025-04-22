@@ -27,6 +27,8 @@ public class CreativeModTabInit {
                         output.accept(BlockInit.COAL_POWER_GENERATOR.get());
                         output.accept(BlockInit.MECHANICAL_TABLE.get());
 
+                        output.accept(BlockInit.VITAL_ENERGY_CUBE.get());
+
                         output.accept(ItemInit.BATTERY_10K.get());
 
                         output.accept(ItemInit.GOLDEN_THREAD.get());
@@ -34,6 +36,7 @@ public class CreativeModTabInit {
                         output.accept(ItemInit.MECHANICAL_PLIERS.get());
                         output.accept(ItemInit.ANCIENT_HAMMER.get());
                         output.accept(ItemInit.ANCIENT_PLATE.get());
+
 
                         output.accept(ItemInit.SIMPLE_CIRCUIT_BOARD.get());
                         output.accept(ItemInit.BASIC_PROCESSOR.get());

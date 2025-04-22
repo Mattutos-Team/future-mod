@@ -4,6 +4,7 @@ import com.mattutos.arkfuture.ArkFuture;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import com.mattutos.arkfuture.block.MechanicalTableBlock;
 
+import com.mattutos.arkfuture.block.VitalEnergyCubeBlock;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -27,6 +28,9 @@ public class BlockInit {
 
     public static final RegistryObject<MechanicalTableBlock> MECHANICAL_TABLE = registerBlock("mechanical_table",
             () -> new MechanicalTableBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.WOOD)));
+
+    public static final RegistryObject<Block> VITAL_ENERGY_CUBE = registerBlock("vital_energy_cube",
+            () -> new VitalEnergyCubeBlock(BlockBehaviour.Properties.of().strength(4f).noOcclusion()));
 
     public static final RegistryObject<Block> ANCIENT_ORE_BLOCK_ITEM = registerBlock("ancient_ore_block",
             () -> new Block(BlockBehaviour.Properties.of().strength(5f, 6f).requiresCorrectToolForDrops().sound(SoundType.STONE)));

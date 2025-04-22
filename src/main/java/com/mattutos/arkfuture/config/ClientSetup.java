@@ -1,6 +1,8 @@
 package com.mattutos.arkfuture.config;
 
+import com.mattutos.arkfuture.block.client.vitalenergycube.VitalEnergyCubeRenderer;
 import com.mattutos.arkfuture.entity.client.EnergyProjectileRenderer;
+import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.EntityInit;
 import com.mattutos.arkfuture.init.MenuInit;
 import com.mattutos.arkfuture.item.common.SingleItemTooltip;
@@ -31,6 +33,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityInit.ENERGY_PROJECTILE.get(), EnergyProjectileRenderer::new);
+        event.registerBlockEntityRenderer(BlockEntityInit.VITAL_ENERGY_CUBE.get(), ctx -> new VitalEnergyCubeRenderer(null));
     }
 
     @SubscribeEvent
