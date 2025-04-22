@@ -71,15 +71,15 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
     public static final int GENERATE = 10;
     public static final int CAPACITY = 20_000;
 
-    private final ItemStackHandler itemStackHandler = createItemStackHandler();
-    private final AFEnergyStorage energyStorage = createEnergyStorage();
-    protected final EnumContainerData<DATA> containerData = createContainerData();
+    private final ItemStackHandler itemStackHandler;
+    private final AFEnergyStorage energyStorage;
+    protected final EnumContainerData<DATA> containerData;
 
     private int remainingBurnTime = 0;
     private int totalBurnTime = 0;
     private int generating = 0;
 
-    private @NotNull ItemStackHandler createItemStackHandler() {
+    private @NotNull ItemStackHandler customCreateItemStackHandler() {
         return new ItemStackHandler(SLOT.values().length) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -98,10 +98,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
             }
 
         };
-    }
-
-    private @NotNull AFEnergyStorage createEnergyStorage() {
-        return new AFEnergyStorage(CAPACITY);
     }
 
     private EnumContainerData<DATA> createContainerData() {
@@ -128,6 +124,10 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
 
     public CoalPowerGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.COAL_POWER_GENERATOR.get(), pPos, pBlockState);
+
+        itemStackHandler = customCreateItemStackHandler();
+        energyStorage = createEnergyStorage(CAPACITY);
+        containerData = createContainerData();
     }
 
     @Override
@@ -155,8 +155,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         super.saveAdditional(pTag, pRegistries);
 
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put(NBT.INVENTORY.key, itemStackHandler.serializeNBT(pRegistries));
-        compoundTag.put(NBT.ENERGY.key, energyStorage.serializeNBT(pRegistries));
         compoundTag.putInt(NBT.REMAINING_BURN_TIME.key, remainingBurnTime);
         compoundTag.putInt(NBT.TOTAL_BURN_TIME.key, totalBurnTime);
 
@@ -168,8 +166,6 @@ public class CoalPowerGeneratorBlockEntity extends AFEnergyContainerBlockEntity 
         super.loadAdditional(pTag, pRegistries);
 
         CompoundTag compoundTag = pTag.getCompound(ArkFuture.MOD_ID);
-        itemStackHandler.deserializeNBT(pRegistries, compoundTag.getCompound(NBT.INVENTORY.key));
-        energyStorage.deserializeNBT(pRegistries, compoundTag.get(NBT.ENERGY.key));
         remainingBurnTime = compoundTag.getInt(NBT.REMAINING_BURN_TIME.key);
         totalBurnTime = compoundTag.getInt(NBT.TOTAL_BURN_TIME.key);
     }

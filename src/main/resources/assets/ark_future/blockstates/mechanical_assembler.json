@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "ark_future:block/mechanical_assembler",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "ark_future:block/mechanical_assembler"
+    },
+    "facing=south": {
+      "model": "ark_future:block/mechanical_assembler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ark_future:block/mechanical_assembler",
+      "y": 270
+    }
+  }
+}

@@ -1,9 +1,10 @@
 package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
+import com.mattutos.arkfuture.block.AssemblerPartBlock;
 import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
+import com.mattutos.arkfuture.block.MechanicalAssemblerBlock;
 import com.mattutos.arkfuture.block.MechanicalTableBlock;
-
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -11,7 +12,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,6 +24,12 @@ public class BlockInit {
 
     public static final RegistryObject<CoalPowerGeneratorBlock> COAL_POWER_GENERATOR = registerBlock("coal_power_generator",
             () -> new CoalPowerGeneratorBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.STONE)));
+
+    public static final RegistryObject<MechanicalAssemblerBlock> MECHANICAL_ASSEMBLER = registerBlock("mechanical_assembler",
+            () -> new MechanicalAssemblerBlock(BlockBehaviour.Properties.of().noOcclusion()));
+
+    public static final RegistryObject<AssemblerPartBlock> ASSEMBLER_PART = registerBlock("assembler_part",
+            () -> new AssemblerPartBlock(BlockBehaviour.Properties.of().noOcclusion()));
 
     public static final RegistryObject<MechanicalTableBlock> MECHANICAL_TABLE = registerBlock("mechanical_table",
             () -> new MechanicalTableBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.WOOD)));

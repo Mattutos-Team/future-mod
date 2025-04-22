@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,15 +33,25 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public abstract class AFBaseContainerBlockEntity extends BlockEntity implements Container, MenuProvider, Nameable {
+    public static final String INVENTORY_KEY = "Inventory";
+    protected LazyOptional<IItemHandler> lazyItemHandler;
     private LockCode lockKey = LockCode.NO_LOCK;
     @Nullable
     private Component name;
 
-    protected LazyOptional<IItemHandler> lazyItemHandler;
-
     protected AFBaseContainerBlockEntity(BlockEntityType<?> pType, BlockPos pPos, BlockState pBlockState) {
         super(pType, pPos, pBlockState);
         lazyItemHandler = LazyOptional.of(this::getItemStackHandler);
+    }
+
+    public static boolean canUnlock(Player pPlayer, LockCode pCode, Component pDisplayName) {
+        if (!pPlayer.isSpectator() && !pCode.unlocksWith(pPlayer.getMainHandItem())) {
+            pPlayer.displayClientMessage(Component.translatable("container.isLocked", pDisplayName), true);
+            pPlayer.playNotifySound(SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, 1.0F);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -60,6 +71,7 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         if (pTag.contains("CustomName", 8)) {
             this.name = parseCustomNameSafe(pTag.getString("CustomName"), pRegistries);
         }
+        getItemStackHandler().deserializeNBT(pRegistries, pTag.getCompound(INVENTORY_KEY));
     }
 
     /**
@@ -79,6 +91,7 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
         if (this.name != null) {
             pTag.putString("CustomName", Component.Serializer.toJson(this.name, pRegistries));
         }
+        pTag.put(INVENTORY_KEY, getItemStackHandler().serializeNBT(pRegistries));
     }
 
     @Override
@@ -101,16 +114,6 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
 
     public boolean canOpen(Player pPlayer) {
         return canUnlock(pPlayer, this.lockKey, this.getDisplayName());
-    }
-
-    public static boolean canUnlock(Player pPlayer, LockCode pCode, Component pDisplayName) {
-        if (!pPlayer.isSpectator() && !pCode.unlocksWith(pPlayer.getMainHandItem())) {
-            pPlayer.displayClientMessage(Component.translatable("container.isLocked", pDisplayName), true);
-            pPlayer.playNotifySound(SoundEvents.CHEST_LOCKED, SoundSource.BLOCKS, 1.0F, 1.0F);
-            return false;
-        } else {
-            return true;
-        }
     }
 
     public abstract ItemStackHandler getItemStackHandler();
@@ -279,6 +282,49 @@ public abstract class AFBaseContainerBlockEntity extends BlockEntity implements 
     @Override
     public @NotNull CompoundTag getUpdateTag(HolderLookup.@NotNull Provider pRegistries) {
         return saveWithoutMetadata(pRegistries);
+    }
+
+    protected @NotNull ItemStackHandler createItemStackHandlerSingle() {
+        return this.createItemStackHandler(1, 1);
+    }
+
+    protected @NotNull ItemStackHandler createItemStackHandler(int slots, int stackLimit) {
+        return new ItemStackHandler(slots) {
+            @Override
+            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+                return stackLimit;
+            }
+
+            @Override
+            public void deserializeNBT(HolderLookup.Provider lookup, CompoundTag nbt) {
+                this.setSize(this.getSlots());
+                super.deserializeNBT(lookup, nbt);
+            }
+
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                if (level != null && !level.isClientSide()) {
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+                }
+            }
+        };
+    }
+
+    protected @NotNull ItemStackHandler createItemStackHandler() {
+        return this.createItemStackHandler(1);
+    }
+
+    protected @NotNull ItemStackHandler createItemStackHandler(int size) {
+        return new ItemStackHandler(size) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                setChanged();
+                if (level != null && !level.isClientSide()) {
+                    level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
+                }
+            }
+        };
     }
 
 }
