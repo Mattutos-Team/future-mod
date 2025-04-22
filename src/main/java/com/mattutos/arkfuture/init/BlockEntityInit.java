@@ -4,6 +4,7 @@ import com.mattutos.arkfuture.ArkFuture;
 
 import com.mattutos.arkfuture.block.entity.CoalPowerGeneratorBlockEntity;
 import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.block.entity.VitalEnergyCubeBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -24,4 +25,8 @@ public class BlockEntityInit {
     public static final RegistryObject<BlockEntityType<MechanicalTableBlockEntity>> MECHANICAL_TABLE =
             BLOCK_ENTITIES.register("mechanical_table", () -> BlockEntityType.Builder.of(
                     MechanicalTableBlockEntity::new, BlockInit.MECHANICAL_TABLE.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<VitalEnergyCubeBlockEntity>> VITAL_ENERGY_CUBE =
+            BLOCK_ENTITIES.register("vital_energy_cube", () -> BlockEntityType.Builder.of(
+                    VitalEnergyCubeBlockEntity::new, BlockInit.VITAL_ENERGY_CUBE.get()).build(null));
 }
