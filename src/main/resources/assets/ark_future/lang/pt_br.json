@@ -15,7 +15,9 @@
     "block.ark_future.ancient_ore_vein_block": "Veio de minério antigo",
     "block.ark_future.deepslate_ancient_ore_vein_block": "Veio de minério antigo de ardosiabissal",
 
+    "block.ark_future.assembler_part": "Parte do Montador",
     "block.ark_future.coal_power_generator": "Gerador de Energia a Carvão",
+    "block.ark_future.mechanical_assembler": "Montador Mecânico",
     "block.ark_future.mechanical_table": "Mesa Mecânica",
 
     "message.ark_future.energy_pistol.energy.not.enough": "Energia não é o suficiente!",

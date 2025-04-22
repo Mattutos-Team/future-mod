@@ -33,6 +33,8 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         this.dropSelf(BlockInit.COAL_POWER_GENERATOR.get());
         this.dropSelf(BlockInit.MECHANICAL_TABLE.get());
         this.dropSelf(BlockInit.VITAL_ENERGY_CUBE.get());
+        this.dropSelf(BlockInit.MECHANICAL_ASSEMBLER.get());
+        this.dropSelf(BlockInit.ASSEMBLER_PART.get());
 
         this.add(BlockInit.ANCIENT_ORE_VEIN_BLOCK_ITEM.get(),
                 block ->

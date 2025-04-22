@@ -25,6 +25,8 @@ public class CreativeModTabInit {
                         output.accept(BlockInit.DEEPSLATE_ANCIENT_ORE_VEIN_BLOCK_ITEM.get());
 
                         output.accept(BlockInit.COAL_POWER_GENERATOR.get());
+                        output.accept(BlockInit.MECHANICAL_ASSEMBLER.get());
+                        output.accept(BlockInit.ASSEMBLER_PART.get());
                         output.accept(BlockInit.MECHANICAL_TABLE.get());
 
                         output.accept(BlockInit.VITAL_ENERGY_CUBE.get());

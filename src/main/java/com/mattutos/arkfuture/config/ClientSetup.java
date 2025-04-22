@@ -1,6 +1,8 @@
 package com.mattutos.arkfuture.config;
 
 import com.mattutos.arkfuture.block.client.vitalenergycube.VitalEnergyCubeRenderer;
+import com.mattutos.arkfuture.block.client.mechanicalassembler.AssemblerPartRender;
+import com.mattutos.arkfuture.block.client.mechanicalassembler.MechanicalAssemblerRender;
 import com.mattutos.arkfuture.entity.client.EnergyProjectileRenderer;
 import com.mattutos.arkfuture.init.BlockEntityInit;
 import com.mattutos.arkfuture.init.EntityInit;
@@ -34,6 +36,8 @@ public class ClientSetup {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(EntityInit.ENERGY_PROJECTILE.get(), EnergyProjectileRenderer::new);
         event.registerBlockEntityRenderer(BlockEntityInit.VITAL_ENERGY_CUBE.get(), ctx -> new VitalEnergyCubeRenderer(null));
+        event.registerBlockEntityRenderer(BlockEntityInit.MECHANICAL_ASSEMBLER.get(), ctx -> new MechanicalAssemblerRender(null));
+        event.registerBlockEntityRenderer(BlockEntityInit.ASSEMBLER_PART.get(), ctx -> new AssemblerPartRender(null));
     }
 
     @SubscribeEvent
