@@ -25,4 +25,7 @@ public class MechanicalTableBlock extends AFBaseEntityBlock {
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new MechanicalTableBlockEntity(pPos, pState);
     }
+
+
+
 }

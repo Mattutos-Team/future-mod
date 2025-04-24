@@ -26,4 +26,5 @@ public class VitalEnergyCubeBlock extends AFBaseEntityBlock {
     public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new VitalEnergyCubeBlockEntity(pPos, pState);
     }
+
 }

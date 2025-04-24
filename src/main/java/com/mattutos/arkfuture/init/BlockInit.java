@@ -6,6 +6,7 @@ import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
 import com.mattutos.arkfuture.block.MechanicalAssemblerBlock;
 import com.mattutos.arkfuture.block.MechanicalTableBlock;
 import com.mattutos.arkfuture.block.VitalEnergyCubeBlock;
+import com.mattutos.arkfuture.item.VitalEnergyCubeItem;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -18,6 +19,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class BlockInit {
@@ -36,7 +38,9 @@ public class BlockInit {
             () -> new MechanicalTableBlock(BlockBehaviour.Properties.of().strength(4f).sound(SoundType.WOOD)));
 
     public static final RegistryObject<Block> VITAL_ENERGY_CUBE = registerBlock("vital_energy_cube",
-            () -> new VitalEnergyCubeBlock(BlockBehaviour.Properties.of().strength(4f).noOcclusion()));
+            () -> new VitalEnergyCubeBlock(BlockBehaviour.Properties.of().strength(4f).noOcclusion()),
+            blockRegistryObject -> () -> new VitalEnergyCubeItem(blockRegistryObject.get(), new Item.Properties())
+    );
 
     public static final RegistryObject<Block> ANCIENT_ORE_BLOCK_ITEM = registerBlock("ancient_ore_block",
             () -> new Block(BlockBehaviour.Properties.of().strength(5f, 6f).requiresCorrectToolForDrops().sound(SoundType.STONE)));
@@ -56,12 +60,18 @@ public class BlockInit {
 
     private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
         RegistryObject<T> toReturn = BLOCKS.register(name, block);
-        registerBlockItem(name, toReturn);
+        registerBlockItem(name, () -> new BlockItem(toReturn.get(), new Item.Properties()));
         return toReturn;
     }
 
-    private static <T extends Block> void registerBlockItem(String name, RegistryObject<T> block) {
-        ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    private static <T extends Block, I extends Item> RegistryObject<T> registerBlock(String name, Supplier<T> block, Function<RegistryObject<T>, Supplier<I>> itemFactory) {
+        RegistryObject<T> toReturn = BLOCKS.register(name, block);
+        registerBlockItem(name, itemFactory.apply(toReturn));
+        return toReturn;
+    }
+
+    private static <T extends Item> void registerBlockItem(String name, Supplier<T> item) {
+        ItemInit.ITEMS.register(name, item);
     }
 
     public static void register(IEventBus eventBus) {
