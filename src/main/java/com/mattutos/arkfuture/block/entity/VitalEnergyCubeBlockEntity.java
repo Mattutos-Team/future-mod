@@ -17,14 +17,13 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public class VitalEnergyCubeBlockEntity extends AFEnergyContainerBlockEntity implements GeoBlockEntity {
 
-    private final AFEnergyStorage energyStorage;
     public static final int CAPACITY = 100_000;
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    public VitalEnergyCubeBlockEntity(BlockPos pPos, BlockState pBlockState, AFEnergyStorage energyStorage) {
+    public VitalEnergyCubeBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.VITAL_ENERGY_CUBE.get(), pPos, pBlockState);
-        this.energyStorage = createEnergyStorage(CAPACITY);
+
     }
 
     @Override
@@ -62,7 +61,7 @@ public class VitalEnergyCubeBlockEntity extends AFEnergyContainerBlockEntity imp
         return cache;
     }
 
-    public float getEnergyPercent() {
-        return (float) this.energyStorage.getEnergyStored() / this.energyStorage.getMaxEnergyStored();
-    }
+//    public float getEnergyPercent() {
+//        return (float) this.energyStorage.getEnergyStored() / this.energyStorage.getMaxEnergyStored();
+//    }
 }
