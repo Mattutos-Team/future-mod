@@ -1,18 +1,19 @@
 package com.mattutos.arkfuture.block;
 
-import com.mattutos.arkfuture.block.entity.MechanicalTableBlockEntity;
+import com.mattutos.arkfuture.block.entity.VitalEnergyCubeBlockEntity;
 import com.mattutos.arkfuture.block.util.AFBaseEntityBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
-public class MechanicalTableBlock extends AFBaseEntityBlock {
+public class VitalEnergyCubeBlock extends AFBaseEntityBlock {
 
-    public static final MapCodec<MechanicalTableBlock> CODEC = simpleCodec(MechanicalTableBlock::new);
+    public static final MapCodec<VitalEnergyCubeBlock> CODEC = simpleCodec(VitalEnergyCubeBlock::new);
 
-    public MechanicalTableBlock(Properties pProperties) {
+    public VitalEnergyCubeBlock(Properties pProperties) {
         super(pProperties);
     }
 
@@ -22,10 +23,8 @@ public class MechanicalTableBlock extends AFBaseEntityBlock {
     }
 
     @Override
-    public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        return new MechanicalTableBlockEntity(pPos, pState);
+    public @Nullable BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
+        return new VitalEnergyCubeBlockEntity(pPos, pState);
     }
-
-
 
 }
