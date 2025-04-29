@@ -1,11 +1,7 @@
 package com.mattutos.arkfuture.init;
 
 import com.mattutos.arkfuture.ArkFuture;
-import com.mattutos.arkfuture.block.AssemblerPartBlock;
-import com.mattutos.arkfuture.block.CoalPowerGeneratorBlock;
-import com.mattutos.arkfuture.block.MechanicalAssemblerBlock;
-import com.mattutos.arkfuture.block.MechanicalTableBlock;
-import com.mattutos.arkfuture.block.VitalEnergyCubeBlock;
+import com.mattutos.arkfuture.block.*;
 import com.mattutos.arkfuture.item.VitalEnergyCubeItem;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
@@ -39,7 +35,7 @@ public class BlockInit {
 
     public static final RegistryObject<Block> VITAL_ENERGY_CUBE = registerBlock("vital_energy_cube",
             () -> new VitalEnergyCubeBlock(BlockBehaviour.Properties.of().strength(4f).noOcclusion()),
-            blockRegistryObject -> () -> new VitalEnergyCubeItem(blockRegistryObject.get(), new Item.Properties())
+            blockRegistryObject -> () -> new VitalEnergyCubeItem(blockRegistryObject.get(), new Item.Properties(), 100_000)
     );
 
     public static final RegistryObject<Block> ANCIENT_ORE_BLOCK_ITEM = registerBlock("ancient_ore_block",
